@@ -4,11 +4,38 @@
   "description": "LINE pre-test",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "build": "node webpack.js && node webpack.js --min && node gulp.js --dist",
+    "postinstall": "npm run-script build"
   },
   "author": "Tran Van Quyet",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "moment": "^2.24.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "css-loader": "^3.5.2",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-iconfont": "^10.0.3",
+    "gulp-iconfont-css": "^3.0.0",
+    "gulp-rename": "^2.0.0",
+    "json-loader": "^0.5.7",
+    "less": "^3.11.1",
+    "less-loader": "^5.0.0",
+    "style-loader": "^1.1.4",
+    "webpack": "^4.43.0"
   }
 }
