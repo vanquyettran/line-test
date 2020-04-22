@@ -2,6 +2,6 @@ import './index.less';
 
 window.LineTest = {
     renderPostPublishApp: () => {
-        console.log('hehe haha hh hah');
+        console.log('haha hh had');
     }
 };
