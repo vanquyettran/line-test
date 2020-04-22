@@ -3,12 +3,13 @@ import React from 'react';
 
 export default class Button extends React.Component {
     render() {
-        const {size = 'medium', children} = this.props;
+        const {title, onClick} = this.props;
         return <button
-            className="button"
             type="button"
+            className="button"
+            onClick={onClick}
         >
-            {children}
+            {title}
         </button>;
     }
 }

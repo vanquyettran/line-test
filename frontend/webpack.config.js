@@ -9,17 +9,13 @@ module.exports = {
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, '../public/bundles/'),
-        publicPath: '/bundles/',
+        publicPath: 'bundles/',
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
                 use: ['babel-loader']
-            },
-            {
-                test: /\.json$/,
-                use: ['json-loader']
             },
             {
                 test: /\.css$/i,
