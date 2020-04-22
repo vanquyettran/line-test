@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "build": "cd frontend/ && node webpack.js && node webpack.js --min && node gulp.js --dist",
-    "watch": "cd frontend/ && concurrently \"node gulp.js --watch\" \"node webpack.js --watch\"",
+    "watch": "cd frontend/ && concurrently \"node webpack.js --watch\" \"node gulp.js --watch\"",
     "postinstall": "npm run-script build"
   },
   "author": "Tran Van Quyet",

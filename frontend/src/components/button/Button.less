@@ -1,5 +1,47 @@
 @import "../../_shared";
 
 .button {
+    .border-radius(1);
+
+    &.size-small {
+        padding: 8px 24px;
+        .font-button-small();
+    }
+
+    &.size-medium {
+        padding: 12px 36px;
+        .font-button();
+    }
+
+    &.size-large {
+        padding: 16px 48px;
+        .font-button();
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &.appearance-primary {
+            color: @colorv-white;
+            .background-interactive(@color-primary);
+        }
+
+        &.appearance-neutral {
+            .background-interactive(@colorv-grey-light-1);
+        }
+    }
+
+    &:disabled {
+        cursor: default;
+
+        &.appearance-primary {
+            color: @colorv-white;
+            .background-disabled(@color-primary);
+        }
+
+        &.appearance-neutral {
+            .background-disabled(@colorv-grey-light-1);
+        }
+    }
 
 }

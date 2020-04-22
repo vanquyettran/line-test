@@ -18,10 +18,14 @@ export default class PostPublishApp extends React.Component {
             <div className="head-panel">
                 <Button
                     title={translate('Save draft')}
+                    appearance="neutral"
+                    size="small"
                     onClick={() => console.log('clicked')}
                 />
                 <Button
                     title={translate('Publish')}
+                    appearance="primary"
+                    size="small"
                     onClick={() => console.log('clicked')}
                 />
             </div>
@@ -34,6 +38,8 @@ export default class PostPublishApp extends React.Component {
             <div className="foot-panel">
                 <Button
                     title={translate('Publish')}
+                    appearance="primary"
+                    size="medium"
                     onClick={() => console.log('clicked')}
                 />
             </div>
