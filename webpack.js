@@ -5,29 +5,40 @@ const config = require('./webpack.config');
 const commandOpt = args[0];
 
 if (commandOpt === '--watch') {
+    console.log('webpack --watch start');
+
     webpack(config).watch({}, (err, stats) => {
-        logResult(moment().format('hh:mm:ss') + ' webpack is watching...', err, stats);
+        console.log('[' + moment().format('hh:mm:ss') + '] webpack is watching...');
+        logResult(err, stats);
     });
+
     return;
 }
 
 if (commandOpt === '--min') {
+    console.log('webpack --min start');
+
     config.optimization.minimize = true;
     config.output.filename = '[name].min.js';
 
     webpack(config).run((err, stats) => {
-        logResult('webpack --min done.', err, stats);
+        logResult(err, stats);
+        console.log('webpack --min done');
     });
+
     return;
 }
 
-webpack(config).run((err, stats) => {
-    logResult('webpack done.', err, stats);
-});
+{
+    console.log('webpack start');
 
-function logResult(name, err, stats) {
-    console.log(name);
+    webpack(config).run((err, stats) => {
+        logResult(err, stats);
+        console.log('webpack done');
+    });
+}
 
+function logResult(err, stats) {
     if (err) {
         console.error(err);
         return;
@@ -38,7 +49,7 @@ function logResult(name, err, stats) {
         return;
     }
 
-    // show bundle files
+    // show output file paths
     let i = 0;
     for (let assetName in stats.compilation.assets) {
         if (!stats.compilation.assets.hasOwnProperty(assetName)) {

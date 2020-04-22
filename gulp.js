@@ -4,13 +4,15 @@ const args = process.argv.slice(2);
 const commandOpt = args[0];
 
 if (commandOpt === '--dist') {
-    startTask('dist');
+    runTask('dist');
     return;
 }
 
-startTask('build');
+{
+    runTask('build');
+}
 
-function startTask(task) {
+function runTask(task) {
     console.log(`gulp ${task} start`);
     gulp.task(task)(() => console.log(`gulp ${task} done`));
 }
