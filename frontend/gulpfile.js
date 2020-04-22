@@ -11,10 +11,10 @@ const iconfontCss = require('gulp-iconfont-css');
 
     const fontName = 'iconfont';
     const cssClass = 'icon';
-    const src = path.resolve(__dirname, './frontend/src/icons/**/*.svg');
-    const fontDir = path.resolve(__dirname, `./public/bundles/${fontName}/`);
-    const cssFilePath = path.resolve(__dirname, `./public/bundles/${fontName}.css`);
-    const cssCleanedDir = path.resolve(__dirname, `./public/bundles/`);
+    const src = path.resolve(__dirname, './src/icons/**/*.svg');
+    const fontDir = path.resolve(__dirname, `../public/bundles/${fontName}/`);
+    const cssFilePath = path.resolve(__dirname, `../public/bundles/${fontName}.css`);
+    const cssCleanedDir = path.resolve(__dirname, `../public/bundles/`);
 
     function buildIconfont(done) {
         gulp.src(src)

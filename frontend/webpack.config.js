@@ -4,11 +4,11 @@ module.exports = {
     mode: 'production',
     context: __dirname,
     entry: {
-        'app': path.resolve(__dirname, './frontend/src/index.js')
+        'app': path.resolve(__dirname, './src/index.js')
     },
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, './public/bundles/'),
+        path: path.resolve(__dirname, '../public/bundles/'),
         publicPath: '/bundles/',
     },
     module: {

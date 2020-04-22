@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build": "node webpack.js && node webpack.js --min && node gulp.js --dist",
+    "build": "cd frontend/ && node webpack.js && node webpack.js --min && node gulp.js --dist",
     "postinstall": "npm run-script build"
   },
   "author": "Tran Van Quyet",
