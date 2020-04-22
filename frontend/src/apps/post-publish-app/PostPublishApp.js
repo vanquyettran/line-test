@@ -8,7 +8,7 @@ export default class PostPublishApp extends React.Component {
 
     render() {
         return <div className="post-publish-app">
-
+            <h1 className="title"></h1>
         </div>;
     }
 }

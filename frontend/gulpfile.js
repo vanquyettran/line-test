@@ -63,10 +63,12 @@ const watchTasks = [];
 
     function watchIconfont(done) {
         buildIconfont(() => {
-            gulp.watch('src/icons/**/*.svg', {cwd: __dirname}).on('change', () => {
-                console.log('[' + moment().format('hh:mm:ss') + '] gulp is watching...');
-                buildIconfont(() => {});
-            });
+            gulp.watch('src/icons/**/*.svg', {cwd: __dirname})
+                .on('change', () => {
+                    console.log('[' + moment().format('hh:mm:ss') + '] gulp is watching...');
+                    buildIconfont(() => {
+                    });
+                });
             done();
         });
     }
