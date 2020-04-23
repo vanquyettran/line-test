@@ -18,6 +18,7 @@ export default class ImageUploadTool extends React.Component {
                 appearance="primary"
                 onClick={() => {
                     onDone({
+                        id: '/img/car-black.jpg',
                         thumbnailUrl: '/img/car-black.jpg'
                     });
                 }}

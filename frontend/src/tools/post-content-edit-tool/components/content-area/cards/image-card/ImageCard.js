@@ -5,6 +5,14 @@ import {translate} from "../../../../../../i18n/i18n";
 import Icon from "../../../../../../components/icon/Icon";
 import Popup from "../../../../../../components/popup/Popup";
 import ImageUploadTool from '../../../../../image-upload-tool/ImageUploadTool';
+import {
+    mimeTypes,
+    fileExts,
+    maxBytes
+} from '../../../../../../models/image/rules';
+import {
+    formatBytes
+} from '../../../../../../utils/number';
 
 export default class ImageCard extends React.Component {
     constructor(props) {
@@ -37,6 +45,17 @@ export default class ImageCard extends React.Component {
         updateImages(images);
     };
 
+    /**
+     *
+     * @param {IImage} image
+     */
+    removeImage = (image) => {
+        const {images, updateImages} = this.props;
+        const index = images.indexOf(image);
+        images.splice(index, 1);
+        updateImages(images);
+    };
+
     render() {
         const {
             toolShown
@@ -49,7 +68,7 @@ export default class ImageCard extends React.Component {
         return <div className="image-card">
             {
                 images.length > 0
-                    ? getCardContent(images, this.showTool)
+                    ? getCardContent(images, this.showTool, this.removeImage)
                     : getCardPlaceholder(this.showTool)
             }
             {
@@ -70,38 +89,43 @@ export default class ImageCard extends React.Component {
 
 /**
  *
- * @param {function} addImage
+ * @param {function} requestAddImage
  * @return {Component}
  */
-function getCardPlaceholder(addImage) {
-    return <div
-        className="card-placeholder"
-        onClick={() => addImage()}
-    >
-        {translate('Upload Photo')}
+function getCardPlaceholder(requestAddImage) {
+    return <div className="card-placeholder">
+        <div className="click-box" onClick={() => requestAddImage()}>
+            <div className="text">{translate('Upload Photo')}</div>
+            <div className="icon-holder">
+                <Icon name="photo"/>
+            </div>
+        </div>
+        <div className="hint">
+            <p>{translate('Formats: ::exts', {exts: fileExts.map(t => t.toUpperCase())})}</p>
+            <p>{translate('File size: ::size', {size: formatBytes(maxBytes)})}</p>
+        </div>
     </div>;
 }
 
 /**
  * @param {IImage[]} images
- * @param {function} addImage
+ * @param {function} requestAddImage
+ * @param {function} requestRemoveImage
  * @return {Component}
  */
-function getCardContent(images, addImage) {
+function getCardContent(images, requestAddImage, requestRemoveImage) {
     return <div className="card-content">
         <ul>
             {
                 images.map(image => (
-                    <li
-                        key={image.thumbnailUrl}
-                    >
-                            {getImageThumbnail(image)}
+                    <li key={image.id}>
+                        {getImageThumbnail(image, requestRemoveImage)}
                     </li>
                 ))
             }
-            <li key="add">
+            <li>
                 {
-                    getAddButton(addImage)
+                    getAddButton(requestAddImage)
                 }
             </li>
         </ul>
@@ -111,30 +135,32 @@ function getCardContent(images, addImage) {
 /**
  *
  * @param {IImage} image
+ * @param {function} requestRemoveImage
  * @return {Component}
  */
-function getImageThumbnail(image) {
+function getImageThumbnail(image, requestRemoveImage) {
     return <div
         className="image-thumbnail"
     >
         <img src={image.thumbnailUrl}/>
         <IconButton
+            className="remove-button"
             icon="times"
-            onClick={() => console.log('clicked')}
+            onClick={() => requestRemoveImage(image)}
         />
     </div>;
 }
 
 /**
  *
- * @param {function} addImage
+ * @param {function} requestAddImage
  * @return {Component}
  */
-function getAddButton(addImage) {
+function getAddButton(requestAddImage) {
     return <button
         className="add-button"
         type="button"
-        onClick={() => addImage()}
+        onClick={() => requestAddImage()}
     >
         <Icon name="plus"/>
     </button>;

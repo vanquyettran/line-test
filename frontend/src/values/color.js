@@ -3,6 +3,7 @@ const colorvWhite = '#FFFFFF';
 const colorvGreen = '#00B900';
 const colorvRed = '#FF0000';
 const colorvYellow = '#FFAA00';
+const colorvGreyMiddle = '#B1B9C1';
 const colorvGreyLight1 = '#CFD4DA';
 const colorvGreyLight2 = '#DAE0E5';
 const colorvGreyLight3 = '#DEE2E6';
@@ -21,6 +22,7 @@ export {
     colorvGreen,
     colorvRed,
     colorvYellow,
+    colorvGreyMiddle,
     colorvGreyLight1,
     colorvGreyLight2,
     colorvGreyLight3,

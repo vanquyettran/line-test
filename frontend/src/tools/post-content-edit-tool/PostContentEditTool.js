@@ -18,12 +18,14 @@ export default class PostContentEditTool extends React.Component {
         this.state = {
             contentType: CONTENT_IMAGE,
             contentData: [
-                // {
-                //     thumbnailUrl: '/img/car-white.jpg',
-                // },
-                // {
-                //     thumbnailUrl: '/img/car-red.jpg',
-                // },
+                {
+                    id: '/img/car-white.jpg',
+                    thumbnailUrl: '/img/car-white.jpg',
+                },
+                {
+                    id: '/img/car-red.jpg',
+                    thumbnailUrl: '/img/car-red.jpg',
+                },
             ]
         };
     }
@@ -66,3 +68,9 @@ export default class PostContentEditTool extends React.Component {
         </div>;
     }
 }
+
+PostContentEditTool.defaultProps = {
+    onChange: ({contentType, contentData}) =>
+        console.log('(PostContentEditTool) onChange is not defined.', {contentType, contentData}),
+
+};

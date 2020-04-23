@@ -25,10 +25,10 @@ const getLanguageCode = () => {
 /**
  *
  * @param {string} id
- * @param {{string}} params
+ * @param {{string}} args
  * @return string
  */
-const translate = (id, params = null) => {
+const translate = (id, args = null) => {
   let msg = id;
   let lang = getLanguageCode();
 
@@ -38,9 +38,17 @@ const translate = (id, params = null) => {
     warnIdMissing(id, lang);
   }
 
-  if (params !== null) {
+  if (args !== null) {
     const regex = /::([a-zA-Z$_][a-zA-Z0-9$_]*)/g;
-    return msg.replace(regex, (match, p1) => params[p1]);
+      return msg.replace(regex, (match, p1) => {
+          const val = args[p1];
+          // in some languages, especially non-Latin language, comma is different
+          // now we support EN and VI only, we can hard-code here (one place)
+          if (val instanceof Array) {
+              return val.join(', ');
+          }
+          return val;
+      });
   }
 
   return msg;

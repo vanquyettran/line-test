@@ -1,6 +1,11 @@
 
 export default class IImage {
     /**
+     * @property {id}
+     */
+    id;
+
+    /**
      * @property {string}
      */
     thumbnailUrl;
