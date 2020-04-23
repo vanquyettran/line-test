@@ -1,6 +1,6 @@
 import './PostPublishApp.less';
 import React from 'react';
-import {translate} from '../../i18n/i18n';
+import {translate} from '../../i18n';
 import Button from '../../components/button/Button';
 import PublishTimeScheduler from './components/publish-time-scheduler/PublishTimeScheduler';
 import PostContentEditTool from '../../tools/post-content-edit-tool/PostContentEditTool';

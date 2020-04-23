@@ -2,7 +2,7 @@ import './ImageCard.less';
 import React from 'react';
 import IconButton from '../../../../../../components/icon-button/IconButton';
 import Button from '../../../../../../components/button/Button';
-import {translate} from "../../../../../../i18n/i18n";
+import {translate} from "../../../../../../i18n";
 import Icon from "../../../../../../components/icon/Icon";
 import Popup from "../../../../../../components/popup/Popup";
 import ImageUploadTool from '../../../../../image-upload-tool/ImageUploadTool';
