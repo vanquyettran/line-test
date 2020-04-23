@@ -1,5 +1,40 @@
 @import "../../../../_shared";
 
 .post-publish-app .post-editor .top-bar {
+    background: @colorv-grey-faint-1;
+    padding: 10px 20px;
+    border-bottom: 1px solid @colorv-grey-light-2;
 
+    ul {
+        .clear-fix();
+
+        li {
+            list-style: none;
+            float: left;
+
+            button {
+                width: 40px;
+                height: 32px;
+                .border-radius(1);
+
+                .icon {
+                    font-size: 16px;
+                }
+            }
+
+            &.selected {
+                button {
+                    cursor: default;
+                    background: @colorv-grey-light-2;
+                }
+            }
+
+            &:not(.selected) {
+                button {
+                    cursor: pointer;
+                    .background-interactive(@colorv-grey-faint-1);
+                }
+            }
+        }
+    }
 }

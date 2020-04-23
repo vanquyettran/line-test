@@ -66,6 +66,16 @@
 }
 
 
+// CLEAR FIX
+.clear-fix {
+    &:before,
+    &:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+}
+
 // BOX SHADOW
 .box-shadow(@level) when (@level = 1) {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
@@ -92,7 +102,7 @@
 
 // BACKGROUND STATES
 .background-hover(@color) {
-    background: lighten(@color, 5%);
+    background: darken(@color, 3%);
 }
 .background-active(@color) {
     background: darken(@color, 5%);
@@ -113,7 +123,7 @@
 
 // COLOR STATES
 .color-hover(@color) {
-    color: lighten(@color, 5%);
+    color: darken(@color, 3%);
 }
 .color-active(@color) {
     color: darken(@color, 5%);
@@ -134,7 +144,7 @@
 
 // BORDER COLOR INTERACTIVE
 .border-color-hover(@color) {
-    border-color: lighten(@color, 5%);
+    border-color: darken(@color, 3%);
 }
 .border-color-active(@color) {
     border-color: darken(@color, 5%);

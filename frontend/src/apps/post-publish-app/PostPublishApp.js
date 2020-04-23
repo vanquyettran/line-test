@@ -8,6 +8,9 @@ import PostEditor from './post-editor/PostEditor';
 export default class PostPublishApp extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+        };
     }
 
     render() {
@@ -33,6 +36,7 @@ export default class PostPublishApp extends React.Component {
                 <PublishTimeScheduler
                 />
                 <PostEditor
+
                 />
             </div>
             <div className="foot-panel">
