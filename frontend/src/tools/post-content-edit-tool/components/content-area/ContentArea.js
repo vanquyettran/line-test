@@ -40,7 +40,11 @@ export default class ContentArea extends React.Component {
             return <LinkCard/>;
         }
 
-        return <SurveyCard/>;
+        if (contentType === CONTENT_SURVEY) {
+            return <SurveyCard/>;
+        }
+
+        return null;
     };
     
     render() {
