@@ -18,6 +18,7 @@ frontend
             // - encapsulated with certain business logic
             // - use shared components as parts
             // - can have components of themselves
+            // - ussualy do not make change directly to data on server
         components
             // what are components?
             // - encapsulated with certain purpose in UI

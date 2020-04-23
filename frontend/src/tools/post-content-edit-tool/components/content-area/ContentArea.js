@@ -18,10 +18,17 @@ import {
 export default class ContentArea extends React.Component {
     
     renderContentCard = () => {
-        const {contentType} = this.props;
+        const {
+            contentType,
+            contentData,
+            updateContentData
+        } = this.props;
         
         if (contentType === CONTENT_IMAGE) {
-            return <ImageCard/>;
+            return <ImageCard
+                images={contentData}
+                updateImages={updateContentData}
+            />;
         }
 
         if (contentType === CONTENT_VIDEO) {

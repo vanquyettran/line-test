@@ -1,0 +1,47 @@
+@import "../../css/_mixin";
+
+.icon-button {
+    .border-radius(1);
+
+    &.size-small {
+        padding: 2px;
+        font-size: 12px;
+    }
+
+    &.size-medium {
+        padding: 4px;
+        font-size: 14px;
+    }
+
+    &.size-large {
+        padding: 6px;
+        font-size: 16px;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &.appearance-primary {
+            color: @colorv-white;
+            .background-interactive(@color-primary);
+        }
+
+        &.appearance-neutral {
+            .background-interactive(@colorv-grey-light-1);
+        }
+    }
+
+    &:disabled {
+        cursor: default;
+
+        &.appearance-primary {
+            color: @colorv-white;
+            .background-disabled(@color-primary);
+        }
+
+        &.appearance-neutral {
+            .background-disabled(@colorv-grey-light-1);
+        }
+    }
+
+}

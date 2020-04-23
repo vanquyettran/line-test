@@ -16,20 +16,41 @@ export default class PostContentEditTool extends React.Component {
         super(props);
 
         this.state = {
-            contentType: CONTENT_IMAGE
+            contentType: CONTENT_IMAGE,
+            contentData: [
+                // {
+                //     thumbnailUrl: '/img/car-white.jpg',
+                // },
+                // {
+                //     thumbnailUrl: '/img/car-red.jpg',
+                // },
+            ]
         };
     }
+
+    setContent(values) {
+        const {onChange} = this.props;
+        this.setState(values, () => onChange({
+            contentType: this.state.contentType,
+            contentData: this.state.contentData
+        }));
+    };
 
     updateContentType = (contentType) => {
         if (contentType === this.state.contentType) {
             return;
         }
-        this.setState({contentType});
+        this.setContent({contentType});
+    };
+
+    updateContentData = (contentData) => {
+        this.setContent({contentData});
     };
 
     render() {
         const {
-            contentType
+            contentType,
+            contentData
         } = this.state;
 
         return <div className="post-content-edit-tool">
@@ -39,6 +60,8 @@ export default class PostContentEditTool extends React.Component {
             />
             <ContentArea
                 contentType={contentType}
+                contentData={contentData}
+                updateContentData={this.updateContentData}
             />
         </div>;
     }
