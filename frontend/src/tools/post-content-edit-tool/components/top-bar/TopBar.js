@@ -8,7 +8,7 @@ import {
     CONTENT_COUPON,
     CONTENT_LINK,
     CONTENT_SURVEY
-} from '../../constants/post';
+} from '../../../../models/post/contentTypes';
 
 export default class TopBar extends React.Component {
     render() {

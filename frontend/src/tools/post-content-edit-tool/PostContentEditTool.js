@@ -1,7 +1,7 @@
-import './PostEditor.less';
+import './PostContentEditTool.less';
 import React from 'react';
-import TopBar from './top-bar/TopBar';
-import ContentArea from './content-area/ContentArea';
+import TopBar from './components/top-bar/TopBar';
+import ContentArea from './components/content-area/ContentArea';
 import {
     CONTENT_IMAGE,
     CONTENT_VIDEO,
@@ -9,9 +9,9 @@ import {
     CONTENT_COUPON,
     CONTENT_LINK,
     CONTENT_SURVEY
-} from '../constants/post';
+} from '../../models/post/contentTypes';
 
-export default class PostEditor extends React.Component {
+export default class PostContentEditTool extends React.Component {
     constructor(props) {
         super(props);
 
@@ -32,12 +32,14 @@ export default class PostEditor extends React.Component {
             contentType
         } = this.state;
 
-        return <div className="post-editor">
+        return <div className="post-content-edit-tool">
             <TopBar
                 contentType={contentType}
                 updateContentType={this.updateContentType}
             />
-            <ContentArea/>
+            <ContentArea
+                contentType={contentType}
+            />
         </div>;
     }
 }
