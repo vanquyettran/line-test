@@ -1,5 +1,78 @@
 @import "../../css/_mixin";
 
 .image-upload-tool {
+    .workspace {
+        border: 1px solid @colorv-grey-light-2;
+        width: 600px;
+        height: 400px;
 
+        .drop-box {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .guideline {
+                text-align: center;
+            }
+
+            .browse {
+                text-align: center;
+
+                .browse-button {
+                    margin-top: 10px;
+                    border: 1px solid @colorv-grey-light-2;
+                    .border-radius(1);
+                    line-height: 0;
+
+                    &:not(:disabled) {
+                        cursor: pointer;
+                    }
+
+                    &:disabled {
+                        cursor: default;
+                    }
+
+                    .text {
+                        display: inline-block;
+                        height: 30px;
+                        line-height: 30px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        padding: 0 10px;
+                    }
+
+                    .icon-holder {
+                        display: inline-block;
+                        border-left: 1px solid @colorv-grey-light-2;
+                        background: @colorv-grey-faint-1;
+                        width: 30px;
+                        height: 30px;
+                        line-height: 30px;
+                        overflow: hidden;
+
+                        .icon {
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .hint {
+        margin-top: 4px;
+        color: @colorv-grey-middle;
+
+        p {
+            &:not(:first-child) {
+                margin-top: 3px;
+            }
+        }
+    }
 }

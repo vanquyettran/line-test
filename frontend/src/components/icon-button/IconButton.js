@@ -8,13 +8,13 @@ export default class IconButton extends React.Component {
             icon,
             onClick,
             appearance = 'neutral', // primary, neutral
-            size = 'medium', // small, medium, large
-            className = ''
+            size = 'medium', // small, medium, large, custom
+            name = ''
         } = this.props;
 
         return <button
             type="button"
-            className={`${className} icon-button appearance-${appearance} size-${size}`}
+            className={`iconbutton ${name} appearance-${appearance} size-${size}`}
             onClick={onClick}
         >
             <Icon name={icon}/>

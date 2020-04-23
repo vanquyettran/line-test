@@ -5,19 +5,52 @@ import LayoutPortal from '../../layout/components/layout-portal/LayoutPortal';
 
 export default class Popup extends React.Component {
     render() {
-        const { children, close } = this.props;
+        const {title, children, close, buttons} = this.props;
 
-        return <LayoutPortal className="popup">
-            <div className="backdrop" onClick={close ? close : undefined}/>
+        return <LayoutPortal name="popup">
+            <div
+                className="backdrop"
+                onClick={close ? () => close() : undefined}
+            />
             <div className="overlay">
-                { children }
                 {
+                    title !== undefined &&
+                    <div className="popup-head">
+                        <div className="title">{ title }</div>
+                        {
+                            close &&
+                            getCloseButton(close)
+                        }
+                    </div>
+                }
+                {
+                    title === undefined &&
                     close &&
-                    <div className="close-button-holder">
-                        <IconButton icon="times" onClick={close}/>
+                    getCloseButton(close)
+                }
+                <div className="popup-body">
+                    { children }
+                </div>
+                {
+                    buttons.length > 0 &&
+                    <div className="popup-foot">
+                        { buttons }
                     </div>
                 }
             </div>
         </LayoutPortal>;
     }
+}
+
+Popup.defaultProps = {
+    buttons: []
+};
+
+function getCloseButton(close) {
+    return <IconButton
+        name="close-button"
+        icon="times"
+        appearance="custom"
+        onClick={() => close()}
+    />;
 }

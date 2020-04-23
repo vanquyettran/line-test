@@ -8,7 +8,7 @@ export default class LayoutPortal extends React.Component {
         super(props);
 
         this.el = document.createElement('div');
-        this.el.className = props.className;
+        this.el.className = props.name;
     }
 
     componentDidMount() {
@@ -27,3 +27,7 @@ export default class LayoutPortal extends React.Component {
         );
     }
 }
+
+LayoutPortal.defaultProps = {
+    name: ''
+};

@@ -1,12 +1,12 @@
 import './ImageCard.less';
 import React from 'react';
 import IconButton from '../../../../../../components/icon-button/IconButton';
+import Button from '../../../../../../components/button/Button';
 import {translate} from "../../../../../../i18n/i18n";
 import Icon from "../../../../../../components/icon/Icon";
 import Popup from "../../../../../../components/popup/Popup";
 import ImageUploadTool from '../../../../../image-upload-tool/ImageUploadTool';
 import {
-    mimeTypes,
     fileExts,
     maxBytes
 } from '../../../../../../models/image/rules';
@@ -19,7 +19,7 @@ export default class ImageCard extends React.Component {
         super(props);
 
         this.state = {
-            toolShown: false
+            toolShown: true
         };
     }
 
@@ -73,7 +73,18 @@ export default class ImageCard extends React.Component {
             }
             {
                 toolShown &&
-                <Popup close={this.hideTool}>
+                <Popup
+                    title={translate('Upload photo')}
+                    close={() => this.hideTool()}
+                    buttons={[
+                        <Button
+                            title={translate('Cancel')}
+                            appearance="neutral"
+                            size="small"
+                            onClick={() => this.hideTool()}
+                        />
+                    ]}
+                >
                     <ImageUploadTool
                         onDone={(image) => {
                             this.addImage(image);
@@ -144,8 +155,9 @@ function getImageThumbnail(image, requestRemoveImage) {
     >
         <img src={image.thumbnailUrl}/>
         <IconButton
-            className="remove-button"
+            name="remove-button"
             icon="times"
+            size="custom"
             onClick={() => requestRemoveImage(image)}
         />
     </div>;
