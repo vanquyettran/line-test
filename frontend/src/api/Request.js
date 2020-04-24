@@ -18,10 +18,12 @@ function add(parcel) {
             .then((response) => response.json())
             .then((rawData) => {
                 const responseData = parcel.parseResponseData(rawData);
+
                 if (responseData.getError() === null) {
                     resolve(responseData.getResult());
                     return;
                 }
+
                 reject(responseData.getError());
             })
             .catch((rawError) => {

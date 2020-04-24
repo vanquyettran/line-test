@@ -1,21 +1,12 @@
 import './ImageUploadTool.less';
 import React from 'react';
-import Button from '../../components/button/Button';
-import Icon from '../../components/icon/Icon';
 import {translate} from "../../i18n";
-import {
-    mimeTypes,
-    fileExts,
-    maxBytes
-} from '../../models/image/rules';
-import {
-    formatBytes
-} from '../../utils/number';
+import {fileExts, maxBytes, checkErrors} from '../../models/image/rules';
+import {formatBytes} from '../../utils/number';
 import DropBox from './components/drop-box/DropBox';
 import BrowseButton from './components/browse-button/BrowseButton';
 import Gallery from './components/gallery/Gallery';
 import {readFileAsDataURL} from '../../utils/browser';
-import {checkErrors} from '../../models/image/rules';
 import ImageUploadParcel from '../../api/endpoints/image/ImageUploadParcel';
 import Request from '../../api/Request';
 import ResponseError from '../../api/ResponseError';
@@ -43,8 +34,6 @@ export default class ImageUploadTool extends React.Component {
     };
 
     onFileData = (data, file) => {
-        const {fileInfoList} = this.state;
-
         const error = getFileError(file);
 
         const fileInfo = {
@@ -53,28 +42,25 @@ export default class ImageUploadTool extends React.Component {
             uploading: error === null
         };
 
-        fileInfoList.push(fileInfo);
+        this.addFileInfo(fileInfo);
 
-        this.forceUpdate();
-
-        if (error !== null) {
-            return;
+        if (error === null) {
+            this.uploadFile(file, fileInfo);
         }
-
-        this.uploadFile(file, fileInfo);
     };
 
     onFileError = (error) => {
-        const {fileInfoList} = this.state;
-
         const fileInfo = {
             data: null,
             error,
             uploading: false
         };
 
-        fileInfoList.push(fileInfo);
+        this.addFileInfo(fileInfo);
+    };
 
+    addFileInfo = (fileInfo) => {
+        this.state.fileInfoList.push(fileInfo);
         this.forceUpdate();
     };
 
@@ -95,13 +81,32 @@ export default class ImageUploadTool extends React.Component {
             fileInfo.error = responseError.getMessage();
         };
 
+        const onFinish = () => {
+            fileInfo.uploading = false;
+            this.forceUpdate();
+
+            if (this.isAllUploadsEnded()) {
+                this.onAllUploadsEnded();
+            }
+        };
+
         Request.add(new ImageUploadParcel(file))
             .then(onDone)
             .catch(onError)
-            .finally(() => {
-                fileInfo.uploading = false;
-                this.forceUpdate();
-            });
+            .finally(onFinish);
+    };
+
+    isAllUploadsEnded = () => {
+        return this.state.fileInfoList.every(fileInfo => !fileInfo.uploading);
+    };
+
+    onAllUploadsEnded = () => {
+        const {onDone} = this.props;
+        const {uploadedImages} = this.state;
+
+        if (uploadedImages.length > 0) {
+            onDone(uploadedImages);
+        }
     };
 
     render() {
@@ -130,6 +135,12 @@ export default class ImageUploadTool extends React.Component {
         </div>;
     }
 }
+
+
+ImageUploadTool.defaultProps = {
+    onDone: (uploadedImages) => console.log('ImageUploadTool onDone is not defined.', uploadedImages)
+};
+
 
 /**
  *

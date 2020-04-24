@@ -12,7 +12,7 @@ const fileExts = [
     'png'
 ];
 
-const maxBytes = 0.25 * 1024 * 1024;
+const maxBytes = 0.5 * 1024 * 1024;
 
 /**
  *

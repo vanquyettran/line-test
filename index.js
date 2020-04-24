@@ -23,8 +23,8 @@ app.put('/_api/media/upload', (req, res) => setTimeout(
             resultCode: success ? 1 : 0,
             resultData: {
                 type: 'PHOTO',
-                thumb: '/img/car1.jpg',
-                original: '/img/car1.jpg',
+                thumb: '/img/ship-white.jpg',
+                original: '/img/ship-white.jpg',
                 width: 1200,
                 height: 800
             },

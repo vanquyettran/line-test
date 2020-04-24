@@ -51,12 +51,13 @@ export default class ImageUploadParcel extends Parcel {
              * @type {IImage}
              */
             const image = {
-                id: rawData['original'],
-                thumbnailUrl: rawData['thumb'],
-                originalUrl: rawData['original'],
-                width: rawData['width'],
-                height: rawData['height']
+                id: rawData['resultData']['original'],
+                thumbnailUrl: rawData['resultData']['thumb'],
+                originalUrl: rawData['resultData']['original'],
+                width: rawData['resultData']['width'],
+                height: rawData['resultData']['height']
             };
+            console.log(rawData, image);
 
             return new ResponseData(image, null);
         }

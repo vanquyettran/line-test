@@ -37,11 +37,11 @@ export default class ImageCard extends React.Component {
 
     /**
      *
-     * @param {IImage} image
+     * @param {IImage[]} newImages
      */
-    addImage = (image) => {
+    addImages = (newImages) => {
         const {images, updateImages} = this.props;
-        images.push(image);
+        images.push(...newImages);
         updateImages(images);
     };
 
@@ -86,8 +86,8 @@ export default class ImageCard extends React.Component {
                     ]}
                 >
                     <ImageUploadTool
-                        onDone={(image) => {
-                            this.addImage(image);
+                        onDone={(images) => {
+                            this.addImages(images);
                             this.hideTool();
                         }}
                         onCancel={() => this.hideTool()}
