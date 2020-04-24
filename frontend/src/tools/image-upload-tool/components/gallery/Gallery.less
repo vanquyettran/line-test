@@ -34,6 +34,8 @@
     }
 
     .image-view {
+        @indicator-size: 28px;
+
         img {
             display: block;
             object-fit: contain;
@@ -44,28 +46,63 @@
             left: 0;
         }
 
-        .error,
-        .uploading {
+        .overlay-uploading,
+        .overlay-success,
+        .overlay-error
+        {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            padding: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .error {
+        .overlay-error {
             background: rgba(190, 0, 0, 0.6);
-            color: @colorv-white;
-            text-align: center;
+
+            .error {
+                color: @colorv-white;
+                text-align: center;
+            }
         }
 
-        .uploading {
+        .overlay-uploading {
             background: rgba(255, 255, 255, 0.4);
-            text-align: center;
+
+            .indicator {
+                background: rgba(0, 0, 0, 0.4);
+                width: @indicator-size;
+                height: @indicator-size;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .border-radius(1);
+
+                .spinner {
+                    width: 16px;
+                }
+            }
         }
+
+        .overlay-success {
+            .indicator {
+                background: rgba(0, 0, 0, 0.4);
+                width: @indicator-size;
+                height: @indicator-size;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .border-radius(1);
+                color: @colorv-white;
+
+                .icon {
+                    font-size: 16px;
+                }
+            }
+        }
+
     }
 }

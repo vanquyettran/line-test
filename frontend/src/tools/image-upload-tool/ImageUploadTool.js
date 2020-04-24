@@ -105,7 +105,7 @@ export default class ImageUploadTool extends React.Component {
         const {uploadedImages} = this.state;
 
         if (uploadedImages.length > 0) {
-            onDone(uploadedImages);
+            setTimeout(() => onDone(uploadedImages), 1000);
         }
     };
 
