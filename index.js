@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => res.render('post/publish'));
 
-app.post('/_api/media/upload', (req, res) => setTimeout(() => res.send({
+app.put('/_api/media/upload', (req, res) => setTimeout(() => res.send({
     resultCode: 1,
     resultData: {
         type: 'PHOTO',

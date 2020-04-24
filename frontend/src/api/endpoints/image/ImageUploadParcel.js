@@ -17,8 +17,8 @@ export default class ImageUploadParcel extends Parcel {
      * @param {File} file
      */
     compose(file) {
-        this.setRequestMethod('POST');
         this.setEndpoint('/_api/media/upload');
+        this.setRequestMethod('PUT');
         this.setRequestBody(this.makeFormData(file));
     }
 
@@ -29,8 +29,10 @@ export default class ImageUploadParcel extends Parcel {
      */
     makeFormData(file) {
         const formData = new FormData();
-        formData.append('type', 'PHOTO');
+
         formData.append('file', file);
+        formData.append('type', 'PHOTO');
+
         return formData;
     }
 
