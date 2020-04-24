@@ -37,8 +37,8 @@ export default class DropBox extends React.Component {
 
         this.setState({isDragging: false});
 
-        const file = ev.dataTransfer.files[0];
-        this.props.onChange(file);
+        const files = [].slice.call(ev.dataTransfer.files);
+        this.props.onChange(files);
     };
 
     render() {

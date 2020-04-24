@@ -13,6 +13,8 @@ import {
 } from '../../utils/number';
 import DropBox from './components/drop-box/DropBox';
 import BrowseButton from './components/browse-button/BrowseButton';
+import Gallery from './components/gallery/Gallery';
+import {readFileAsDataURL} from '../../utils/browser';
 
 
 export default class ImageUploadTool extends React.Component {
@@ -20,27 +22,49 @@ export default class ImageUploadTool extends React.Component {
         super(props);
 
         this.state = {
-            errors: []
+            errors: [],
+            fileInfoList: []
         };
     }
 
-    handleFile = file => {
-        console.log('handleFile', file);
+    handleFiles = files => {
+        const {fileInfoList} = this.state;
 
+        files.forEach(file =>
+            readFileAsDataURL(file).then(
+                data => fileInfoList.push({
+                    data,
+                    error: null
+                })
+            ).catch(
+                error => fileInfoList.push({
+                    data: null,
+                    error
+                })
+            ).finally(
+                () => this.forceUpdate()
+            )
+        );
     };
 
     render() {
-        const {onDone} = this.props;
+        const {fileInfoList} = this.props;
 
         return <div className="image-upload-tool">
             <div className="workspace">
-                <DropBox onChange={file => this.handleFile(file)}>
-                    <div className="guideline">{translate('Drop your photo here')}</div>
-                    <div className="guideline">{translate('or')}</div>
-                    <div className="browse">
-                        <BrowseButton onChange={file => this.handleFile(file)}/>
-                    </div>
-                </DropBox>
+                {
+                    fileInfoList.length > 0
+                        ?
+                        <Gallery fileInfoList={fileInfoList}/>
+                        :
+                        <DropBox onChange={files => this.handleFiles(files)}>
+                            <div className="guideline">{translate('Drop your photo here')}</div>
+                            <div className="guideline">{translate('or')}</div>
+                            <div className="browse">
+                                <BrowseButton onChange={files => this.handleFiles(files)}/>
+                            </div>
+                        </DropBox>
+                }
             </div>
             <div className="hint">
                 <p>{translate('Formats: ::exts', {exts: fileExts.map(t => t.toUpperCase())})}</p>
@@ -49,3 +73,4 @@ export default class ImageUploadTool extends React.Component {
         </div>;
     }
 }
+

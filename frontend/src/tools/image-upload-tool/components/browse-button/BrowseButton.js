@@ -14,8 +14,8 @@ export default class BrowseButton extends React.Component {
     handleFileInputChange = (ev) => {
         ev.preventDefault();
 
-        const file = ev.target.files[0];
-        this.props.onChange(file);
+        const files = [].slice.call(ev.target.files, 0);
+        this.props.onChange(files);
     };
 
     render() {
@@ -28,6 +28,7 @@ export default class BrowseButton extends React.Component {
             </div>
             <input
                 type="file"
+                multiple="multiple"
                 accept={mimeTypes.join(',')}
                 onChange={this.handleFileInputChange}
             />
