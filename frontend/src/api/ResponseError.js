@@ -1,5 +1,9 @@
 
 export default class ResponseError {
+    /**
+     *
+     * @param {string} message
+     */
     constructor(message) {
         this.message = message;
     }

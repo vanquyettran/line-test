@@ -6,7 +6,7 @@ import {
 
 export default class Spinner extends React.Component {
     render() {
-        const {color = colorPrimary} = this.props;
+        const {color} = this.props;
 
         const svgContent = SVG_CONTENT.replace(/\@color/g, color);
 
@@ -20,6 +20,10 @@ export default class Spinner extends React.Component {
         />;
     }
 }
+
+Spinner.defaultProps = {
+    color: colorPrimary
+};
 
 const SVG_CONTENT = `<g>
     <g transform="translate(82,50)">

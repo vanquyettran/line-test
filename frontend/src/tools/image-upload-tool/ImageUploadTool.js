@@ -15,6 +15,10 @@ import DropBox from './components/drop-box/DropBox';
 import BrowseButton from './components/browse-button/BrowseButton';
 import Gallery from './components/gallery/Gallery';
 import {readFileAsDataURL} from '../../utils/browser';
+import {checkErrors} from '../../models/image/rules';
+import ImageUploadParcel from '../../api/endpoints/image/ImageUploadParcel';
+import Request from '../../api/Request';
+import ResponseError from '../../api/ResponseError';
 
 
 export default class ImageUploadTool extends React.Component {
@@ -23,7 +27,8 @@ export default class ImageUploadTool extends React.Component {
 
         this.state = {
             errors: [],
-            fileInfoList: []
+            fileInfoList: [],
+            uploadedImages: []
         };
     }
 
@@ -32,14 +37,48 @@ export default class ImageUploadTool extends React.Component {
 
         files.forEach(file =>
             readFileAsDataURL(file).then(
-                data => fileInfoList.push({
-                    data,
-                    error: null
-                })
+                data => {
+                    const error = getFileError(file);
+
+                    const fileInfo = {
+                        data,
+                        error,
+                        uploading: error === null
+                    };
+
+                    fileInfoList.push(fileInfo);
+
+                    if (error !== null) {
+                        return;
+                    }
+
+                    /**
+                     * @type {IImage}
+                     */
+                    const onDone = image => {
+                        this.state.uploadedImages.push(image);
+                    };
+
+                    /**
+                     * @param {ResponseError} responseError
+                     */
+                    const onError = responseError => {
+                        fileInfo.error = responseError.getMessage();
+                    };
+
+                    Request.add(new ImageUploadParcel(file))
+                        .then(onDone)
+                        .catch(onError)
+                        .finally(() => {
+                            fileInfo.uploading = false;
+                            this.forceUpdate();
+                        });
+                }
             ).catch(
                 error => fileInfoList.push({
                     data: null,
-                    error
+                    error,
+                    uploading: false
                 })
             ).finally(
                 () => this.forceUpdate()
@@ -48,7 +87,7 @@ export default class ImageUploadTool extends React.Component {
     };
 
     render() {
-        const {fileInfoList} = this.props;
+        const {fileInfoList} = this.state;
 
         return <div className="image-upload-tool">
             <div className="workspace">
@@ -74,3 +113,15 @@ export default class ImageUploadTool extends React.Component {
     }
 }
 
+/**
+ *
+ * @param {File} file
+ */
+function getFileError(file) {
+    const ext = file.name.split('.').pop();
+    const errors = checkErrors(file.type, ext, file.size);
+    if (errors.length === 0) {
+        return null;
+    }
+    return translate('Invalid: ::errors', {errors});
+}

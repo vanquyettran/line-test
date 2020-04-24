@@ -1,7 +1,9 @@
+require('dotenv').config();
+
 const path = require('path');
 
 module.exports = {
-    mode: 'production',
+    mode: process.env.MODE,
     context: __dirname,
     entry: {
         'app': path.resolve(__dirname, './src/index.js')

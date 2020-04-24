@@ -1,5 +1,6 @@
 import Parcel from '../../Parcel';
 import ResponseError from '../../ResponseError';
+import ResponseData from '../../ResponseData';
 
 export default class ImageUploadParcel extends Parcel {
     /**
@@ -39,16 +40,30 @@ export default class ImageUploadParcel extends Parcel {
     /**
      *
      * @param rawData
-     * @return {IImage}
+     * @return {ResponseData}
      */
     parseResponseData(rawData) {
-        return {
-            id: rawData['original'],
-            thumbnailUrl: rawData['thumb'],
-            originalUrl: rawData['original'],
-            width: rawData['width'],
-            height: rawData['height'],
-        };
+        const success = rawData['resultCode'] === 1;
+
+        if (success) {
+            /**
+             *
+             * @type {IImage}
+             */
+            const image = {
+                id: rawData['original'],
+                thumbnailUrl: rawData['thumb'],
+                originalUrl: rawData['original'],
+                width: rawData['width'],
+                height: rawData['height']
+            };
+
+            return new ResponseData(image, null);
+        }
+
+        const responseError = new ResponseError(rawData['errorMessage']);
+
+        return new ResponseData(null, responseError);
     }
 
     /**

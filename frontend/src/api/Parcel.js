@@ -114,7 +114,7 @@ export default class Parcel {
      * @abstract
      *
      * @param {*} rawData
-     * @return {*}
+     * @return {ResponseData}
      */
     parseResponseData(rawData) {}
 

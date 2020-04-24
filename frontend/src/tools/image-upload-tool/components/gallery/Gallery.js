@@ -1,10 +1,11 @@
 import './Gallery.less';
 import React from 'react';
+import Spinner from '../../../../components/spinner/Spinner';
 
 export default class Gallery extends React.Component {
 
     render() {
-        const {fileInfoList} = this;
+        const {fileInfoList} = this.props;
 
         return <div className="gallery">
             {
@@ -24,7 +25,7 @@ export default class Gallery extends React.Component {
                         </div>
                         :
                         <div className="full-view">
-                            {renderImageView(fileInfo)}
+                            {renderImageView(fileInfoList[0])}
                         </div>
                 )
             }
@@ -40,11 +41,20 @@ export default class Gallery extends React.Component {
 function renderImageView(fileInfo) {
     return <div className="image-view">
         {
-            fileInfo.error !== null
-                ?
-                <div className="error">{fileInfo.error}</div>
-                :
-                <img src={fileInfo.data}/>
+            fileInfo.data !== null &&
+            <img src={fileInfo.data}/>
+        }
+        {
+            fileInfo.error !== null &&
+            <div className="error">
+                <div className="text">{fileInfo.error}</div>
+            </div>
+        }
+        {
+            fileInfo.uploading &&
+            <div className="uploading">
+                <Spinner/>
+            </div>
         }
     </div>;
 }
