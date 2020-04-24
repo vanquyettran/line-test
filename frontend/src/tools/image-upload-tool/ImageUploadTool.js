@@ -33,57 +33,75 @@ export default class ImageUploadTool extends React.Component {
     }
 
     handleFiles = files => {
-        const {fileInfoList} = this.state;
-
         files.forEach(file =>
             readFileAsDataURL(file).then(
-                data => {
-                    const error = getFileError(file);
-
-                    const fileInfo = {
-                        data,
-                        error,
-                        uploading: error === null
-                    };
-
-                    fileInfoList.push(fileInfo);
-
-                    if (error !== null) {
-                        return;
-                    }
-
-                    /**
-                     * @type {IImage}
-                     */
-                    const onDone = image => {
-                        this.state.uploadedImages.push(image);
-                    };
-
-                    /**
-                     * @param {ResponseError} responseError
-                     */
-                    const onError = responseError => {
-                        fileInfo.error = responseError.getMessage();
-                    };
-
-                    Request.add(new ImageUploadParcel(file))
-                        .then(onDone)
-                        .catch(onError)
-                        .finally(() => {
-                            fileInfo.uploading = false;
-                            this.forceUpdate();
-                        });
-                }
+                data => this.onFileData(data, file)
             ).catch(
-                error => fileInfoList.push({
-                    data: null,
-                    error,
-                    uploading: false
-                })
-            ).finally(
-                () => this.forceUpdate()
+                error => this.onFileError(error)
             )
         );
+    };
+
+    onFileData = (data, file) => {
+        const {fileInfoList} = this.state;
+
+        const error = getFileError(file);
+
+        const fileInfo = {
+            data,
+            error,
+            uploading: error === null
+        };
+
+        fileInfoList.push(fileInfo);
+
+        this.forceUpdate();
+
+        if (error !== null) {
+            return;
+        }
+
+        this.uploadFile(file, fileInfo);
+    };
+
+    onFileError = (error) => {
+        const {fileInfoList} = this.state;
+
+        const fileInfo = {
+            data: null,
+            error,
+            uploading: false
+        };
+
+        fileInfoList.push(fileInfo);
+
+        this.forceUpdate();
+    };
+
+    uploadFile = (file, fileInfo) => {
+        const {uploadedImages} = this.state;
+
+        /**
+         * @type {IImage}
+         */
+        const onDone = image => {
+            uploadedImages.push(image);
+        };
+
+        /**
+         * @param {ResponseError} responseError
+         */
+        const onError = responseError => {
+            fileInfo.error = responseError.getMessage();
+        };
+
+        Request.add(new ImageUploadParcel(file))
+            .then(onDone)
+            .catch(onError)
+            .finally(() => {
+                fileInfo.uploading = false;
+                this.forceUpdate();
+            });
     };
 
     render() {
