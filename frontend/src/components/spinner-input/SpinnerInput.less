@@ -1,8 +1,27 @@
 @import "../../css/_mixin";
 
 .spinner-input {
+    .head,
+    .foot {
+        cursor: pointer;
+
+        &:hover {
+            color: @colorv-grey-light-4;
+        }
+
+        &:active {
+            color: @colorv-grey-light-3;
+        }
+    }
+
+    .body {
+
+    }
+
     .options-view {
         ul {
+            list-style: none;
+
             li {
                 &.selected {
                     font-weight: bold;

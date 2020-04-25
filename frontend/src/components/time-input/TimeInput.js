@@ -50,8 +50,8 @@ export default class TimeInput extends React.Component {
                 onChange={({hours, minutes, seconds}) => this.syncYMD(hours, minutes, seconds, 'templateInput')}
             />
             <TimePicker
-                defaultSeconds={[hours, minutes, seconds]}
-                seconds={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
+                defaultValue={[hours, minutes, seconds]}
+                value={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
                 onChange={([hours, minutes, seconds]) => this.syncYMD(hours, minutes, seconds, 'timePicker')}
                 getIsValidTime={(hours, minutes, seconds) => getIsValidTime(hours, minutes, seconds)}
             />

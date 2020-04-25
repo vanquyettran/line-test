@@ -63,19 +63,25 @@ export default class SpinnerInput extends React.Component {
         const result = [];
 
         for (let i = 0; i < options.length; i++) {
-            if (options[i].value !== value) {
+            if (value !== null && options[i].value !== value) {
                 continue;
             }
 
-            for (let j = Math.max(i - expanding, 0)
-                ; j <= Math.min(i + expanding, options.length - 1)
+            for (let j = i - expanding
+                ; j <= i + expanding
                 ; j++
             ) {
+                if (j < 0 || j > options.length - 1) {
+                    result.push(j);
+                    continue;
+                }
                 result.push(options[j]);
             }
 
             break;
         }
+
+        console.log('result', result);
 
         if (result.length > 0) {
             return result;
@@ -86,6 +92,10 @@ export default class SpinnerInput extends React.Component {
 
     renderOptionItem = (option) => {
         const {value} = this.state;
+
+        if ('number' === typeof option) {
+            return <li key={option}>&nbsp;</li>
+        }
 
         return <li
             key={option.value}
@@ -103,7 +113,7 @@ export default class SpinnerInput extends React.Component {
             <ul>
                 {
                     this.getShouldDrawnOptions()
-                        .map(option => this.renderOptionItem(option))
+                        .map((option, index) => this.renderOptionItem(option))
                 }
             </ul>
         </div>;
@@ -119,8 +129,7 @@ export default class SpinnerInput extends React.Component {
 
     selectAbove = () => {
         const {options} = this.props;
-        const selectedOption = options.find(option => option.value === value);
-        const index = options.indexOf(selectedOption);
+        const index = options.indexOf(this.getSelectedOption());
         if (index > 0) {
             this.updateValue(options[index - 1].value);
         }
@@ -128,11 +137,17 @@ export default class SpinnerInput extends React.Component {
 
     selectBelow = () => {
         const {options} = this.props;
-        const selectedOption = options.find(option => option.value === value);
-        const index = options.indexOf(selectedOption);
+        const index = options.indexOf(this.getSelectedOption());
         if (index < options.length - 1) {
             this.updateValue(options[index + 1].value);
         }
+    };
+
+    getSelectedOption = () => {
+        const {options} = this.props;
+        const {value} = this.state;
+
+        return options.find(option => option.value === value);
     };
 
     render() {
@@ -157,5 +172,6 @@ SpinnerInput.defaultProps = {
     options: new Array(60).fill(null).map(
         (_, index) => ({value: index, label: index < 10 ? '0' + index : '' + index})
     ),
-    expanding: 2
+    expanding: 2,
+    onChange: (value) => console.log('(SpinnerInput) onChange is omitted', value)
 };
