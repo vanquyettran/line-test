@@ -60,7 +60,6 @@ export default class DateInput extends React.Component {
 }
 
 
-
 DateInput.defaultProps = {
     defaultYear: new Date().getFullYear(),
     defaultMonth: new Date().getMonth() + 1,
@@ -70,5 +69,3 @@ DateInput.defaultProps = {
         return new Date(year, month - 1, date, 23, 59, 59).getTime() >= new Date().getTime();
     },
 };
-
-

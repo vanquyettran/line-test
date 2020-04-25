@@ -201,7 +201,7 @@ TemplateInput.dateDMYTemplate = [
         key: 'year',
         type: TemplateInput.PIECE_NUMBER,
         min: 1900,
-        max: 2050,
+        max: 2100,
         emptyDigit: '-'
     },
 ];
@@ -229,9 +229,54 @@ TemplateInput.monthTemplate = [
         key: 'year',
         type: TemplateInput.PIECE_NUMBER,
         min: 1900,
-        max: 2050,
+        max: 2100,
         emptyDigit: '-'
     },
+];
+
+TemplateInput.timeHMSTemplate = [
+    {
+        key: 'hours',
+        type: TemplateInput.PIECE_NUMBER,
+        min: 0,
+        max: 23,
+        emptyDigit: '-'
+    },
+    ':',
+    {
+        key: 'minutes',
+        type: TemplateInput.PIECE_NUMBER,
+        min: 0,
+        max: 59,
+        emptyDigit: '-'
+    },
+    ':',
+    {
+        key: 'seconds',
+        type: TemplateInput.PIECE_NUMBER,
+        min: 0,
+        max: 59,
+        emptyDigit: '-'
+    },
+];
+
+
+TemplateInput.timeHMTemplate = [
+    {
+        key: 'hours',
+        type: TemplateInput.PIECE_NUMBER,
+        min: 0,
+        max: 23,
+        emptyDigit: '-'
+    },
+    ':',
+    {
+        key: 'minutes',
+        type: TemplateInput.PIECE_NUMBER,
+        min: 0,
+        max: 59,
+        emptyDigit: '-'
+    }
 ];
 
 TemplateInput.defaultProps = {
