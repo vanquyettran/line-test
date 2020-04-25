@@ -4,7 +4,6 @@
     table {
         border-collapse: collapse;
         border-spacing: 0;
-        text-align: right;
         background: @colorv-white;
 
         td {
@@ -12,41 +11,82 @@
             border: none;
             padding: 0;
 
-            span {
+            div {
                 display: block;
                 padding: 5px;
             }
         }
 
+        td.weekday-cell {
+            div {
+                text-align: right;
+            }
+        }
+
         td.date-cell {
-            span {
+            div {
                 cursor: pointer;
+                text-align: right;
+            }
+
+            &:not(.is-valid) {
+                div {
+                    cursor: not-allowed;
+                }
             }
 
             &.is-in-current-month {
                 &.is-current-date {
-                    span {
-                        background: @color-primary;
-                        color: @colorv-white;
+                    &.is-valid {
+                        div {
+                            background: @color-primary;
+                            color: @colorv-white;
+                        }
+                    }
+
+                    &:not(.is-valid) {
+                        div {
+                            background: @colorv-grey-middle;
+                            color: @colorv-white;
+                        }
                     }
                 }
 
                 &:not(.is-current-date) {
-                    span {
-                        &:hover {
-                            background: @colorv-grey-light-4;
+                    &.is-valid {
+                        div {
+                            &:hover {
+                                background: @colorv-grey-light-4;
+                            }
+                        }
+                    }
+
+                    &:not(.is-valid) {
+                        div {
+                            color: @colorv-grey-middle;
                         }
                     }
                 }
 
                 &.is-today {
-                    color: @colorv-red;
+                    &:not(.is-current-date) {
+                        &.is-valid {
+                            div {
+                                color: @colorv-red;
+                            }
+                        }
+
+                        &:not(.is-valid) {
+                            div {
+                                color: lighten(@colorv-red, 30%);
+                            }
+                        }
+                    }
                 }
             }
 
             &:not(.is-in-current-month) {
-
-                span {
+                div {
                     color: @colorv-grey-light-1;
 
                     &:hover {
@@ -57,12 +97,27 @@
             }
         }
 
-        .weekdays-row {
+        td.year-month-cell {
+            div {
+                text-align: center;
+                cursor: pointer;
 
+                &:hover {
+                    background: @colorv-grey-light-4;
+                }
+            }
         }
 
-        .week-row {
+        td.month-backward-cell,
+        td.month-forward-cell {
+            div {
+                text-align: center;
+                cursor: pointer;
 
+                &:hover {
+                    background: @colorv-grey-light-4;
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import './DatePicker.less';
 import React from 'react';
 import {translate} from '../../i18n';
+import Icon from '../../components/icon/Icon';
 
 
 export default class DatePicker extends React.Component {
@@ -8,12 +9,26 @@ export default class DatePicker extends React.Component {
         super(props);
 
         this.current = new Date(props.date);
+
+        this.state = {
+            shownYear: this.getCurrentYear(),
+            shownMonth: this.getCurrentMonth()
+        };
     }
 
+    /**
+     * @return {number}
+     */
     getCurrentYear = () => this.current.getFullYear();
 
+    /**
+     * @return {number}
+     */
     getCurrentMonth = () => this.current.getMonth();
 
+    /**
+     * @return {number}
+     */
     getCurrentDate = () => this.current.getDate();
 
     setCurrentYear = year => this.current.setFullYear(year);
@@ -24,47 +39,103 @@ export default class DatePicker extends React.Component {
 
     updateCurrentYear = year => {
         this.setCurrentYear(year);
-        this.forceUpdate();
+        this.resetShownYearMonth();
     };
 
     updateCurrentMonth = month => {
         this.setCurrentMonth(month);
-        this.forceUpdate();
+        this.resetShownYearMonth();
     };
 
     updateCurrentDate = date => {
         this.setCurrentDate(date);
-        this.forceUpdate();
+        this.resetShownYearMonth();
     };
 
     updateCurrentYMD = (year, month, date) => {
         this.setCurrentYear(year);
         this.setCurrentMonth(month);
         this.setCurrentDate(date);
-        this.forceUpdate();
+        this.resetShownYearMonth();
     };
 
-    getCalendar = () => {
+    resetShownYearMonth = () => {
+        this.setState({
+            shownYear: this.getCurrentYear(),
+            shownMonth: this.getCurrentMonth()
+        });
+    };
+
+    getWeekInfoList = () => {
+        const {
+            shownYear,
+            shownMonth
+        } = this.state;
+
         return createCalendar(
             this.getCurrentYear(),
             this.getCurrentMonth(),
-            this.getCurrentDate()
+            this.getCurrentDate(),
+            shownYear,
+            shownMonth
         );
     };
 
-    render() {
-        const {shortWeekdays} = this.props;
+    backwardMonth = () => {
+        this.setState(({shownYear, shownMonth}) => {
+            if (shownMonth === 0) {
+                shownMonth = 11;
+                shownYear--;
+            } else {
+                shownMonth--;
+            }
+            return {shownYear, shownMonth};
+        });
+    };
 
-        const weekInfoList = this.getCalendar();
+    forwardMonth = () => {
+        this.setState(({shownYear, shownMonth}) => {
+            if (shownMonth === 11) {
+                shownMonth = 0;
+                shownYear++;
+            } else {
+                shownMonth++;
+            }
+            return {shownYear, shownMonth};
+        });
+    };
+
+    render() {
+        const {
+            shortWeekdays,
+            shortMonths,
+            months,
+            yearMonthTemplate,
+            getIsValidDate
+        } = this.props;
+
+        const {
+            shownYear,
+            shownMonth
+        } = this.state;
 
         return <div className="date-picker">
             <table>
                 <tbody>
                 {
+                    getYearMonthRow(
+                        yearMonthTemplate, this.getCurrentYear(),
+                        this.getCurrentMonth(), months, shortMonths,
+                        this.backwardMonth, this.forwardMonth
+                    )
+                }
+                {
                     getWeekdaysRow(shortWeekdays)
                 }
                 {
-                    weekInfoList.map(weekInfo => getWeekRow(weekInfo, this.updateCurrentYMD))
+                    this.getWeekInfoList().map(
+                        weekInfo => getWeekRow(weekInfo, getIsValidDate, this.updateCurrentYMD)
+                    )
                 }
                 </tbody>
             </table>
@@ -83,8 +154,83 @@ DatePicker.defaultProps = {
         translate("Th"),
         translate("Fr"),
         translate("Sa")
-    ]
+    ],
+    shortMonths: [
+        translate("Jan"),
+        translate("Feb"),
+        translate("Mar"),
+        translate("Apr"),
+        translate("May"),
+        translate("Jun"),
+        translate("Jul"),
+        translate("Aug"),
+        translate("Sep"),
+        translate("Oct"),
+        translate("Nov"),
+        translate("Dec")
+    ],
+    months: [
+        translate("January"),
+        translate("February"),
+        translate("March"),
+        translate("April"),
+        translate("May"),
+        translate("June"),
+        translate("July"),
+        translate("August"),
+        translate("September"),
+        translate("October"),
+        translate("November"),
+        translate("December")
+    ],
+    yearMonthTemplate: '{shortMonth} {year}',
+    getIsValidDate: (year, month, date) => {
+        return new Date(year, month, date, 23, 59, 59).getTime() >= new Date().getTime();
+    }
 };
+
+
+/**
+ *
+ * @param {string} yearMonthTemplate
+ * @param {number} year
+ * @param {number} month
+ * @param {string[]} months
+ * @param {string[]} shortMonths
+ * @param {function|null} backwardMonth
+ * @param {function|null} forwardMonth
+ */
+function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, backwardMonth, forwardMonth) {
+    return <tr className="year-month-row">
+        <td className="month-backward-cell">
+            {
+                backwardMonth &&
+                <div onClick={() => backwardMonth()}>
+                    <Icon name="angle-left"/>
+                </div>
+            }
+        </td>
+        <td className="year-month-cell" colSpan="5">
+            <div>
+                {
+                    yearMonthTemplate
+                        .replace(/\{year\}/g, '' + year)
+                        .replace(/\{month\}/g, months[month])
+                        .replace(/\{shortMonth\}/g, shortMonths[month])
+                }
+            </div>
+        </td>
+        <td className="month-forward-cell">
+            {
+                forwardMonth &&
+                <div onClick={() => forwardMonth()}>
+                    <Icon name="angle-right"/>
+                </div>
+            }
+        </td>
+    </tr>
+}
+
 
 /**
  *
@@ -95,22 +241,25 @@ function getWeekdaysRow(shortWeekdays) {
     return <tr className="weekdays-row">
         {
             shortWeekdays.map(wd => <td key={wd} className="weekday-cell">
-                <span>{wd}</span>
+                <div>{wd}</div>
             </td>)
         }
     </tr>;
 }
 
+
 /**
  *
  * @param {{year, month, date, isInCurrentMonth, isCurrentDate, isToday}[]} dateInfoList
+ * @param {function} getIsValidDate
  * @param {function} updateCurrentYMD
  * @returns {Component}
  */
-function getWeekRow(dateInfoList, updateCurrentYMD) {
+function getWeekRow(dateInfoList, getIsValidDate, updateCurrentYMD) {
     return <tr className="week-row">
         {
             dateInfoList.map(({year, month, date, isInCurrentMonth, isCurrentDate, isToday}) => {
+                const isValid = getIsValidDate(year, month, date);
                 return <td
                     key={`${year} ${month} ${date}`}
                     className={
@@ -118,9 +267,12 @@ function getWeekRow(dateInfoList, updateCurrentYMD) {
                         + (isInCurrentMonth ? 'is-in-current-month ' : '')
                         + (isCurrentDate ? 'is-current-date ' : '')
                         + (isToday ? 'is-today ' : '')
+                        + (isValid ? 'is-valid ' : '')
                     }
                 >
-                    <span onClick={() => updateCurrentYMD(year, month, date)}>{date}</span>
+                    <div onClick={() => isValid && updateCurrentYMD(year, month, date)}>
+                        {date}
+                    </div>
                 </td>;
             })
         }
@@ -133,23 +285,25 @@ function getWeekRow(dateInfoList, updateCurrentYMD) {
  * @param currentYear
  * @param currentMonth
  * @param currentDate
+ * @param shownYear
+ * @param shownMonth
  * @returns {Array}
  */
-function createCalendar(currentYear, currentMonth, currentDate) {
+function createCalendar(currentYear, currentMonth, currentDate, shownYear, shownMonth) {
 
     const now = new Date();
     const calendar = [];
-    const threeMonths = [[currentYear, currentMonth]];
+    const threeMonths = [[shownYear, shownMonth]];
 
-    if (currentMonth == 0) {
-        threeMonths.unshift([currentYear - 1, 11]);
-        threeMonths.push([currentYear, 1]);
-    } else if (currentMonth == 11) {
-        threeMonths.unshift([currentYear, 10]);
-        threeMonths.push([currentYear + 1, 0]);
+    if (shownMonth == 0) {
+        threeMonths.unshift([shownYear - 1, 11]);
+        threeMonths.push([shownYear, 1]);
+    } else if (shownMonth == 11) {
+        threeMonths.unshift([shownYear, 10]);
+        threeMonths.push([shownYear + 1, 0]);
     } else {
-        threeMonths.unshift([currentYear, currentMonth - 1]);
-        threeMonths.push([currentYear, currentMonth + 1]);
+        threeMonths.unshift([shownYear, shownMonth - 1]);
+        threeMonths.push([shownYear, shownMonth + 1]);
     }
 
     let week, day = new Date(threeMonths[0][0], threeMonths[0][1], 1).getDay();
