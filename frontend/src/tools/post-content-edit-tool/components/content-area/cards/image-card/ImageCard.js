@@ -19,7 +19,7 @@ export default class ImageCard extends React.Component {
         super(props);
 
         this.state = {
-            toolShown: true
+            toolShown: false
         };
     }
 

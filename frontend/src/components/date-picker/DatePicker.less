@@ -1,5 +1,68 @@
 @import "../../css/_mixin";
 
 .date-picker {
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        text-align: right;
+        background: @colorv-white;
 
+        td {
+            cursor: default;
+            border: none;
+            padding: 0;
+
+            span {
+                display: block;
+                padding: 5px;
+            }
+        }
+
+        td.date-cell {
+            span {
+                cursor: pointer;
+            }
+
+            &.is-in-current-month {
+                &.is-current-date {
+                    span {
+                        background: @color-primary;
+                        color: @colorv-white;
+                    }
+                }
+
+                &:not(.is-current-date) {
+                    span {
+                        &:hover {
+                            background: @colorv-grey-light-4;
+                        }
+                    }
+                }
+
+                &.is-today {
+                    color: @colorv-red;
+                }
+            }
+
+            &:not(.is-in-current-month) {
+
+                span {
+                    color: @colorv-grey-light-1;
+
+                    &:hover {
+                        color: @colorv-grey-middle;
+                        background: @colorv-grey-light-4;
+                    }
+                }
+            }
+        }
+
+        .weekdays-row {
+
+        }
+
+        .week-row {
+
+        }
+    }
 }

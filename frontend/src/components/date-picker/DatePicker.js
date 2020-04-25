@@ -7,21 +7,49 @@ export default class DatePicker extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            currentYear,
-            currentMonth,
-            currentDate
-        };
+        this.current = new Date(props.date);
     }
 
-    getCalendar = () => {
-        const {
-            currentYear,
-            currentMonth,
-            currentDate
-        } = this.state;
+    getCurrentYear = () => this.current.getFullYear();
 
-        return createCalendar(currentYear, currentMonth, currentDate);
+    getCurrentMonth = () => this.current.getMonth();
+
+    getCurrentDate = () => this.current.getDate();
+
+    setCurrentYear = year => this.current.setFullYear(year);
+
+    setCurrentMonth = month => this.current.setMonth(month);
+
+    setCurrentDate = date => this.current.setDate(date);
+
+    updateCurrentYear = year => {
+        this.setCurrentYear(year);
+        this.forceUpdate();
+    };
+
+    updateCurrentMonth = month => {
+        this.setCurrentMonth(month);
+        this.forceUpdate();
+    };
+
+    updateCurrentDate = date => {
+        this.setCurrentDate(date);
+        this.forceUpdate();
+    };
+
+    updateCurrentYMD = (year, month, date) => {
+        this.setCurrentYear(year);
+        this.setCurrentMonth(month);
+        this.setCurrentDate(date);
+        this.forceUpdate();
+    };
+
+    getCalendar = () => {
+        return createCalendar(
+            this.getCurrentYear(),
+            this.getCurrentMonth(),
+            this.getCurrentDate()
+        );
     };
 
     render() {
@@ -36,7 +64,7 @@ export default class DatePicker extends React.Component {
                     getWeekdaysRow(shortWeekdays)
                 }
                 {
-                    weekInfoList.map(weekInfo => getWeekRow(weekInfo))
+                    weekInfoList.map(weekInfo => getWeekRow(weekInfo, this.updateCurrentYMD))
                 }
                 </tbody>
             </table>
@@ -46,6 +74,7 @@ export default class DatePicker extends React.Component {
 
 
 DatePicker.defaultProps = {
+    date: new Date().getTime(),
     shortWeekdays: [
         translate("Su"),
         translate("Mo"),
@@ -75,10 +104,11 @@ function getWeekdaysRow(shortWeekdays) {
 /**
  *
  * @param {{year, month, date, isInCurrentMonth, isCurrentDate, isToday}[]} dateInfoList
+ * @param {function} updateCurrentYMD
  * @returns {Component}
  */
-function getWeekRow(dateInfoList) {
-    return <tr className="dates-row">
+function getWeekRow(dateInfoList, updateCurrentYMD) {
+    return <tr className="week-row">
         {
             dateInfoList.map(({year, month, date, isInCurrentMonth, isCurrentDate, isToday}) => {
                 return <td
@@ -90,7 +120,7 @@ function getWeekRow(dateInfoList) {
                         + (isToday ? 'is-today ' : '')
                     }
                 >
-                    <span>{date}</span>
+                    <span onClick={() => updateCurrentYMD(year, month, date)}>{date}</span>
                 </td>;
             })
         }
