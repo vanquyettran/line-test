@@ -8,10 +8,23 @@ export default class TemplateInput extends React.Component {
         super(props);
 
         this.state = {
-            values: {},
+            values: props.defaultValues !== null ? props.defaultValues : {},
             focusedPieceKey: null,
             forceFocusedPieceKey: null
         };
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        const isValuesChanged = props.values !== null
+            && JSON.stringify(props.values) !== JSON.stringify(state.values);
+
+        if (isValuesChanged) {
+            state.values = props.values;
+
+            return state;
+        }
+
+        return null;
     }
 
     updateValue = (key, value) => {
@@ -93,6 +106,7 @@ export default class TemplateInput extends React.Component {
     };
 
     getNumberPiece = (pieceProps) => {
+        const {defaultValues, values: propsValues} = this.props;
         const {values, forceFocusedPieceKey} = this.state;
 
         const onInputRef = el => {
@@ -102,9 +116,10 @@ export default class TemplateInput extends React.Component {
             }
         };
 
+
         return <NumberPiece
-            value={pieceProps.value}
-            defaultValue={pieceProps.defaultValue}
+            value={propsValues !== null && propsValues[pieceProps.key] !== null ? propsValues[pieceProps.key] : null}
+            defaultValue={defaultValues !== null ? defaultValues[pieceProps.key] : null}
             emptyDigit={pieceProps.emptyDigit}
             min={'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values)}
             max={'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values)}
@@ -221,5 +236,7 @@ TemplateInput.monthTemplate = [
 
 TemplateInput.defaultProps = {
     template: TemplateInput.dateDMYTemplate,
+    values: null,
+    defaultValues: null,
     onChange: (values) => console.log('(TemplateInput) onChange is omitted', values)
 };

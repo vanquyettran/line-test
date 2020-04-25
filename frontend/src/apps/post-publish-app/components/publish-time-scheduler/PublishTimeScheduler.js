@@ -10,8 +10,6 @@ export default class PublishTimeScheduler extends React.Component {
         return <div className="publish-time-scheduler">
             <DateInput/>
             <br/>
-            <DatePicker/>
-            <br/>
             <TimeInput/>
             <br/>
             <TimePicker/>

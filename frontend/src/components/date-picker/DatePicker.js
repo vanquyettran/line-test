@@ -8,100 +8,115 @@ export default class DatePicker extends React.Component {
     constructor(props) {
         super(props);
 
-        this.current = new Date(props.date);
+        const dateObject = new Date(props.defaultDate);
+        this.state = {};
+        this.state.current = !isNaN(dateObject.getTime()) ? dateObject : new Date(),
+        this.state.shownYear = this.getCurrentYear();
+        this.state.shownMonthIndex = this.getCurrentMonthIndex();
+    }
 
-        this.state = {
-            shownYear: this.getCurrentYear(),
-            shownMonth: this.getCurrentMonth()
-        };
+    static getDerivedStateFromProps(props, state) {
+        if (props.date === null) {
+            return null;
+        }
+
+        const dateObject = new Date(props.date);
+
+        if (isNaN(dateObject.getTime())) {
+            return null;
+        }
+        if (state.current.getTime() === dateObject.getTime()) {
+            return null;
+        }
+
+        state.current = dateObject;
+        state.shownYear = dateObject.getFullYear();
+        state.shownMonthIndex = dateObject.getMonth();
+
+        return state;
     }
 
     /**
      * @return {number}
      */
-    getCurrentYear = () => this.current.getFullYear();
+    getCurrentYear = () => this.state.current.getFullYear();
 
     /**
      * @return {number}
      */
-    getCurrentMonth = () => this.current.getMonth();
+    getCurrentMonthIndex = () => this.state.current.getMonth();
 
     /**
      * @return {number}
      */
-    getCurrentDate = () => this.current.getDate();
+    getCurrentDate = () => this.state.current.getDate();
 
-    setCurrentYear = year => this.current.setFullYear(year);
+    setCurrentYear = year => this.state.current.setFullYear(year);
 
-    setCurrentMonth = month => this.current.setMonth(month);
+    setCurrentMonthIndex = monthIndex => this.state.current.setMonth(monthIndex);
 
-    setCurrentDate = date => this.current.setDate(date);
+    setCurrentDate = date => this.state.current.setDate(date);
 
-    updateCurrentYear = year => {
+    updateCurrentYMD = (year, monthIndex, date) => {
         this.setCurrentYear(year);
-        this.resetShownYearMonth();
-    };
-
-    updateCurrentMonth = month => {
-        this.setCurrentMonth(month);
-        this.resetShownYearMonth();
-    };
-
-    updateCurrentDate = date => {
+        this.setCurrentMonthIndex(monthIndex);
         this.setCurrentDate(date);
         this.resetShownYearMonth();
+
+        setTimeout(this.pushChange, 0);
     };
 
-    updateCurrentYMD = (year, month, date) => {
-        this.setCurrentYear(year);
-        this.setCurrentMonth(month);
-        this.setCurrentDate(date);
-        this.resetShownYearMonth();
+    pushChange = () => {
+        this.props.onChange([
+            this.getCurrentYear(),
+            this.getCurrentMonthIndex() + 1,
+            this.getCurrentDate()
+        ]);
     };
 
     resetShownYearMonth = () => {
         this.setState({
             shownYear: this.getCurrentYear(),
-            shownMonth: this.getCurrentMonth()
+            shownMonthIndex: this.getCurrentMonthIndex()
         });
     };
 
     getCalendar = () => {
         const {
             shownYear,
-            shownMonth
+            shownMonthIndex
         } = this.state;
 
         return createCalendar(
             shownYear,
-            shownMonth,
+            shownMonthIndex,
             this.getCurrentYear(),
-            this.getCurrentMonth(),
+            this.getCurrentMonthIndex(),
             this.getCurrentDate()
         );
     };
 
     showPrevMonth = () => {
-        this.setState(({shownYear, shownMonth}) => {
-            if (shownMonth === 0) {
-                shownMonth = 11;
+        this.setState(({shownYear, shownMonthIndex}) => {
+            if (shownMonthIndex === 0) {
+                shownMonthIndex = 11;
                 shownYear--;
             } else {
-                shownMonth--;
+                shownMonthIndex--;
             }
-            return {shownYear, shownMonth};
+            return {shownYear, shownMonthIndex};
         });
     };
 
     showNextMonth = () => {
-        this.setState(({shownYear, shownMonth}) => {
-            if (shownMonth === 11) {
-                shownMonth = 0;
+        this.setState(({shownYear, shownMonthIndex}) => {
+            if (shownMonthIndex === 11) {
+                shownMonthIndex = 0;
                 shownYear++;
             } else {
-                shownMonth++;
+                shownMonthIndex++;
             }
-            return {shownYear, shownMonth};
+            return {shownYear, shownMonthIndex};
         });
     };
 
@@ -114,13 +129,18 @@ export default class DatePicker extends React.Component {
             getIsValidDate
         } = this.props;
 
+        const {
+            shownYear,
+            shownMonthIndex
+        } = this.state;
+
         return <div className="date-picker">
             <table>
                 <tbody>
                 {
                     getYearMonthRow(
-                        yearMonthTemplate, this.getCurrentYear(),
-                        this.getCurrentMonth(), months, shortMonths,
+                        yearMonthTemplate, shownYear,
+                        shownMonthIndex, months, shortMonths,
                         this.showPrevMonth, this.showNextMonth
                     )
                 }
@@ -140,7 +160,8 @@ export default class DatePicker extends React.Component {
 
 
 DatePicker.defaultProps = {
-    date: new Date().getTime(),
+    date: null,
+    defaultDate: new Date().getTime(),
     shortWeekdays: [
         translate("Su"),
         translate("Mo"),
@@ -180,22 +201,26 @@ DatePicker.defaultProps = {
     ],
     yearMonthTemplate: '{shortMonth} {year}',
     getIsValidDate: (year, month, date) => {
-        return new Date(year, month, date, 23, 59, 59).getTime() >= new Date().getTime();
-    }
+        return true;
+
+        // example for preventing users select a date in the past
+        // return new Date(year, month, date, 23, 59, 59).getTime() >= new Date().getTime();
+    },
+    onChange: (value) => console.log('(DatePicker) onChange is omitted', value)
 };
 
 
 /**
  *
  * @param {string} yearMonthTemplate
- * @param {number} year
- * @param {number} month
+ * @param {number} shownYear
+ * @param {number} shownMonthIndex
  * @param {string[]} months
  * @param {string[]} shortMonths
  * @param {function|null} showPrevMonth
  * @param {function|null} showNextMonth
  */
-function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, showPrevMonth, showNextMonth) {
+function getYearMonthRow(yearMonthTemplate, shownYear, shownMonthIndex, months, shortMonths, showPrevMonth, showNextMonth) {
     return <tr className="year-month-row">
         <td className="month-backward-cell">
             {
@@ -209,9 +234,9 @@ function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, sh
             <div>
                 {
                     yearMonthTemplate
-                        .replace(/\{year\}/g, '' + year)
-                        .replace(/\{month\}/g, months[month])
-                        .replace(/\{shortMonth\}/g, shortMonths[month])
+                        .replace(/\{year\}/g, '' + shownYear)
+                        .replace(/\{month\}/g, months[shownMonthIndex])
+                        .replace(/\{shortMonth\}/g, shortMonths[shownMonthIndex])
                 }
             </div>
         </td>
@@ -245,7 +270,7 @@ function getWeekdaysRow(shortWeekdays) {
 
 /**
  *
- * @param {{year, month, date, isInCurrentMonth, isCurrentDate, isToday}[]} dateInfoList
+ * @param {{year, monthIndex, date, isInCurrentMonth, isCurrentDate, isToday}[]} dateInfoList
  * @param {function} getIsValidDate
  * @param {function} updateCurrentYMD
  * @returns {Component}
@@ -253,10 +278,10 @@ function getWeekdaysRow(shortWeekdays) {
 function getWeekRow(dateInfoList, getIsValidDate, updateCurrentYMD) {
     return <tr className="week-row">
         {
-            dateInfoList.map(({year, month, date, isInCurrentMonth, isCurrentDate, isToday}) => {
-                const isValid = getIsValidDate(year, month, date);
+            dateInfoList.map(({year, monthIndex, date, isInCurrentMonth, isCurrentDate, isToday}) => {
+                const isValid = getIsValidDate(year, monthIndex + 1, date);
                 return <td
-                    key={`${year} ${month} ${date}`}
+                    key={`${year} ${monthIndex} ${date}`}
                     className={
                         'date-cell '
                         + (isInCurrentMonth ? 'is-in-current-month ' : '')
@@ -265,7 +290,7 @@ function getWeekRow(dateInfoList, getIsValidDate, updateCurrentYMD) {
                         + (isValid ? 'is-valid ' : '')
                     }
                 >
-                    <div onClick={() => isValid && updateCurrentYMD(year, month, date)}>
+                    <div onClick={() => isValid && updateCurrentYMD(year, monthIndex, date)}>
                         {date}
                     </div>
                 </td>;
@@ -278,27 +303,27 @@ function getWeekRow(dateInfoList, getIsValidDate, updateCurrentYMD) {
 /**
  *
  * @param shownYear
- * @param shownMonth
+ * @param shownMonthIndex
  * @param currentYear
- * @param currentMonth
+ * @param currentMonthIndex
  * @param currentDate
  * @returns {Array}
  */
-function createCalendar(shownYear, shownMonth, currentYear, currentMonth, currentDate) {
+function createCalendar(shownYear, shownMonthIndex, currentYear, currentMonthIndex, currentDate) {
 
     const now = new Date();
     const calendar = [];
-    const threeMonths = [[shownYear, shownMonth]];
+    const threeMonths = [[shownYear, shownMonthIndex]];
 
-    if (shownMonth == 0) {
+    if (shownMonthIndex == 0) {
         threeMonths.unshift([shownYear - 1, 11]);
         threeMonths.push([shownYear, 1]);
-    } else if (shownMonth == 11) {
+    } else if (shownMonthIndex == 11) {
         threeMonths.unshift([shownYear, 10]);
         threeMonths.push([shownYear + 1, 0]);
     } else {
-        threeMonths.unshift([shownYear, shownMonth - 1]);
-        threeMonths.push([shownYear, shownMonth + 1]);
+        threeMonths.unshift([shownYear, shownMonthIndex - 1]);
+        threeMonths.push([shownYear, shownMonthIndex + 1]);
     }
 
     let week, day = new Date(threeMonths[0][0], threeMonths[0][1], 1).getDay();
@@ -318,10 +343,10 @@ function createCalendar(shownYear, shownMonth, currentYear, currentMonth, curren
 
             week.push({
                 year: item[0],
-                month: item[1],
+                monthIndex: item[1],
                 date: i,
                 isInCurrentMonth: index == 1,
-                isCurrentDate: item[0] == currentYear && item[1] == currentMonth && i == currentDate,
+                isCurrentDate: item[0] == currentYear && item[1] == currentMonthIndex && i == currentDate,
                 isToday: item[0] == now.getFullYear() && item[1] == now.getMonth() && i == now.getDate()
             });
 
