@@ -5,8 +5,8 @@ export default class NumberPiece extends React.Component {
     constructor(props) {
         super(props);
 
-        const {defaultValue, max, emptyDigit} = this.props;
-        const digitsAndValue = NumberPiece.normalizeDigitsAndValue(defaultValue, max, emptyDigit);
+        const {defaultValue, max} = this.props;
+        const digitsAndValue = NumberPiece.normalizeDigitsAndValue(defaultValue, max);
 
         this.state = {
             digits: digitsAndValue[0],
@@ -19,16 +19,10 @@ export default class NumberPiece extends React.Component {
         this.input = null;
     }
 
-    static normalizeDigitsAndValue = (value, max, emptyDigit) => {
-        const digits = numberToDigits(value, String(max).length, emptyDigit);
-        const _value = digitsToNumber(digits, emptyDigit);
-        return [digits, _value];
-    };
-
     static getDerivedStateFromProps(props, state) {
         if (props.value !== null && props.value !== state.value) {
-            const {value, max, emptyDigit} = this.props;
-            const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max, emptyDigit);
+            const {value, max} = this.props;
+            const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max);
 
             state.digits = digitsAndValue[0];
             state.value = digitsAndValue[1];
@@ -39,71 +33,130 @@ export default class NumberPiece extends React.Component {
         return null;
     }
 
-    syncDigitsToValue = () => {
-        const {emptyDigit, max} = this.props;
-        this.setState(({digits}) => {
-            const number = digitsToNumber(digits, emptyDigit);
-            return {
-                value: number,
-                digits: numberToDigits(number, String(max).length, emptyDigit)
-            };
-        });
+    static normalizeDigitsAndValue = (value, max) => {
+        const digits = numberToDigits(value, String(max).length);
+        return [digits, digitsToNumber(digits)];
     };
 
-    syncValueToDigits = () => {
-        const {emptyDigit, max} = this.props;
-        this.setState(({value}) => {
-            const digits = numberToDigits(value, String(max).length, emptyDigit);
-            return {
-                digits,
-                value: digitsToNumber(digits, emptyDigit)
-            };
-        });
+    getValidDigitsAndValue = (digits, value) => {
+        const {min, max} = this.props;
+
+        if (value === null) {
+            return {digits, value};
+        }
+
+        if (value < min) {
+            digits = numberToDigits(min, String(max).length);
+            return {digits, value: min};
+        }
+
+        if (value > max) {
+            digits = numberToDigits(max, String(max).length);
+            return {digits, value: max};
+        }
+
+        return {digits, value};
+    };
+
+    updateSyncedDigitsAndValue = (digits, value, validate) => {
+        if (!validate) {
+            this.setState({digits, value});
+            return;
+        }
+
+        this.setState(this.getValidDigitsAndValue(digits, value));
+    };
+
+    syncDigitsToValue = (digits) => {
+        const {max} = this.props;
+
+        let number = digitsToNumber(digits);
+        let _digits = numberToDigits(number, String(max).length);
+        number = digitsToNumber(_digits);
+
+        this.updateSyncedDigitsAndValue(
+            _digits,
+            number,
+            false
+        );
+    };
+
+    syncValueToDigits = (value) => {
+        const {max} = this.props;
+        const digits = numberToDigits(value, String(max).length);
+        const number = digitsToNumber(digits);
+        this.updateSyncedDigitsAndValue(
+            digits,
+            number,
+            true
+        );
     };
 
     addDigit = (digit) => {
         const {digits} = this.state;
 
-        digits.push(digit);
-        this.syncDigitsToValue();
+        this.syncDigitsToValue(digits.concat(digit));
     };
 
     popDigit = () => {
         const {digits} = this.state;
 
-        digits.pop();
-        this.syncDigitsToValue();
+        if (digits.length === 0 || digits.every(d => d === '0')) {
+            this.syncValueToDigits(null);
+            return;
+        }
+
+        const _digits = [].concat(digits);
+        _digits.pop();
+        this.syncDigitsToValue(_digits);
     };
 
     increaseValue = () => {
-        this.state.value++;
-        this.syncValueToDigits();
+        const {min} = this.props;
+        const {value} = this.state;
+
+        if (value === null) {
+            this.syncValueToDigits(min);
+            return;
+        }
+
+        this.syncValueToDigits(value + 1);
     };
 
     decreaseValue = () => {
-        this.state.value--;
-        this.syncValueToDigits();
+        const {max} = this.props;
+        const {value} = this.state;
+
+        if (value === null) {
+            this.syncValueToDigits(max);
+            return;
+        }
+
+        this.syncValueToDigits(value - 1);
     };
 
     onKeyDown = ev => {
-        ev.preventDefault();
 
         if (!isNaN(ev.key)) {
+            ev.preventDefault();
             this.addDigit(ev.key);
             return;
         }
 
         if (ev.key === 'Delete' || ev.key === 'Backspace') {
+            ev.preventDefault();
             this.popDigit();
             return;
         }
 
         if (ev.key === 'ArrowUp') {
+            ev.preventDefault();
             this.increaseValue();
             return;
         }
 
         if (ev.key === 'ArrowDown') {
+            ev.preventDefault();
             this.decreaseValue();
             return;
         }
@@ -130,12 +183,13 @@ export default class NumberPiece extends React.Component {
 
     };
 
+    onBlur = ev => {
+        const {digits, value} = this.state;
+        this.setState(this.getValidDigitsAndValue(digits, value));
+    };
+
     render() {
-        const {
-            min,
-            max,
-            emptyDigit
-        } = this.props;
+        const {emptyDigit} = this.props;
 
         const {digits} = this.state;
 
@@ -149,7 +203,8 @@ export default class NumberPiece extends React.Component {
                 onPaste={this.onPaste}
                 onChange={this.onChange}
                 onInput={this.onInput}
-                value={digits.join('')}
+                onBlur={this.onBlur}
+                value={digits.map(digit => digit !== null ? digit : emptyDigit).join('')}
             />
         </div>;
     }
@@ -164,17 +219,23 @@ NumberPiece.defaultProps = {
     defaultValue: null
 };
 
-function digitsToNumber(digits, emptyDigit) {
-    return Number(digits.filter(digit => digit !== emptyDigit).join(''));
+function digitsToNumber(digits) {
+    const valuableDigits = digits.filter(digit => digit !== null);
+
+    if (valuableDigits.length === 0) {
+        return null;
+    }
+
+    return Number(valuableDigits.join(''));
 }
 
 
-function numberToDigits(number, numOfDigits, emptyDigit) {
-    if (number === null) {
+function numberToDigits(number, numOfDigits) {
+    if (number === null || number < 0) {
         const digits = [];
 
         for (let i = 0; i < numOfDigits; i++) {
-            digits.push(emptyDigit);
+            digits.push(null);
         }
 
         return digits;
