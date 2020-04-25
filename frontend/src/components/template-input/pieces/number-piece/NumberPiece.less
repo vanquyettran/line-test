@@ -1,5 +1,20 @@
 @import "../../../../css/_mixin";
 
 .template-input .number-piece {
+    padding: 0 5px;
 
+    input {
+        border: none;
+        background: @colorv-white;
+        width: 0;
+        // why 0px ?
+        // note that min-width is set by JS
+    }
+
+    &.focused {
+        input {
+            background: @color-primary;
+            color: @colorv-white;
+        }
+    }
 }

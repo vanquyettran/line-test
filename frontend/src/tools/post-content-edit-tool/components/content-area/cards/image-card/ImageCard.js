@@ -128,11 +128,9 @@ function getCardContent(images, requestAddImage, requestRemoveImage) {
     return <div className="card-content">
         <ul>
             {
-                images.map(image => (
-                    <li key={image.id}>
-                        {getImageThumbnail(image, requestRemoveImage)}
-                    </li>
-                ))
+                images.map((image, index) => <li key={image.id}>
+                    {getImageThumbnail(image, requestRemoveImage)}
+                </li>)
             }
             <li>
                 {

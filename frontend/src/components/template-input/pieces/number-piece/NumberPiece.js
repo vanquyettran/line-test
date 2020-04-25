@@ -10,7 +10,8 @@ export default class NumberPiece extends React.Component {
 
         this.state = {
             digits: digitsAndValue[0],
-            value: digitsAndValue[1]
+            value: digitsAndValue[1],
+            focused: false
         };
 
         /**
@@ -19,13 +20,54 @@ export default class NumberPiece extends React.Component {
         this.input = null;
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.value !== null && props.value !== state.value) {
-            const {value, max} = this.props;
-            const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max);
+    componentDidMount() {
+        this.initInputStyle();
+    }
 
-            state.digits = digitsAndValue[0];
-            state.value = digitsAndValue[1];
+    componentDidUpdate() {
+        this.ensureValueIsValid();
+    }
+
+    /**
+     *
+     * when received new props
+     * some rules might be changed
+     */
+    ensureValueIsValid = () => {
+        const {digits, value} = this.state;
+        const [validDigits, validValue] = this.getValidDigitsAndValue(digits, value);
+        if (value === validValue) {
+            return;
+        }
+        this.updateDigitsAndValue(validDigits, validValue);
+    };
+
+    /**
+     * First time render, this.input === null
+     * After mount, this.input !== null,
+     * we need to init input style
+     */
+    initInputStyle = () => {
+        const style = this.getInputStyle(this.getDisplayedValue());
+
+        for (let attr in style) {
+            if (style.hasOwnProperty(attr)) {
+                this.input.style[attr] = style[attr];
+            }
+        }
+    };
+
+    static getDerivedStateFromProps(props, state) {
+        const isValueChanged = props.value !== null && props.value !== state.value;
+        if (isValueChanged) {
+            const {value, max} = props;
+
+            if (isValueChanged) {
+                const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max);
+
+                state.digits = digitsAndValue[0];
+                state.value = digitsAndValue[1];
+            }
 
             return state;
         }
@@ -42,29 +84,37 @@ export default class NumberPiece extends React.Component {
         const {min, max} = this.props;
 
         if (value === null) {
-            return {digits, value};
+            return [digits, value];
         }
 
         if (value < min) {
             digits = numberToDigits(min, String(max).length);
-            return {digits, value: min};
+            return [digits, min];
         }
 
         if (value > max) {
             digits = numberToDigits(max, String(max).length);
-            return {digits, value: max};
+            return [digits, max];
         }
 
-        return {digits, value};
+        return [digits, value];
+    };
+
+    updateDigitsAndValue = (digits, value) => {
+        this.setState({digits, value}, () => {
+            this.props.onChange(this.state.value);
+        });
     };
 
     updateSyncedDigitsAndValue = (digits, value, validate) => {
         if (!validate) {
-            this.setState({digits, value});
+            this.updateDigitsAndValue(digits, value);
             return;
         }
 
-        this.setState(this.getValidDigitsAndValue(digits, value));
+        this.updateDigitsAndValue(
+            ...this.getValidDigitsAndValue(digits, value)
+        );
     };
 
     syncDigitsToValue = (digits) => {
@@ -136,7 +186,6 @@ export default class NumberPiece extends React.Component {
     };
 
     onKeyDown = ev => {
-
         if (!isNaN(ev.key)) {
             ev.preventDefault();
             this.addDigit(ev.key);
@@ -161,6 +210,17 @@ export default class NumberPiece extends React.Component {
             return;
         }
 
+        if (ev.key === 'ArrowLeft') {
+            ev.preventDefault();
+            this.props.onBackward();
+            return;
+        }
+
+        if (ev.key === 'ArrowRight') {
+            ev.preventDefault();
+            this.props.onForward();
+            return;
+        }
     };
 
     onKeyUp = ev => {
@@ -183,28 +243,65 @@ export default class NumberPiece extends React.Component {
 
     };
 
+    onFocus = ev => {
+        const {onFocus} = this.props;
+        this.setState(
+            {focused: true},
+            () => onFocus()
+        );
+    };
+
     onBlur = ev => {
+        const {onBlur} = this.props;
         const {digits, value} = this.state;
-        this.setState(this.getValidDigitsAndValue(digits, value));
+
+        this.setState(
+            {focused: false},
+            () => onBlur()
+        );
+
+        this.updateDigitsAndValue(
+            ...this.getValidDigitsAndValue(digits, value)
+        );
+    };
+
+    getDisplayedValue = () => {
+        const {emptyDigit} = this.props;
+        const {digits} = this.state;
+
+        return digits.map(digit => digit !== null ? digit : emptyDigit).join('');
+    };
+
+    getInputStyle = (displayedValue) => {
+        return {
+            boxSizing: 'content-box',
+            padding: '0px',
+            minWidth: measureTextWidth(displayedValue, this.input || document.body) + 'px'
+        };
     };
 
     render() {
-        const {emptyDigit} = this.props;
+        const {focused} = this.state;
+        const displayedValue = this.getDisplayedValue();
+        const inputStyle = this.getInputStyle(displayedValue);
 
-        const {digits} = this.state;
-
-        return <div className="number-piece">
+        return <div className={'number-piece' + (focused ? ' focused' : '')}>
             <input
                 className="template-input"
                 type="text"
-                ref={el => this.input = el}
+                ref={el => {
+                    this.input = el;
+                    this.props.onInputRef(el);
+                }}
                 onKeyDown={this.onKeyDown}
                 onKeyUp={this.onKeyUp}
                 onPaste={this.onPaste}
                 onChange={this.onChange}
                 onInput={this.onInput}
+                onFocus={this.onFocus}
                 onBlur={this.onBlur}
-                value={digits.map(digit => digit !== null ? digit : emptyDigit).join('')}
+                value={displayedValue}
+                style={inputStyle}
             />
         </div>;
     }
@@ -215,9 +312,16 @@ NumberPiece.defaultProps = {
     min: 0,
     max: 99,
     emptyDigit: '-',
+    defaultValue: null,
     value: null,
-    defaultValue: null
+    onInputRef: (el) => {},
+    onChange: (value) => console.log('(TemplateInput/NumberPiece) onChange is omitted', value),
+    onBackward: () => {},
+    onForward: () => {},
+    onFocus: () => {},
+    onBlur: () => {},
 };
+
 
 function digitsToNumber(digits) {
     const valuableDigits = digits.filter(digit => digit !== null);
@@ -254,4 +358,13 @@ function numberToDigits(number, numOfDigits) {
     }
 
     return digits;
+}
+
+
+/** @type {CanvasRenderingContext2D} */
+const context2d = document.createElement('canvas').getContext('2d');
+
+function measureTextWidth(text, el) {
+    context2d.font = window.getComputedStyle(el).font;
+    return context2d.measureText(text).width;
 }

@@ -2,6 +2,8 @@ import Parcel from '../../Parcel';
 import ResponseError from '../../ResponseError';
 import ResponseData from '../../ResponseData';
 
+let autoIncId = 0;
+
 export default class ImageUploadParcel extends Parcel {
     /**
      *
@@ -51,13 +53,12 @@ export default class ImageUploadParcel extends Parcel {
              * @type {IImage}
              */
             const image = {
-                id: rawData['resultData']['original'],
+                id: JSON.stringify([rawData['resultData']['original'], ++autoIncId]),
                 thumbnailUrl: rawData['resultData']['thumb'],
                 originalUrl: rawData['resultData']['original'],
                 width: rawData['resultData']['width'],
                 height: rawData['resultData']['height']
             };
-            console.log(rawData, image);
 
             return new ResponseData(image, null);
         }
