@@ -15,8 +15,15 @@ export default class TemplateInput extends React.Component {
     }
 
     updateValue = (key, value) => {
-        this.state.values[key] = value;
-        this.forceUpdate(() => this.props.onChange(this.state.values));
+        const {onChange} = this.props;
+        const {values} = this.state;
+
+        values[key] = value;
+
+        this.setState(
+            {values},
+            () => onChange(values)
+        );
     };
 
     updateFocusedPiece = (key) => {
@@ -28,25 +35,35 @@ export default class TemplateInput extends React.Component {
     };
 
     focusNextPiece = (key) => {
-        this.focusSiblingPiece(key, true);
+        const sibling = this.getSiblingPiece(key, true);
+
+        if (sibling) {
+            this.focusPiece(sibling.key);
+        }
     };
 
     focusPrevPiece = (key) => {
-        this.focusSiblingPiece(key, false);
+        const sibling = this.getSiblingPiece(key, false);
+
+        if (sibling) {
+            this.focusPiece(sibling.key);
+        }
     };
 
-    focusSiblingPiece = (key, isForward) => {
+    getSiblingPiece = (key, isForward) => {
         const {template} = this.props;
         const {focusedPieceKey} = this.state;
 
         const arrayOfPieceProps = [].concat(template);
+
         if (!isForward) {
             arrayOfPieceProps.reverse();
         }
 
         let reached = false;
-        const sibling = arrayOfPieceProps.find(pieceProps => {
-            if ('string' === typeof pieceProps || React.isValidElement(pieceProps)) {
+
+        return arrayOfPieceProps.find(pieceProps => {
+            if (this.getIsAlienPiece(pieceProps)) {
                 return false;
             }
 
@@ -57,45 +74,66 @@ export default class TemplateInput extends React.Component {
 
             return reached;
         });
-
-        if (sibling) {
-            this.focusPiece(sibling.key);
-        }
     };
 
-    getPiece = (pieceProps) => {
+    getIsAlienPiece = (pieceProps) => {
         if ('string' === typeof pieceProps) {
-            return <span className="string-alien">{pieceProps}</span>;
+            return true;
         }
 
         if (React.isValidElement(pieceProps)) {
-            return pieceProps;
+            return true;
         }
 
+        return false;
+    };
+
+    getAlienPiece = (pieceProps) => {
+        return pieceProps;
+    };
+
+    getNumberPiece = (pieceProps) => {
         const {values, forceFocusedPieceKey} = this.state;
 
-        if (pieceProps.type === TemplateInput.PIECE_NUMBER) {
-            const onInputRef = el => {
-                if (el && forceFocusedPieceKey === pieceProps.key) {
-                    el.focus();
-                    this.focusPiece(null);
-                }
-            };
+        const onInputRef = el => {
+            if (el && forceFocusedPieceKey === pieceProps.key) {
+                el.focus();
+                this.focusPiece(null);
+            }
+        };
 
-            return <NumberPiece
-                {...pieceProps}
-                min={'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values)}
-                max={'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values)}
-                onChange={value => this.updateValue(pieceProps.key, value)}
-                onBackward={() => this.focusPrevPiece(pieceProps.key)}
-                onForward={() => this.focusNextPiece(pieceProps.key)}
-                onFocus={() => this.updateFocusedPiece(pieceProps.key)}
-                onInputRef={onInputRef}
-            />;
+        return <NumberPiece
+            value={pieceProps.value}
+            defaultValue={pieceProps.defaultValue}
+            emptyDigit={pieceProps.emptyDigit}
+            min={'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values)}
+            max={'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values)}
+            onChange={value => this.updateValue(pieceProps.key, value)}
+            onBackward={() => this.focusPrevPiece(pieceProps.key)}
+            onForward={() => this.focusNextPiece(pieceProps.key)}
+            onFocus={() => this.updateFocusedPiece(pieceProps.key)}
+            onInputRef={onInputRef}
+        />;
+    };
+
+    getSelectablePiece = (pieceProps) => {
+        /**
+         * Not implemented yet
+         */
+        return <SelectablePiece/>;
+    };
+
+    getPiece = (pieceProps) => {
+        if (this.getIsAlienPiece(pieceProps)) {
+            return this.getAlienPiece(pieceProps);
+        }
+
+        if (pieceProps.type === TemplateInput.PIECE_NUMBER) {
+            return this.getNumberPiece(pieceProps);
         }
 
         if (pieceProps.type === TemplateInput.PIECE_SELECTABLE) {
-            return <SelectablePiece values={values} {...pieceProps}/>;
+            return this.getSelectablePiece(pieceProps);
         }
     };
 

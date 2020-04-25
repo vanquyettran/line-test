@@ -5,14 +5,16 @@ export default class NumberPiece extends React.Component {
     constructor(props) {
         super(props);
 
-        const {defaultValue, max} = this.props;
-        const digitsAndValue = NumberPiece.normalizeDigitsAndValue(defaultValue, max);
+        const {defaultValue, max, onChange} = this.props;
+        const [digits, value] = NumberPiece.normalizeDigitsAndValue(defaultValue, max);
 
         this.state = {
-            digits: digitsAndValue[0],
-            value: digitsAndValue[1],
+            digits,
+            value,
             focused: false
         };
+
+        onChange(value);
 
         /**
          * @type {HTMLInputElement}
@@ -25,7 +27,9 @@ export default class NumberPiece extends React.Component {
     }
 
     componentDidUpdate() {
-        this.ensureValueIsValid();
+        if (!this.state.focused) {
+            this.ensureValueIsValid();
+        }
     }
 
     /**
