@@ -1,5 +1,98 @@
 @import "../../css/_mixin";
 
 .radio-group-input {
+    ul {
+        list-style: none;
 
+        li {
+            .option-content {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+
+                .icon-holder {
+                    margin-right: 6px;
+
+                    .icon {
+                        font-size: 16px;
+                    }
+                }
+
+                .label {
+
+                }
+            }
+        }
+    }
+
+    &:not(.disabled) {
+        ul {
+            li {
+                cursor: pointer;
+
+                .option-content {
+                    .icon {
+                        color: @colorv-grey-light-2;
+                    }
+                }
+
+                &:hover {
+                    .option-content {
+                        .icon {
+                            color: @color-primary;
+                        }
+                    }
+                }
+
+                &.selected {
+                    .option-content {
+                        .icon {
+                            color: @color-primary;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.disabled {
+        ul {
+            li {
+                cursor: default;
+
+                .option-content {
+                    .icon {
+                        color: @colorv-grey-faint-1;
+                    }
+
+                    .label {
+                        color: @colorv-grey-middle;
+                    }
+                }
+            }
+        }
+    }
+
+    &.appearance-block {
+        ul {
+            li {
+                display: block;
+
+                &:not(:first-child) {
+                    margin: 10px 0 0 0;
+                }
+            }
+        }
+    }
+
+    &.appearance-inline {
+        ul {
+            li {
+                display: inline-block;
+                vertical-align: middle;
+                margin: 0 10px 10px 0;
+            }
+        }
+    }
 }
