@@ -16,7 +16,7 @@ export default class DatePicker extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.date === null) {
+        if (props.date === undefined) {
             return null;
         }
 
@@ -160,7 +160,7 @@ export default class DatePicker extends React.Component {
 
 
 DatePicker.defaultProps = {
-    date: null,
+    date: undefined,
     defaultDate: new Date().getTime(),
     shortWeekdays: [
         translate("Su"),

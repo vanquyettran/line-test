@@ -46,12 +46,12 @@ export default class DateInput extends React.Component {
             <TemplateInput
                 template={TemplateInput.dateDMYTemplate}
                 defaultValues={{year, month, date}}
-                values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : null}
+                values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
             />
             <DatePicker
                 defaultDate={[year, month, date]}
-                date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : null}
+                date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}
                 onChange={([year, month, date]) => this.syncYMD(year, month, date, 'datePicker')}
                 getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
             />

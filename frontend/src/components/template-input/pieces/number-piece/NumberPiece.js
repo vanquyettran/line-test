@@ -62,21 +62,20 @@ export default class NumberPiece extends React.Component {
     };
 
     static getDerivedStateFromProps(props, state) {
-        const isValueChanged = props.value !== null && props.value !== state.value;
-        if (isValueChanged) {
-            const {value, max} = props;
+        const {value, max} = props;
 
-            if (isValueChanged) {
-                const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max);
+        const isValueChanged = value !== undefined && value !== state.value;
 
-                state.digits = digitsAndValue[0];
-                state.value = digitsAndValue[1];
-            }
-
-            return state;
+        if (!isValueChanged) {
+            return null;
         }
 
-        return null;
+        const digitsAndValue = NumberPiece.normalizeDigitsAndValue(value, max);
+
+        state.digits = digitsAndValue[0];
+        state.value = digitsAndValue[1];
+
+        return state;
     }
 
     static normalizeDigitsAndValue = (value, max) => {
@@ -317,7 +316,7 @@ NumberPiece.defaultProps = {
     max: 99,
     emptyDigit: '-',
     defaultValue: null,
-    value: null,
+    value: undefined,
     onInputRef: (el) => {},
     onChange: (value) => console.log('(TemplateInput/NumberPiece) onChange is omitted', value),
     onBackward: () => {},

@@ -15,7 +15,7 @@ export default class TemplateInput extends React.Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        const isValuesChanged = props.values !== null
+        const isValuesChanged = props.values !== undefined
             && JSON.stringify(props.values) !== JSON.stringify(state.values);
 
         if (isValuesChanged) {
@@ -106,8 +106,13 @@ export default class TemplateInput extends React.Component {
     };
 
     getNumberPiece = (pieceProps) => {
-        const {defaultValues, values: propsValues} = this.props;
+        const {defaultValues, values: propValues} = this.props;
         const {values, forceFocusedPieceKey} = this.state;
+
+        const propValue = propValues !== undefined ? propValues[pieceProps.key] : undefined;
+        const defaultValue = defaultValues !== null ? defaultValues[pieceProps.key] : null;
+        const min = 'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values);
+        const max = 'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values);
 
         const onInputRef = el => {
             if (el && forceFocusedPieceKey === pieceProps.key) {
@@ -116,13 +121,12 @@ export default class TemplateInput extends React.Component {
             }
         };
 
-
         return <NumberPiece
-            value={propsValues !== null && propsValues[pieceProps.key] !== null ? propsValues[pieceProps.key] : null}
-            defaultValue={defaultValues !== null ? defaultValues[pieceProps.key] : null}
+            value={propValue}
+            defaultValue={defaultValue}
             emptyDigit={pieceProps.emptyDigit}
-            min={'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values)}
-            max={'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values)}
+            min={min}
+            max={max}
             onChange={value => this.updateValue(pieceProps.key, value)}
             onBackward={() => this.focusPrevPiece(pieceProps.key)}
             onForward={() => this.focusNextPiece(pieceProps.key)}
@@ -281,7 +285,7 @@ TemplateInput.timeHMTemplate = [
 
 TemplateInput.defaultProps = {
     template: TemplateInput.dateDMYTemplate,
-    values: null,
+    values: undefined,
     defaultValues: null,
     onChange: (values) => console.log('(TemplateInput) onChange is omitted', values)
 };
