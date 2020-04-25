@@ -185,7 +185,9 @@ export default class NumberPiece extends React.Component {
             return;
         }
 
-        this.syncValueToDigits(value - 1);
+        if (value > 0) {
+            this.syncValueToDigits(value - 1);
+        }
     };
 
     onKeyDown = ev => {

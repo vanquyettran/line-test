@@ -81,8 +81,6 @@ export default class SpinnerInput extends React.Component {
             break;
         }
 
-        console.log('result', result);
-
         if (result.length > 0) {
             return result;
         }
@@ -152,13 +150,13 @@ export default class SpinnerInput extends React.Component {
 
     render() {
         return <div className="spinner-input">
-            <div className="head" onClick={() => this.selectAbove()}>
+            <div className="head" onClick={() => this.selectBelow()}>
                 <Icon name="angle-up"/>
             </div>
             <div className="body">
                 {this.renderOptionsView()}
             </div>
-            <div className="foot" onClick={() => this.selectBelow()}>
+            <div className="foot" onClick={() => this.selectAbove()}>
                 <Icon name="angle-down"/>
             </div>
         </div>;
@@ -172,6 +170,6 @@ SpinnerInput.defaultProps = {
     options: new Array(60).fill(null).map(
         (_, index) => ({value: index, label: index < 10 ? '0' + index : '' + index})
     ),
-    expanding: 2,
-    onChange: (value) => console.log('(SpinnerInput) onChange is omitted', value)
+    onChange: (value) => console.log('(SpinnerInput) onChange is omitted', value),
+    expanding: 2
 };
