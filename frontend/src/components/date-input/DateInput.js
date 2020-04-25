@@ -1,5 +1,6 @@
 import './DateInput.less';
 import React from 'react';
+import TemplateInput from '../../components/template-input/TemplateInput';
 
 export default class DateInput extends React.Component {
     constructor(props) {
@@ -8,12 +9,6 @@ export default class DateInput extends React.Component {
         this.state = {
 
         };
-
-        /**
-         *
-         * @type {HTMLInputElement}
-         */
-        this.input = null;
     }
 
 
@@ -22,15 +17,8 @@ export default class DateInput extends React.Component {
         return <div className="date-input">
             <input type="date"/>
             <br/>
-            <input
-                type="text"
-                ref={el => this.input = el}
-                onKeyDown={this.onKeyDown}
-                onKeyUp={this.onKeyUp}
-                onSelect={this.onSelect}
-                onPaste={this.onPaste}
-                onChange={this.onChange}
-            />
+            <br/>
+            <TemplateInput/>
         </div>;
     }
 }
