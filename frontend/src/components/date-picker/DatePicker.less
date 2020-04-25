@@ -88,10 +88,14 @@
             &:not(.is-in-current-month) {
                 div {
                     color: @colorv-grey-light-1;
+                }
 
-                    &:hover {
-                        color: @colorv-grey-middle;
-                        background: @colorv-grey-light-4;
+                &.is-valid {
+                    div {
+                        &:hover {
+                            color: @colorv-grey-middle;
+                            background: @colorv-grey-light-4;
+                        }
                     }
                 }
             }

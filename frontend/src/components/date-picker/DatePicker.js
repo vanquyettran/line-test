@@ -66,22 +66,22 @@ export default class DatePicker extends React.Component {
         });
     };
 
-    getWeekInfoList = () => {
+    getCalendar = () => {
         const {
             shownYear,
             shownMonth
         } = this.state;
 
         return createCalendar(
+            shownYear,
+            shownMonth,
             this.getCurrentYear(),
             this.getCurrentMonth(),
-            this.getCurrentDate(),
-            shownYear,
-            shownMonth
+            this.getCurrentDate()
         );
     };
 
-    backwardMonth = () => {
+    showPrevMonth = () => {
         this.setState(({shownYear, shownMonth}) => {
             if (shownMonth === 0) {
                 shownMonth = 11;
@@ -93,7 +93,7 @@ export default class DatePicker extends React.Component {
         });
     };
 
-    forwardMonth = () => {
+    showNextMonth = () => {
         this.setState(({shownYear, shownMonth}) => {
             if (shownMonth === 11) {
                 shownMonth = 0;
@@ -114,11 +114,6 @@ export default class DatePicker extends React.Component {
             getIsValidDate
         } = this.props;
 
-        const {
-            shownYear,
-            shownMonth
-        } = this.state;
-
         return <div className="date-picker">
             <table>
                 <tbody>
@@ -126,14 +121,14 @@ export default class DatePicker extends React.Component {
                     getYearMonthRow(
                         yearMonthTemplate, this.getCurrentYear(),
                         this.getCurrentMonth(), months, shortMonths,
-                        this.backwardMonth, this.forwardMonth
+                        this.showPrevMonth, this.showNextMonth
                     )
                 }
                 {
                     getWeekdaysRow(shortWeekdays)
                 }
                 {
-                    this.getWeekInfoList().map(
+                    this.getCalendar().map(
                         weekInfo => getWeekRow(weekInfo, getIsValidDate, this.updateCurrentYMD)
                     )
                 }
@@ -197,15 +192,15 @@ DatePicker.defaultProps = {
  * @param {number} month
  * @param {string[]} months
  * @param {string[]} shortMonths
- * @param {function|null} backwardMonth
- * @param {function|null} forwardMonth
+ * @param {function|null} showPrevMonth
+ * @param {function|null} showNextMonth
  */
-function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, backwardMonth, forwardMonth) {
+function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, showPrevMonth, showNextMonth) {
     return <tr className="year-month-row">
         <td className="month-backward-cell">
             {
-                backwardMonth &&
-                <div onClick={() => backwardMonth()}>
+                showPrevMonth &&
+                <div onClick={() => showPrevMonth()}>
                     <Icon name="angle-left"/>
                 </div>
             }
@@ -222,8 +217,8 @@ function getYearMonthRow(yearMonthTemplate, year, month, months, shortMonths, ba
         </td>
         <td className="month-forward-cell">
             {
-                forwardMonth &&
-                <div onClick={() => forwardMonth()}>
+                showNextMonth &&
+                <div onClick={() => showNextMonth()}>
                     <Icon name="angle-right"/>
                 </div>
             }
@@ -282,14 +277,14 @@ function getWeekRow(dateInfoList, getIsValidDate, updateCurrentYMD) {
 
 /**
  *
+ * @param shownYear
+ * @param shownMonth
  * @param currentYear
  * @param currentMonth
  * @param currentDate
- * @param shownYear
- * @param shownMonth
  * @returns {Array}
  */
-function createCalendar(currentYear, currentMonth, currentDate, shownYear, shownMonth) {
+function createCalendar(shownYear, shownMonth, currentYear, currentMonth, currentDate) {
 
     const now = new Date();
     const calendar = [];
