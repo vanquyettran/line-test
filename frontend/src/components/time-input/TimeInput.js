@@ -9,9 +9,9 @@ export default class TimeInput extends React.Component {
         super(props);
 
         this.state = {
-            hours: props.defaultHours,
-            minutes: props.defaultMinutes,
-            seconds: props.defaultSeconds,
+            hours: props.defaultValue[0],
+            minutes: props.defaultValue[1],
+            seconds: props.defaultValue[2],
             syncFrom: null,
             pickerShown: false
         };
@@ -23,8 +23,12 @@ export default class TimeInput extends React.Component {
         this.el = null;
     }
 
+    pushChange = () => {
+        this.props.onChange(this.state.hours, this.state.minutes, this.state.seconds);
+    };
+
     sync = (hours, minutes, seconds, syncFrom) => {
-        const {getIsValidTime, onChange} = this.props;
+        const {getIsValidTime} = this.props;
         const {hours: currentHours, minutes: currentMinutes, seconds: currentSeconds} = this.state;
 
         const currentTimeIsValid = getIsValidTime(currentHours, currentMinutes, currentSeconds);
@@ -44,9 +48,14 @@ export default class TimeInput extends React.Component {
             {hours, minutes, seconds, syncFrom},
             () => this.setState(
                 {syncFrom: null},
-                () => onChange(this.state.hours, this.state.minutes, this.state.seconds)
+                () => this.pushChange()
             )
-        )
+        );
+    };
+
+    syncNeeded = (name) => {
+        const {syncFrom} = this.state;
+        return syncFrom !== null && syncFrom !== name;
     };
 
     showPicker = () => {
@@ -62,17 +71,15 @@ export default class TimeInput extends React.Component {
     };
 
     render() {
-        const {getIsValidTime} = this.props;
-        const {hours, minutes, seconds, syncFrom, pickerShown} = this.state;
+        const {getIsValidTime, hasSeconds} = this.props;
+        const {hours, minutes, seconds, pickerShown} = this.state;
 
         return <div className="time-input" ref={el => this.el = el}>
             <TemplateInput
-                template={TemplateInput.timeHMSTemplate}
+                template={hasSeconds ? TemplateInput.timeHMSTemplate : TemplateInput.timeHMTemplate}
                 defaultValues={{hours, minutes, seconds}}
-                values={syncFrom !== null && syncFrom !== 'templateInput' ? {hours, minutes, seconds} : undefined}
-                onChange={({hours, minutes, seconds}) => {
-                    this.sync(hours, minutes, seconds, 'templateInput');
-                }}
+                values={this.syncNeeded('templateInput') ? {hours, minutes, seconds} : undefined}
+                onChange={({hours, minutes, seconds}) => this.sync(hours, minutes, seconds, 'templateInput')}
                 onFocus={(key) => this.showPicker()}
             />
             {
@@ -83,9 +90,10 @@ export default class TimeInput extends React.Component {
                 >
                     <TimePicker
                         defaultValue={[hours, minutes, seconds]}
-                        value={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
-                        onChange={([hours, minutes, seconds]) => this.sync(hours, minutes, seconds, 'timePicker')}
+                        value={this.syncNeeded('picker') ? [hours, minutes, seconds] : undefined}
+                        onChange={([hours, minutes, seconds]) => this.sync(hours, minutes, seconds, 'picker')}
                         getIsValidTime={(hours, minutes, seconds) => getIsValidTime(hours, minutes, seconds)}
+                        hasSeconds={hasSeconds}
                     />
                 </Dropdown>
             }
@@ -95,9 +103,8 @@ export default class TimeInput extends React.Component {
 
 
 TimeInput.defaultProps = {
-    defaultHours: 0,
-    defaultMinutes: 0,
-    defaultSeconds: 0,
+    defaultValue: [0, 0, 0],
+    hasSeconds: true,
     getIsValidTime: (hours, minutes, seconds) => true,
     onChange: (hours, minutes, seconds) =>
         console.log('(TimeInput) onChange is omitted', hours, minutes, seconds)

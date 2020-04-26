@@ -4,18 +4,20 @@ import React from 'react';
 export default class RadioGroupInput extends React.Component {
     constructor(props) {
         super(props);
+
+        console.log('radio', RadioGroupInput.normalizeValue(this.props.defaultValue));
         this.state = {
             value: RadioGroupInput.normalizeValue(this.props.defaultValue)
         };
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.value !== undefined && props.value !== state.value) {
-            state.value = RadioGroupInput.normalizeValue(props.value);
-            return state;
-        }
-        return null;
-    }
+    // static getDerivedStateFromProps(props, state) {
+    //     if (props.value !== undefined && props.value !== state.value) {
+    //         state.value = RadioGroupInput.normalizeValue(props.value);
+    //         return state;
+    //     }
+    //     return null;
+    // }
 
     static normalizeValue = (value) => {
         return value !== undefined ? value : null;

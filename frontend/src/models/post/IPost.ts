@@ -5,17 +5,16 @@ import {ICoupon} from '../coupon/ICoupon';
 import {ILink} from '../link/ILink';
 import {ISurvey} from '../survey/ISurvey';
 
+/**
+ * Post interface used by frontend code
+ * this might be different than the interface on server
+ */
 export interface IPost {
   id: number,
-  type: string,
   status: string,
   scheduledTime?: number,
-  images?: IImage[],
-  video?: IVideo,
-  sticker?: ISticker,
-  coupon?: ICoupon,
-  link?: ILink,
-  survey?: ISurvey,
+  contentType: string,
+  contentData: IImage[] | IVideo | ISticker | ICoupon | ILink | ISurvey,
   createdAt: number,
   updatedAt: number
 }

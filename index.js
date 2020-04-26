@@ -35,10 +35,9 @@ app.put('/_api/media/upload', (req, res) => setTimeout(
     , 5000
 ));
 
-app.put('/_api/post/upload', (req, res) => setTimeout(
+app.post('/_api/post/upload', (req, res) => setTimeout(
     () => {
-        const now = new Date().getMilliseconds();
-        const error = now % 3 === 0;
+        const error = false;
         res.send({
             resultCode: error ? 0 : 1,
             resultData: {
@@ -60,8 +59,8 @@ app.put('/_api/post/upload', (req, res) => setTimeout(
                         height: 800
                     },
                 ],
-                createdAt: 12345566666,
-                updatedAt: 12345456677
+                createdAt: new Date().getTime(),
+                updatedAt: new Date().getTime()
             },
             errorDisplay: false,
             errorMessage: error ? 'This is an random error that cannot be fixed' : ''

@@ -16,8 +16,8 @@ export default class PostContentEditTool extends React.Component {
         super(props);
 
         this.state = {
-            contentType: CONTENT_IMAGE,
-            contentData: getDefaultContentData(CONTENT_IMAGE)
+            contentType: props.defaultContentType,
+            contentData: props.defaultContentData
         };
     }
 
@@ -41,6 +41,19 @@ export default class PostContentEditTool extends React.Component {
         return state;
     }
 
+    static getDefaultContentData(contentType) {
+        switch (contentType) {
+            case CONTENT_IMAGE: return [];
+            case CONTENT_VIDEO: return null;
+            case CONTENT_STICKER: return null;
+            case CONTENT_COUPON: return null;
+            case CONTENT_LINK: return null;
+            case CONTENT_SURVEY: return null;
+        }
+
+        return null;
+    }
+
     pushChange = () => {
         this.props.onChange(this.state.contentType, this.state.contentData);
     };
@@ -59,7 +72,7 @@ export default class PostContentEditTool extends React.Component {
 
         this.updateContent({
             contentType,
-            contentData: getDefaultContentData(contentType)
+            contentData: PostContentEditTool.getDefaultContentData(contentType)
         });
     };
 
@@ -90,20 +103,9 @@ export default class PostContentEditTool extends React.Component {
 PostContentEditTool.defaultProps = {
     contentType: undefined,
     contentData: undefined,
+    defaultContentType: CONTENT_IMAGE,
+    defaultContentData: PostContentEditTool.getDefaultContentData(CONTENT_IMAGE),
     onChange: (contentType, contentData) =>
         console.log('(PostContentEditTool) onChange is omitted.', contentType, contentData),
 
 };
-
-function getDefaultContentData(contentType) {
-    switch (contentType) {
-        case CONTENT_IMAGE: return [];
-        case CONTENT_VIDEO: return null;
-        case CONTENT_STICKER: return null;
-        case CONTENT_COUPON: return null;
-        case CONTENT_LINK: return null;
-        case CONTENT_SURVEY: return null;
-    }
-
-    return null;
-}

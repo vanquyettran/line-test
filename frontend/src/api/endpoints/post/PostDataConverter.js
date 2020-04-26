@@ -8,6 +8,7 @@ import {
     CONTENT_SURVEY
 } from '../../../models/post/contentTypes';
 
+
 /**
  *
  * @param {{}} data
@@ -16,15 +17,10 @@ import {
 function fromEndpoint(data) {
     return {
         id: data['id'],
-        type: data['type'],
         status: data['status'],
+        contentType: data['type'],
         scheduledTime: data['scheduledTime'],
-        images: data['images'].map(im => ImageDataConverter.fromEndpoint(im)),
-        video: data['video'],
-        sticker: data['sticker'],
-        coupon: data['coupon'],
-        link: data['link'],
-        survey: data['survey'],
+        contentData: getContentData(data['type'], data),
         createdAt: data['createdAt'],
         updatedAt: data['updatedAt']
     };
@@ -69,6 +65,19 @@ function getContentDataFieldName(contentType) {
         case CONTENT_COUPON: return 'coupon';
         case CONTENT_LINK: return 'link';
         case CONTENT_SURVEY: return 'survey';
+    }
+
+    throw new Error(`Post content type is invalid: ${contentType}`);
+}
+
+function getContentData(contentType, data) {
+    switch (contentType) {
+        case CONTENT_IMAGE: return data['images'].map(im => ImageDataConverter.fromEndpoint(im));
+        case CONTENT_VIDEO: return data['video'];
+        case CONTENT_STICKER: return data['sticker'];
+        case CONTENT_COUPON: return data['coupon'];
+        case CONTENT_LINK: return data['link'];
+        case CONTENT_SURVEY: return data['survey'];
     }
 
     throw new Error(`Post content type is invalid: ${contentType}`);

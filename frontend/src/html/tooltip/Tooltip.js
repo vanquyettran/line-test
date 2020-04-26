@@ -13,7 +13,7 @@ function findOpener(el, triedCount = 0) {
         return null;
     }
 
-    if (el.hasAttribute(ATTR_TOOLTIP)) {
+    if (el.getAttribute(ATTR_TOOLTIP)) {
         return el;
     }
 

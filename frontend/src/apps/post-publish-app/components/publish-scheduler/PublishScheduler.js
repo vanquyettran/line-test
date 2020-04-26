@@ -11,22 +11,8 @@ export default class PublishScheduler extends React.Component {
 
         this.state = {
             scheduled: props.defaultValue !== null,
-            ...dateFromValue(props.defaultValue)
+            ...dateFromValue(props.defaultValue),
         };
-    }
-
-    static getDerivedStateFromProps(props, state) {
-        if (props.value === undefined) {
-            return null;
-        }
-
-        const value = stateToValue(state);
-        if (props.value === value) {
-            return null;
-        }
-
-        state.value = value;
-        return state;
     }
 
     pushChange = () => {
@@ -55,24 +41,36 @@ export default class PublishScheduler extends React.Component {
     };
 
     getDateTimeInput = () => {
+        const {year, month, date, hours, minutes} = this.state;
+
         return <div className="date-time">
             <DateInput
+                defaultValue={[year, month, date]}
                 onChange={(year, month, date) => {
                     this.updateYMD(year, month, date);
+                }}
+                getIsValidDate={(year, month, date) => {
+                    // disable dates in the past
+                    return new Date(year, month - 1, date, 23, 59, 59).getTime() >= new Date().getTime();
                 }}
             />
             <br/>
             <TimeInput
+                value={[hours, minutes, 0]}
                 onChange={(hours, minutes, seconds) => {
                     this.updateHMS(hours, minutes);
                 }}
+                hasSeconds={false}
             />
         </div>;
     };
 
     render() {
+        const {scheduled} = this.state;
+
         return <div className="publish-scheduler">
             <RadioGroupInput
+                defaultValue={scheduled}
                 options={[
                     {value: false, label: translate('Publish now')},
                     {value: true, label: this.getDateTimeInput()},
@@ -87,7 +85,6 @@ export default class PublishScheduler extends React.Component {
 
 PublishScheduler.defaultProps = {
     defaultValue: null,
-    value: undefined,
     onChange: (value) =>
         console.log('(PublishScheduler) onChange is omitted', year, month, date)
 };

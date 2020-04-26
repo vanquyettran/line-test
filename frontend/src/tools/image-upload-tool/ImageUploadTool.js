@@ -68,7 +68,7 @@ export default class ImageUploadTool extends React.Component {
         const {uploadedImages} = this.state;
 
         /**
-         * @type {IImage}
+         * @param {IImage} image
          */
         const onDone = image => {
             uploadedImages.push(image);

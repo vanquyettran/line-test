@@ -14,21 +14,20 @@ export default class TimePicker extends React.Component {
     }
 
     // static getDerivedStateFromProps(props, state) {
-    //     const hasChange =
-    //         props.hours !== undefined && props.hours !== state.hours
-    //         ||
-    //         props.minutes !== undefined && props.minutes !== state.minutes
-    //         ||
-    //         props.seconds !== undefined && props.seconds !== state.seconds
-    //         ;
-    //
-    //     if (!hasChange) {
+    //     if (props.value === undefined) {
     //         return null;
     //     }
     //
-    //     state.hours = props.hours;
-    //     state.minutes = props.minutes;
-    //     state.seconds = props.seconds;
+    //     if (state.hours === props.value[0] &&
+    //         state.minutes === props.value[1] &&
+    //         state.seconds === props.value[2]
+    //     ) {
+    //         return null;
+    //     }
+    //
+    //     state.hours = props.value[0];
+    //     state.minutes = props.value[1];
+    //     state.seconds = props.value[2];
     //
     //     return state;
     // }
@@ -60,7 +59,8 @@ export default class TimePicker extends React.Component {
     };
 
     render() {
-        const [hours, minutes, seconds] = (this.props.value || []);
+        const {value, hasSeconds} = this.props;
+        const [hours, minutes, seconds] = (value || []);
 
         return <div className="time-picker">
             <div className="spinners">
@@ -76,12 +76,15 @@ export default class TimePicker extends React.Component {
                     onChange={value => this.updateMinutes(value)}
                     expanding={1}
                 />
-                <SpinnerInput
-                    options={getSecondsOptions()}
-                    value={seconds}
-                    expanding={1}
-                    onChange={value => this.updateSeconds(value)}
-                />
+                {
+                    hasSeconds &&
+                    <SpinnerInput
+                        options={getSecondsOptions()}
+                        value={seconds}
+                        expanding={1}
+                        onChange={value => this.updateSeconds(value)}
+                    />
+                }
             </div>
         </div>;
     }
@@ -90,7 +93,8 @@ export default class TimePicker extends React.Component {
 
 TimePicker.defaultProps = {
     defaultValue: [0, 0, 0],
-    value: undefined
+    value: undefined,
+    hasSeconds: true
 };
 
 

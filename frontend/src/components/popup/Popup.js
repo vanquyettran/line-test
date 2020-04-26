@@ -14,21 +14,13 @@ export default class Popup extends React.Component {
                     onClick={close ? () => close() : undefined}
                 />
                 <div className={`overlay ${name}-popup`}>
-                    {
-                        title !== undefined &&
-                        <div className="popup-head">
-                            <div className="title">{ title }</div>
-                            {
-                                close &&
-                                getCloseButton(close)
-                            }
-                        </div>
-                    }
-                    {
-                        title === undefined &&
-                        close &&
-                        getCloseButton(close)
-                    }
+                    <div className="popup-head">
+                        <div className="title">{ title }</div>
+                        {
+                            close &&
+                            getCloseButton(close)
+                        }
+                    </div>
                     <div className="popup-body">
                         { children }
                     </div>

@@ -9,9 +9,9 @@ export default class DateInput extends React.Component {
         super(props);
 
         this.state = {
-            year: props.defaultYear,
-            month: props.defaultMonth,
-            date: props.defaultDate,
+            year: props.defaultValue[0],
+            month: props.defaultValue[1],
+            date: props.defaultValue[2],
             syncFrom: null,
             pickerShown: false
         };
@@ -23,8 +23,12 @@ export default class DateInput extends React.Component {
         this.el = null;
     }
 
+    pushChange = () => {
+        this.props.onChange(this.state.year, this.state.month, this.state.date);
+    };
+
     sync = (year, month, date, syncFrom) => {
-        const {getIsValidDate, onChange} = this.props;
+        const {getIsValidDate} = this.props;
         const {year: currentYear, month: currentMonth, date: currentDate} = this.state;
 
         const currentDateIsValid = getIsValidDate(currentYear, currentMonth, currentDate);
@@ -44,9 +48,14 @@ export default class DateInput extends React.Component {
             {year, month, date, syncFrom},
             () => this.setState(
                 {syncFrom: null},
-                () => onChange(this.state.year, this.state.month, this.state.date)
+                () => this.pushChange()
             )
         )
+    };
+
+    syncNeeded = (name) => {
+        const {syncFrom} = this.state;
+        return syncFrom !== null && syncFrom !== name;
     };
 
     showPicker = () => {
@@ -63,13 +72,13 @@ export default class DateInput extends React.Component {
 
     render() {
         const {getIsValidDate} = this.props;
-        const {year, month, date, syncFrom, pickerShown} = this.state;
+        const {year, month, date, pickerShown} = this.state;
 
         return <div className="date-input" ref={el => this.el = el}>
             <TemplateInput
                 template={TemplateInput.dateDMYTemplate}
                 defaultValues={{year, month, date}}
-                values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
+                values={this.syncNeeded('templateInput') ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.sync(year, month, date, 'templateInput')}
                 onFocus={(key) => this.showPicker()}
             />
@@ -78,7 +87,7 @@ export default class DateInput extends React.Component {
                 <Dropdown opener={this.el} close={this.hidePicker}>
                     <DatePicker
                         defaultDate={[year, month, date]}
-                        date={syncFrom !== null && syncFrom !== 'picker' ? [year, month, date] : undefined}
+                        date={this.syncNeeded('picker') ? [year, month, date] : undefined}
                         onChange={([year, month, date]) => this.sync(year, month, date, 'picker')}
                         getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
                     />
@@ -89,13 +98,8 @@ export default class DateInput extends React.Component {
 }
 
 DateInput.defaultProps = {
-    defaultYear: new Date().getFullYear(),
-    defaultMonth: new Date().getMonth() + 1,
-    defaultDate: new Date().getDate(),
-    getIsValidDate: (year, month, date) => {
-        // example for preventing users select a date in the past
-        return new Date(year, month - 1, date, 23, 59, 59).getTime() >= new Date().getTime();
-    },
-    onChange: (year, month, date) =>
-        console.log('(DateInput) onChange is omitted', year, month, date)
+    defaultValue: (d => ([d.getFullYear(), d.getMonth() + 1, d.getDate()]))(new Date()),
+    value: undefined,
+    getIsValidDate: (year, month, date) => true,
+    onChange: (year, month, date) => console.log('(DateInput) onChange is omitted', year, month, date)
 };
