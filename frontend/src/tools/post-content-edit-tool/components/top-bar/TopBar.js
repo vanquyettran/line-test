@@ -9,6 +9,8 @@ import {
     CONTENT_LINK,
     CONTENT_SURVEY
 } from '../../../../models/post/contentTypes';
+import {Tooltip} from '../../../../utils/dom';
+import {translate} from '../../../../i18n';
 
 export default class TopBar extends React.Component {
     render() {
@@ -21,19 +23,20 @@ export default class TopBar extends React.Component {
             <ul>
                 {
                     [
-                        [CONTENT_IMAGE, 'photo'],
-                        [CONTENT_VIDEO, 'video'],
-                        [CONTENT_EMOJI, 'smile'],
-                        [CONTENT_COUPON, 'coupon'],
-                        [CONTENT_LINK, 'link'],
-                        [CONTENT_SURVEY, 'survey'],
-                    ].map(([itemContentType, iconName]) => (
+                        [CONTENT_IMAGE, 'photo', translate('Photo')],
+                        [CONTENT_VIDEO, 'video', translate('Video')],
+                        [CONTENT_EMOJI, 'smile', translate('Emoji')],
+                        [CONTENT_COUPON, 'coupon', translate('Coupon')],
+                        [CONTENT_LINK, 'link', translate('Link')],
+                        [CONTENT_SURVEY, 'survey', translate('Survey')],
+                    ].map(([itemContentType, iconName, label]) => (
                         <li key={itemContentType}
                             className={contentType === itemContentType ? 'selected' : ''}
                         >
                             <button
                                 type="button"
                                 onClick={() => updateContentType(itemContentType)}
+                                {...{[Tooltip.attr]: label}}
                             >
                                 <Icon name={iconName}/>
                             </button>
