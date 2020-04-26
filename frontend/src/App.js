@@ -1,7 +1,7 @@
 import './layout';
-import {Tooltip} from './utils/dom';
 import React from 'react';
 import AppErrorBoundary from './error-boundaries/app-error-boundary/AppErrorBoundary';
+import Tooltip from './html/tooltip/Tooltip';
 import PostPublishApp from './apps/post-publish-app/PostPublishApp';
 
 export default class App extends React.Component {

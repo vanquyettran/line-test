@@ -1,6 +1,6 @@
 import './Tooltip.less';
 
-const ATTR_TOOLTIP = 'aria-tooltip';
+const ATTR_TOOLTIP = 'aria-label';
 
 /**
  *
@@ -33,14 +33,9 @@ function createTooltip(opener) {
 
 function appendTooltip(tooltip) {
     document.body.appendChild(tooltip);
-    console.log('tooltip', tooltip);
 }
 
 function removeTooltip(tooltip) {
-    if (!tooltip.parentNode) {
-        return;
-    }
-
     tooltip.parentNode.removeChild(tooltip);
 }
 

@@ -9,7 +9,6 @@ import {
     CONTENT_LINK,
     CONTENT_SURVEY
 } from '../../../../models/post/contentTypes';
-import {Tooltip} from '../../../../utils/dom';
 import {translate} from '../../../../i18n';
 
 export default class TopBar extends React.Component {
@@ -36,7 +35,7 @@ export default class TopBar extends React.Component {
                             <button
                                 type="button"
                                 onClick={() => updateContentType(itemContentType)}
-                                {...{[Tooltip.attr]: label}}
+                                {...{'aria-label': label}}
                             >
                                 <Icon name={iconName}/>
                             </button>
