@@ -2,6 +2,9 @@ import './Dropdown.less';
 import React from 'react';
 import LayoutPortal from '../../layout/components/layout-portal/LayoutPortal';
 import {getLayoutScrollElement, getLayoutPortalElement} from '../../layout/domElements';
+import {setCloseByOutsideDispatcher, unsetCloseByOutsideDispatcher} from '../../utils/dom';
+
+let autoIncId = 0;
 
 export default class Dropdown extends React.Component {
     constructor(props) {
@@ -11,6 +14,8 @@ export default class Dropdown extends React.Component {
 
         };
 
+        this.id = ++autoIncId;
+
         /**
          *
          * @type {HTMLDivElement}
@@ -19,15 +24,31 @@ export default class Dropdown extends React.Component {
     }
 
     componentDidMount() {
-        closeOthers(this.props.opener, this.props.close);
-
+        this.setupCloseHandling();
         this.updateAll();
         this.setDOMEventListeners();
+    }
+
+    componentWillUnmount() {
+        this.endupCloseHandling();
     }
 
     componentDidUpdate() {
         this.updateAll();
     }
+
+    setupCloseHandling = () => {
+        closeOthers(this.props.opener, this.props.close);
+        setCloseByOutsideDispatcher(
+            `components.Dropdown.${this.id}`,
+            [this.el, this.props.opener],
+            this.props.close
+        );
+    };
+
+    endupCloseHandling = () => {
+        unsetCloseByOutsideDispatcher(`components.Dropdown.${this.id}`);
+    };
 
     setDOMEventListeners = () => {
         getLayoutScrollElement().addEventListener('scroll', () => this.updateAll());

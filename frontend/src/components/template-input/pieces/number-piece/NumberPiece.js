@@ -71,7 +71,6 @@ export default class NumberPiece extends React.Component {
         const {value, max} = props;
 
         const isValueChanged = value !== undefined && value !== state.value && !state.isTemp;
-        console.log(isValueChanged, value, state.value, state.isTemp);
 
         if (!isValueChanged) {
             return null;

@@ -68,11 +68,9 @@ export default class TimeInput extends React.Component {
                 defaultValues={{hours, minutes, seconds}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {hours, minutes, seconds} : undefined}
                 onChange={({hours, minutes, seconds}) => {
-                    console.log({hours, minutes, seconds});
                     this.sync(hours, minutes, seconds, 'templateInput');
                 }}
                 onFocus={(key) => this.showPicker()}
-                onBlurAll={() => this.hidePicker()}
             />
             {
                 pickerShown &&

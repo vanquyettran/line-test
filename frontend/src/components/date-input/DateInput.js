@@ -69,7 +69,6 @@ export default class DateInput extends React.Component {
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
                 onFocus={(key) => this.showPicker()}
-                onBlurAll={() => this.hidePicker()}
             />
             {
                 pickerShown &&
