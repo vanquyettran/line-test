@@ -1,16 +1,11 @@
 import './layout';
 import React from 'react';
 import AppErrorBoundary from './error-boundaries/app-error-boundary/AppErrorBoundary';
-import Tooltip from './html/tooltip/Tooltip';
 import PostPublishApp from './apps/post-publish-app/PostPublishApp';
 
 export default class App extends React.Component {
 
-    componentDidMount() {
-        Tooltip.init();
-    }
-
-    renderApp = () => {
+    _render = () => {
         const {appName} = this.props;
 
         if (appName === 'PostPublish') {
@@ -22,7 +17,7 @@ export default class App extends React.Component {
 
     render() {
         return <AppErrorBoundary>
-            {this.renderApp()}
+            {this._render()}
         </AppErrorBoundary>;
     }
 }
