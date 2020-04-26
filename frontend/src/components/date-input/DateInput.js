@@ -13,7 +13,7 @@ export default class DateInput extends React.Component {
             month: props.defaultMonth,
             date: props.defaultDate,
             syncFrom: null,
-            datePickerShown: false
+            pickerShown: false
         };
 
         /**
@@ -46,21 +46,21 @@ export default class DateInput extends React.Component {
         )
     };
 
-    showDatePicker = () => {
-        if (!this.state.datePickerShown) {
-            this.setState({datePickerShown: true});
+    showPicker = () => {
+        if (!this.state.pickerShown) {
+            this.setState({pickerShown: true});
         }
     };
 
-    hideDatePicker = () => {
-        if (this.state.datePickerShown) {
-            this.setState({datePickerShown: false});
+    hidePicker = () => {
+        if (this.state.pickerShown) {
+            this.setState({pickerShown: false});
         }
     };
 
     render() {
         const {getIsValidDate} = this.props;
-        const {year, month, date, syncFrom, datePickerShown} = this.state;
+        const {year, month, date, syncFrom, pickerShown} = this.state;
 
         return <div className="date-input" ref={el => this.el = el}>
             <TemplateInput
@@ -68,15 +68,16 @@ export default class DateInput extends React.Component {
                 defaultValues={{year, month, date}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
-                onFocus={() => this.showDatePicker()}
+                onFocus={(key) => this.showPicker()}
+                onBlurAll={() => this.hidePicker()}
             />
             {
-                datePickerShown &&
-                <Dropdown opener={this.el} close={this.hideDatePicker}>
+                pickerShown &&
+                <Dropdown opener={this.el} close={this.hidePicker}>
                     <DatePicker
                         defaultDate={[year, month, date]}
-                        date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}
-                        onChange={([year, month, date]) => this.syncYMD(year, month, date, 'datePicker')}
+                        date={syncFrom !== null && syncFrom !== 'picker' ? [year, month, date] : undefined}
+                        onChange={([year, month, date]) => this.syncYMD(year, month, date, 'picker')}
                         getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
                     />
                 </Dropdown>

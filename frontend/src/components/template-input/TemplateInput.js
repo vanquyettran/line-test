@@ -39,8 +39,8 @@ export default class TemplateInput extends React.Component {
         );
     };
 
-    updateFocusedPiece = (key) => {
-        this.setState({focusedPieceKey: key});
+    updateFocusedPiece = (key, callback) => {
+        this.setState({focusedPieceKey: key}, callback);
     };
 
     focusPiece = (key) => {
@@ -106,10 +106,10 @@ export default class TemplateInput extends React.Component {
     };
 
     getNumberPiece = (pieceProps) => {
-        const {defaultValues, values: propValues, onFocus} = this.props;
+        const {defaultValues} = this.props;
         const {values, forceFocusedPieceKey} = this.state;
 
-        const propValue = propValues !== undefined ? propValues[pieceProps.key] : undefined;
+        const propValue = this.props.values !== undefined ? this.props.values[pieceProps.key] : undefined;
         const defaultValue = defaultValues !== null ? defaultValues[pieceProps.key] : null;
         const min = 'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values);
         const max = 'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values);
@@ -121,20 +121,39 @@ export default class TemplateInput extends React.Component {
             }
         };
 
+        const onBlur = () => {
+
+            // add to callback queue
+            // to wait for next focus happens immediately on other pieces of this input instance
+            // if true, just ignore
+            // if no focus happened, set focused key null, and fire onBlurAll
+            setTimeout(() => {
+                if (this.state.focusedPieceKey !== pieceProps.key) {
+                    return;
+                }
+                this.updateFocusedPiece(null);
+                this.props.onBlurAll();
+            }, 0);
+        };
+
+        const onFocus = () => {
+            this.updateFocusedPiece(pieceProps.key, () => {
+                this.props.onFocus(pieceProps.key);
+            });
+        };
+
         return <NumberPiece
             value={propValue}
             defaultValue={defaultValue}
             emptyDigit={pieceProps.emptyDigit}
             min={min}
             max={max}
+            onInputRef={onInputRef}
             onChange={value => this.updateValue(pieceProps.key, value)}
             onBackward={() => this.focusPrevPiece(pieceProps.key)}
             onForward={() => this.focusNextPiece(pieceProps.key)}
-            onFocus={() => {
-                this.updateFocusedPiece(pieceProps.key);
-                onFocus();
-            }}
-            onInputRef={onInputRef}
+            onBlur={onBlur}
+            onFocus={onFocus}
         />;
     };
 
@@ -291,5 +310,6 @@ TemplateInput.defaultProps = {
     values: undefined,
     defaultValues: null,
     onChange: (values) => console.log('(TemplateInput) onChange is omitted', values),
-    onFocus: () => {}
+    onFocus: (key) => {},
+    onBlurAll: () => {}
 };

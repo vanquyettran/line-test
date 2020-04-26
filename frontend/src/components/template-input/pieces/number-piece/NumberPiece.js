@@ -11,7 +11,13 @@ export default class NumberPiece extends React.Component {
         this.state = {
             digits,
             value,
-            focused: false
+            focused: false,
+
+            // when typing, value can be invalid temporarily,
+            // typing is char by char, if validate immediately, users cannot type what they want
+            // do not validate until blurring happened completely
+            isTemp: false,
+
         };
 
         onChange(value);
@@ -27,7 +33,7 @@ export default class NumberPiece extends React.Component {
     }
 
     componentDidUpdate() {
-        if (!this.state.focused) {
+        if (!this.state.isTemp) {
             this.ensureValueIsValid();
         }
     }
@@ -64,7 +70,8 @@ export default class NumberPiece extends React.Component {
     static getDerivedStateFromProps(props, state) {
         const {value, max} = props;
 
-        const isValueChanged = value !== undefined && value !== state.value;
+        const isValueChanged = value !== undefined && value !== state.value && !state.isTemp;
+        console.log(isValueChanged, value, state.value, state.isTemp);
 
         if (!isValueChanged) {
             return null;
@@ -103,6 +110,10 @@ export default class NumberPiece extends React.Component {
         return [digits, value];
     };
 
+    setTempDigitsAndValue = (digits, value) => {
+        this.setState({digits, value, isTemp: true});
+    };
+
     updateDigitsAndValue = (digits, value) => {
         this.setState({digits, value}, () => {
             this.props.onChange(this.state.value);
@@ -111,7 +122,7 @@ export default class NumberPiece extends React.Component {
 
     updateSyncedDigitsAndValue = (digits, value, validate) => {
         if (!validate) {
-            this.updateDigitsAndValue(digits, value);
+            this.setTempDigitsAndValue(digits, value);
             return;
         }
 
@@ -262,11 +273,18 @@ export default class NumberPiece extends React.Component {
 
         this.setState(
             {focused: false},
-            () => onBlur()
-        );
+            () => {
+                onBlur();
 
-        this.updateDigitsAndValue(
-            ...this.getValidDigitsAndValue(digits, value)
+                this.setState(
+                    {isTemp: false},
+                    () => {
+                        this.updateDigitsAndValue(
+                            ...this.getValidDigitsAndValue(digits, value)
+                        );
+                    }
+                );
+            }
         );
     };
 

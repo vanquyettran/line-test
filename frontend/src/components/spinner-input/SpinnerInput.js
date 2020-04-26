@@ -51,7 +51,7 @@ export default class SpinnerInput extends React.Component {
             return true;
         }
 
-        this.setValue(defaultValue);
+        this.updateValue(defaultValue);
 
         return false;
     };
@@ -104,15 +104,9 @@ export default class SpinnerInput extends React.Component {
     };
 
     renderOptionsView = () => {
-        return <div
-            className="options-view"
-            ref={el => this.optionsView = el}
-        >
+        return <div className="options-view" ref={el => this.optionsView = el}>
             <ul>
-                {
-                    this.getShouldDrawnOptions()
-                        .map((option, index) => this.renderOptionItem(option))
-                }
+                { this.getShouldDrawnOptions().map(option => this.renderOptionItem(option)) }
             </ul>
         </div>;
     };
@@ -150,13 +144,13 @@ export default class SpinnerInput extends React.Component {
 
     render() {
         return <div className="spinner-input">
-            <div className="head" onClick={() => this.selectBelow()}>
+            <div className="head" onClick={() => this.selectAbove()}>
                 <Icon name="angle-up"/>
             </div>
             <div className="body">
                 {this.renderOptionsView()}
             </div>
-            <div className="foot" onClick={() => this.selectAbove()}>
+            <div className="foot" onClick={() => this.selectBelow()}>
                 <Icon name="angle-down"/>
             </div>
         </div>;

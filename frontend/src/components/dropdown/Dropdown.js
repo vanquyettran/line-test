@@ -19,7 +19,7 @@ export default class Dropdown extends React.Component {
     }
 
     componentDidMount() {
-        closeOtherOpeners(this.props.opener, this.props.close);
+        closeOthers(this.props.opener, this.props.close);
 
         this.updateAll();
         this.setDOMEventListeners();
@@ -132,22 +132,22 @@ Dropdown.defaultProps = {
 
 
 // CLOSE DISPATCHERS
-const openerCloseDispatchers = [];
+const closeDispatchers = [];
 
-function closeOtherOpeners(opener, close) {
-    openerCloseDispatchers.forEach(([_opener, _close]) => {
+function closeOthers(opener, close) {
+    closeDispatchers.forEach(([_opener, _close]) => {
         if (_opener !== opener) {
             _close();
         }
     });
 
-    addOpenerCloseDispatcherIfNotYet(opener, close);
+    addCloseDispatcherIfNotYet(opener, close);
 }
 
-function addOpenerCloseDispatcherIfNotYet(opener, close) {
-    if (openerCloseDispatchers.some(([_opener]) => _opener === opener)) {
+function addCloseDispatcherIfNotYet(opener, close) {
+    if (closeDispatchers.some(([_opener]) => _opener === opener)) {
         return;
     }
 
-    openerCloseDispatchers.push([opener, close]);
+    closeDispatchers.push([opener, close]);
 }
