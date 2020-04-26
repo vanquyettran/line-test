@@ -1,11 +1,10 @@
 import './css/common.less';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PostPublishApp from './apps/post-publish-app/PostPublishApp';
-import './layout';
+import App from './App';
 
 window.LineTest = {
-    renderPostPublishApp: (root, props) => {
-        ReactDOM.render(<PostPublishApp {...props}/>, root);
+    renderApp: (root, props) => {
+        ReactDOM.render(<App {...props}/>, root);
     }
 };

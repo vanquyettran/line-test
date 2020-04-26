@@ -2,6 +2,7 @@ import './TimeInput.less';
 import React from 'react';
 import TimePicker from '../../components/time-picker/TimePicker';
 import TemplateInput from '../../components/template-input/TemplateInput';
+import Dropdown from '../../components/dropdown/Dropdown';
 
 export default class TimeInput extends React.Component {
     constructor(props) {
@@ -11,8 +12,15 @@ export default class TimeInput extends React.Component {
             hours: props.defaultHours,
             minutes: props.defaultMinutes,
             seconds: props.defaultSeconds,
-            syncFrom: null
+            syncFrom: null,
+            datePickerShown: false
         };
+
+        /**
+         *
+         * @type {HTMLDivElement}
+         */
+        this.el = null;
     }
 
     syncYMD = (hours, minutes, seconds, syncFrom) => {
@@ -38,23 +46,42 @@ export default class TimeInput extends React.Component {
         )
     };
 
+    showDatePicker = () => {
+        if (!this.state.datePickerShown) {
+            this.setState({datePickerShown: true});
+        }
+    };
+
+    hideDatePicker = () => {
+        if (this.state.datePickerShown) {
+            this.setState({datePickerShown: false});
+        }
+    };
+
     render() {
         const {getIsValidTime} = this.props;
-        const {hours, minutes, seconds, syncFrom} = this.state;
+        const {hours, minutes, seconds, syncFrom, datePickerShown} = this.state;
 
-        return <div className="time-input">
+        return <div className="time-input" ref={el => this.el = el}>
             <TemplateInput
                 template={TemplateInput.timeHMSTemplate}
                 defaultValues={{hours, minutes, seconds}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {hours, minutes, seconds} : undefined}
                 onChange={({hours, minutes, seconds}) => this.syncYMD(hours, minutes, seconds, 'templateInput')}
+                onFocus={() => this.showDatePicker()}
             />
-            <TimePicker
-                defaultValue={[hours, minutes, seconds]}
-                value={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
-                onChange={([hours, minutes, seconds]) => this.syncYMD(hours, minutes, seconds, 'timePicker')}
-                getIsValidTime={(hours, minutes, seconds) => getIsValidTime(hours, minutes, seconds)}
-            />
+            {
+                datePickerShown &&
+                this.el !== null &&
+                <Dropdown opener={this.el} id="Time" close={this.hideDatePicker}>
+                    <TimePicker
+                        defaultValue={[hours, minutes, seconds]}
+                        value={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
+                        onChange={([hours, minutes, seconds]) => this.syncYMD(hours, minutes, seconds, 'timePicker')}
+                        getIsValidTime={(hours, minutes, seconds) => getIsValidTime(hours, minutes, seconds)}
+                    />
+                </Dropdown>
+            }
         </div>;
     }
 }

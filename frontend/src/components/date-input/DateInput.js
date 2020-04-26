@@ -12,7 +12,8 @@ export default class DateInput extends React.Component {
             year: props.defaultYear,
             month: props.defaultMonth,
             date: props.defaultDate,
-            syncFrom: null
+            syncFrom: null,
+            datePickerShown: false
         };
 
         /**
@@ -45,9 +46,21 @@ export default class DateInput extends React.Component {
         )
     };
 
+    showDatePicker = () => {
+        if (!this.state.datePickerShown) {
+            this.setState({datePickerShown: true});
+        }
+    };
+
+    hideDatePicker = () => {
+        if (this.state.datePickerShown) {
+            this.setState({datePickerShown: false});
+        }
+    };
+
     render() {
         const {getIsValidDate} = this.props;
-        const {year, month, date, syncFrom} = this.state;
+        const {year, month, date, syncFrom, datePickerShown} = this.state;
 
         return <div className="date-input" ref={el => this.el = el}>
             <TemplateInput
@@ -55,10 +68,12 @@ export default class DateInput extends React.Component {
                 defaultValues={{year, month, date}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
+                onFocus={() => this.showDatePicker()}
             />
             {
+                datePickerShown &&
                 this.el !== null &&
-                <Dropdown opener={this.el}>
+                <Dropdown opener={this.el} id="Date" close={this.hideDatePicker}>
                     <DatePicker
                         defaultDate={[year, month, date]}
                         date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}

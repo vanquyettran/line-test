@@ -3,6 +3,24 @@ import React from 'react';
 import LayoutPortal from '../../layout/components/layout-portal/LayoutPortal';
 import {getLayoutScrollElement, getLayoutPortalElement} from '../../layout/domElements';
 
+const openerClosers = [];
+
+const addOpenerCloser = (opener, closer) => {
+    if (openerClosers.some(([_opener]) => _opener === opener)) {
+        return;
+    }
+    openerClosers.push([opener, closer]);
+};
+
+const closeOtherOpeners = (opener) => {
+    console.log('closers',openerClosers);
+    openerClosers.forEach(([_opener, _close]) => {
+        if (_opener !== opener) {
+            _close();
+        }
+    });
+};
+
 export default class Dropdown extends React.Component {
     constructor(props) {
         super(props);
@@ -16,9 +34,14 @@ export default class Dropdown extends React.Component {
          * @type {HTMLDivElement}
          */
         this.el = null;
+
+        this.mounted = false;
     }
 
     componentDidMount() {
+        this.mounted = true;
+        addOpenerCloser(this.props.opener, this.props.close);
+        closeOtherOpeners(this.props.opener);
         this.updateAll();
         this.setDOMEventListeners();
     }
@@ -33,6 +56,9 @@ export default class Dropdown extends React.Component {
     };
 
     updateAll = () => {
+        if (this.el === null) {
+            return;
+        }
         const op = this.getOpenerValues();
         const pt = this.getPortalValues();
         this.updateDimensions(op, pt);
@@ -55,7 +81,8 @@ export default class Dropdown extends React.Component {
      * @param {{style: CSSStyleDeclaration, rect: ClientRect}} pt
      */
     updatePosition = (op, pt) => {
-
+        this.setStyle('left', op.rect.left + 'px');
+        this.setStyle('top', op.rect.bottom + 'px');
     };
 
     /**
@@ -99,7 +126,7 @@ export default class Dropdown extends React.Component {
 
     };
 
-    render() {
+    render = () => {
         const {children} = this.props;
 
         return <LayoutPortal name="dropdown">
@@ -114,7 +141,7 @@ export default class Dropdown extends React.Component {
                 {children}
             </div>
         </LayoutPortal>;
-    }
+    };
 }
 
 

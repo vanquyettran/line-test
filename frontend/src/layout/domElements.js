@@ -1,9 +1,9 @@
 /**
  *
- * @return {Element|HTMLElement}
+ * @return {Window}
  */
 function getLayoutScrollElement() {
-    return document.body;
+    return window;
 }
 
 /**

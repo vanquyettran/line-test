@@ -106,7 +106,7 @@ export default class TemplateInput extends React.Component {
     };
 
     getNumberPiece = (pieceProps) => {
-        const {defaultValues, values: propValues} = this.props;
+        const {defaultValues, values: propValues, onFocus} = this.props;
         const {values, forceFocusedPieceKey} = this.state;
 
         const propValue = propValues !== undefined ? propValues[pieceProps.key] : undefined;
@@ -130,7 +130,10 @@ export default class TemplateInput extends React.Component {
             onChange={value => this.updateValue(pieceProps.key, value)}
             onBackward={() => this.focusPrevPiece(pieceProps.key)}
             onForward={() => this.focusNextPiece(pieceProps.key)}
-            onFocus={() => this.updateFocusedPiece(pieceProps.key)}
+            onFocus={() => {
+                this.updateFocusedPiece(pieceProps.key);
+                onFocus();
+            }}
             onInputRef={onInputRef}
         />;
     };
@@ -287,5 +290,6 @@ TemplateInput.defaultProps = {
     template: TemplateInput.dateDMYTemplate,
     values: undefined,
     defaultValues: null,
-    onChange: (values) => console.log('(TemplateInput) onChange is omitted', values)
+    onChange: (values) => console.log('(TemplateInput) onChange is omitted', values),
+    onFocus: () => {}
 };
