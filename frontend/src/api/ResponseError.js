@@ -1,3 +1,5 @@
+import {translate} from '../i18n';
+
 
 export default class ResponseError {
     /**
@@ -13,6 +15,6 @@ export default class ResponseError {
      * @return {string}
      */
     getMessage() {
-        return this.message;
+        return this.message || translate('something_went_wrong');
     }
 }

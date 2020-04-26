@@ -3,24 +3,6 @@ import React from 'react';
 import LayoutPortal from '../../layout/components/layout-portal/LayoutPortal';
 import {getLayoutScrollElement, getLayoutPortalElement} from '../../layout/domElements';
 
-const openerClosers = [];
-
-const addOpenerCloser = (opener, closer) => {
-    if (openerClosers.some(([_opener]) => _opener === opener)) {
-        return;
-    }
-    openerClosers.push([opener, closer]);
-};
-
-const closeOtherOpeners = (opener) => {
-    console.log('closers',openerClosers);
-    openerClosers.forEach(([_opener, _close]) => {
-        if (_opener !== opener) {
-            _close();
-        }
-    });
-};
-
 export default class Dropdown extends React.Component {
     constructor(props) {
         super(props);
@@ -34,14 +16,11 @@ export default class Dropdown extends React.Component {
          * @type {HTMLDivElement}
          */
         this.el = null;
-
-        this.mounted = false;
     }
 
     componentDidMount() {
-        this.mounted = true;
-        addOpenerCloser(this.props.opener, this.props.close);
-        closeOtherOpeners(this.props.opener);
+        closeOtherOpeners(this.props.opener, this.props.close);
+
         this.updateAll();
         this.setDOMEventListeners();
     }
@@ -118,20 +97,12 @@ export default class Dropdown extends React.Component {
         };
     };
 
-    calcWidth = () => {
-
-    };
-
-    calcHeight = () => {
-
-    };
-
     render = () => {
         const {children} = this.props;
 
         return <LayoutPortal name="dropdown">
             <div
-                className="overlay"
+                className="dropdown"
                 ref={el => this.el = el}
                 style={{
                     display: 'table',
@@ -144,7 +115,26 @@ export default class Dropdown extends React.Component {
     };
 }
 
-
 Dropdown.defaultProps = {
     opener: document.body
 };
+
+
+const openerClosers = [];
+
+function addOpenerCloser(opener, closer) {
+    if (openerClosers.some(([_opener]) => _opener === opener)) {
+        return;
+    }
+    openerClosers.push([opener, closer]);
+}
+
+function closeOtherOpeners(opener, close) {
+    addOpenerCloser(opener, close);
+    openerClosers.forEach(([_opener, _close]) => {
+        if (_opener !== opener) {
+            _close();
+        }
+    });
+    console.log('closers', openerClosers);
+}

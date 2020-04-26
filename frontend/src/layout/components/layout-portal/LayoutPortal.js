@@ -12,7 +12,7 @@ export default class LayoutPortal extends React.Component {
 
     initEl = () => {
         this.el = document.createElement('div');
-        this.el.className = this.props.name;
+        this.el.className = `${this.props.name}-portal`;
         this.el.style.display = 'contents';
     };
 
