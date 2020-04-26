@@ -10,10 +10,6 @@ export default class Dropdown extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-
-        };
-
         this.id = ++autoIncId;
 
         /**
@@ -25,8 +21,8 @@ export default class Dropdown extends React.Component {
 
     componentDidMount() {
         this.setupCloseHandling();
-        this.updateAll();
         this.setDOMEventListeners();
+        this.refreshDisplay();
     }
 
     componentWillUnmount() {
@@ -34,11 +30,10 @@ export default class Dropdown extends React.Component {
     }
 
     componentDidUpdate() {
-        this.updateAll();
+        this.refreshDisplay();
     }
 
     setupCloseHandling = () => {
-        closeOthers(this.props.opener, this.props.close);
         setCloseByOutsideDispatcher(
             `components.Dropdown.${this.id}`,
             [this.el, this.props.opener],
@@ -51,11 +46,11 @@ export default class Dropdown extends React.Component {
     };
 
     setDOMEventListeners = () => {
-        getLayoutScrollElement().addEventListener('scroll', () => this.updateAll());
-        getLayoutScrollElement().addEventListener('resize', () => this.updateAll());
+        getLayoutScrollElement().addEventListener('scroll', () => this.refreshDisplay());
+        getLayoutScrollElement().addEventListener('resize', () => this.refreshDisplay());
     };
 
-    updateAll = () => {
+    refreshDisplay = () => {
         if (this.el === null) {
             return;
         }
@@ -150,25 +145,3 @@ Dropdown.defaultProps = {
     opener: null,
     matchOpenerWidth: false
 };
-
-
-// CLOSE DISPATCHERS
-const closeDispatchers = [];
-
-function closeOthers(opener, close) {
-    closeDispatchers.forEach(([_opener, _close]) => {
-        if (_opener !== opener) {
-            _close();
-        }
-    });
-
-    addCloseDispatcherIfNotYet(opener, close);
-}
-
-function addCloseDispatcherIfNotYet(opener, close) {
-    if (closeDispatchers.some(([_opener]) => _opener === opener)) {
-        return;
-    }
-
-    closeDispatchers.push([opener, close]);
-}

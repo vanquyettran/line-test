@@ -144,13 +144,13 @@ export default class SpinnerInput extends React.Component {
 
     render() {
         return <div className="spinner-input">
-            <div className="head" onClick={() => this.selectAbove()}>
+            <div className="head" onClick={() => this.selectBelow()}>
                 <Icon name="angle-up"/>
             </div>
             <div className="body">
                 {this.renderOptionsView()}
             </div>
-            <div className="foot" onClick={() => this.selectBelow()}>
+            <div className="foot" onClick={() => this.selectAbove()}>
                 <Icon name="angle-down"/>
             </div>
         </div>;
