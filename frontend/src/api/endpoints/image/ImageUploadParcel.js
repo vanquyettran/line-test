@@ -1,8 +1,7 @@
 import Parcel from '../../Parcel';
 import ResponseError from '../../ResponseError';
 import ResponseData from '../../ResponseData';
-
-let autoIncId = 0;
+import ImageDataConverter from './ImageDataConverter';
 
 export default class ImageUploadParcel extends Parcel {
     /**
@@ -22,58 +21,38 @@ export default class ImageUploadParcel extends Parcel {
     compose(file) {
         this.setEndpoint('/_api/media/upload');
         this.setRequestMethod('PUT');
-        this.setRequestBody(this.makeFormData(file));
+        this.setRequestBody(ImageDataConverter.toEndpoint(file));
     }
 
     /**
      *
-     * @param file
-     * @return {FormData}
-     */
-    makeFormData(file) {
-        const formData = new FormData();
-
-        formData.append('file', file);
-        formData.append('type', 'PHOTO');
-
-        return formData;
-    }
-
-    /**
-     *
-     * @param rawData
+     * @param res
      * @return {ResponseData}
      */
-    parseResponseData(rawData) {
-        const success = rawData['resultCode'] === 1;
+    parseResponseData(res) {
+        const success = res['resultCode'] === 1;
 
         if (success) {
             /**
              *
              * @type {IImage}
              */
-            const image = {
-                id: JSON.stringify([rawData['resultData']['original'], ++autoIncId]),
-                thumbnailUrl: rawData['resultData']['thumb'],
-                originalUrl: rawData['resultData']['original'],
-                width: rawData['resultData']['width'],
-                height: rawData['resultData']['height']
-            };
+            const image = ImageDataConverter.fromEndpoint(res['resultData']);
 
             return new ResponseData(image, null);
         }
 
-        const responseError = new ResponseError(rawData['errorMessage']);
+        const responseError = new ResponseError(res['errorMessage']);
 
         return new ResponseData(null, responseError);
     }
 
     /**
      *
-     * @param rawError
+     * @param err
      * @return {ResponseError}
      */
-    parseResponseError(rawError) {
-        return new ResponseError(JSON.stringify(rawError));
+    parseResponseError(err) {
+        return new ResponseError(err);
     }
 }

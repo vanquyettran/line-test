@@ -5,7 +5,7 @@ import ContentArea from './components/content-area/ContentArea';
 import {
     CONTENT_IMAGE,
     CONTENT_VIDEO,
-    CONTENT_EMOJI,
+    CONTENT_STICKER,
     CONTENT_COUPON,
     CONTENT_LINK,
     CONTENT_SURVEY

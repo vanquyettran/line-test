@@ -4,7 +4,7 @@ import Icon from '../../../../components/icon/Icon';
 import {
     CONTENT_IMAGE,
     CONTENT_VIDEO,
-    CONTENT_EMOJI,
+    CONTENT_STICKER,
     CONTENT_COUPON,
     CONTENT_LINK,
     CONTENT_SURVEY
@@ -24,7 +24,7 @@ export default class TopBar extends React.Component {
                     [
                         [CONTENT_IMAGE, 'photo', translate('Photo')],
                         [CONTENT_VIDEO, 'video', translate('Video')],
-                        [CONTENT_EMOJI, 'smile', translate('Emoji')],
+                        [CONTENT_STICKER, 'smile', translate('Sticker')],
                         [CONTENT_COUPON, 'coupon', translate('Coupon')],
                         [CONTENT_LINK, 'link', translate('Link')],
                         [CONTENT_SURVEY, 'survey', translate('Survey')],

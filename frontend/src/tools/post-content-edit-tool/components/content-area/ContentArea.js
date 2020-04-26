@@ -2,14 +2,14 @@ import './ContentArea.less';
 import React from 'react';
 import ImageCard from './cards/image-card/ImageCard';
 import VideoCard from './cards/video-card/VideoCard';
-import EmojiCard from './cards/emoji-card/EmojiCard';
+import StickerCard from './cards/sticker-card/StickerCard';
 import CouponCard from './cards/coupon-card/CouponCard';
 import LinkCard from './cards/link-card/LinkCard';
 import SurveyCard from './cards/survey-card/SurveyCard';
 import {
     CONTENT_IMAGE,
     CONTENT_VIDEO,
-    CONTENT_EMOJI,
+    CONTENT_STICKER,
     CONTENT_COUPON,
     CONTENT_LINK,
     CONTENT_SURVEY
@@ -35,8 +35,8 @@ export default class ContentArea extends React.Component {
             return <VideoCard/>;
         }
 
-        if (contentType === CONTENT_EMOJI) {
-            return <EmojiCard/>;
+        if (contentType === CONTENT_STICKER) {
+            return <StickerCard/>;
         }
 
         if (contentType === CONTENT_COUPON) {
