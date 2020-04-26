@@ -28,26 +28,25 @@ export default class RadioGroupInput extends React.Component {
         // check if value is in options or not
         // if not, set value to default value
         if (value !== null && !options.find(option => option.value === value)) {
-            this.setValue(RadioGroupInput.normalizeValue(defaultValue));
+            this.updateValue(RadioGroupInput.normalizeValue(defaultValue));
         }
     }
 
-    setValue = (value) => {
+    updateValue = (value) => {
         const {onChange} = this.props;
-        const callback = onChange ? () => onChange(value) : undefined;
-        this.setState({value}, callback);
+        this.setState({value}, () => onChange(value));
     };
 
     render() {
-        const {options, disabled, appearance = 'default', optionAppearance = 'default'} = this.props;
+        const {options, disabled, appearance} = this.props;
         const {value: inputValue} = this.state;
 
-        return <div className={`radio-group-input appearance-${appearance} option-appearance-${optionAppearance}`}>
+        return <div className={`radio-group-input appearance-${appearance}`}>
             <ul>
                 {
                     options.map(({value, label}) => <li
                         key={value}
-                        onClick={() => disabled || this.setValue(value)}
+                        onClick={() => disabled || this.updateValue(value)}
                         className={inputValue === value ? 'selected' : ''}
                     >
                         <div className="option-content">
@@ -68,3 +67,12 @@ export default class RadioGroupInput extends React.Component {
         </div>
     }
 }
+
+
+RadioGroupInput.defaultProps = {
+    options: [],
+    value: undefined,
+    defaultValue: null,
+    onChange: value => console.log('(RadioGroupInput) onChange is omitted', value),
+    appearance: 'column'
+};

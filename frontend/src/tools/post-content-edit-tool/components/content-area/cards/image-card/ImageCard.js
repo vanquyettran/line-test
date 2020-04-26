@@ -57,13 +57,9 @@ export default class ImageCard extends React.Component {
     };
 
     render() {
-        const {
-            toolShown
-        } = this.state;
+        const {toolShown} = this.state;
 
-        const {
-            images
-        } = this.props;
+        const {images} = this.props;
 
         return <div className="image-card">
             {

@@ -23,8 +23,8 @@ export default class DateInput extends React.Component {
         this.el = null;
     }
 
-    syncYMD = (year, month, date, syncFrom) => {
-        const {getIsValidDate} = this.props;
+    sync = (year, month, date, syncFrom) => {
+        const {getIsValidDate, onChange} = this.props;
         const {year: currentYear, month: currentMonth, date: currentDate} = this.state;
 
         const currentDateIsValid = getIsValidDate(currentYear, currentMonth, currentDate);
@@ -36,13 +36,16 @@ export default class DateInput extends React.Component {
         // however if both are invalid
         // then new date is approved
         if (currentDateIsValid && !newDateIsValid) {
-            this.syncYMD(currentYear, currentMonth, currentDate, 'syncCenter');
+            this.sync(currentYear, currentMonth, currentDate, 'syncCentral');
             return;
         }
 
         this.setState(
             {year, month, date, syncFrom},
-            () => this.setState({syncFrom: null})
+            () => this.setState(
+                {syncFrom: null},
+                () => onChange(this.state.year, this.state.month, this.state.date)
+            )
         )
     };
 
@@ -67,7 +70,7 @@ export default class DateInput extends React.Component {
                 template={TemplateInput.dateDMYTemplate}
                 defaultValues={{year, month, date}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
-                onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
+                onChange={({year, month, date}) => this.sync(year, month, date, 'templateInput')}
                 onFocus={(key) => this.showPicker()}
             />
             {
@@ -76,7 +79,7 @@ export default class DateInput extends React.Component {
                     <DatePicker
                         defaultDate={[year, month, date]}
                         date={syncFrom !== null && syncFrom !== 'picker' ? [year, month, date] : undefined}
-                        onChange={([year, month, date]) => this.syncYMD(year, month, date, 'picker')}
+                        onChange={([year, month, date]) => this.sync(year, month, date, 'picker')}
                         getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
                     />
                 </Dropdown>
@@ -93,4 +96,6 @@ DateInput.defaultProps = {
         // example for preventing users select a date in the past
         return new Date(year, month - 1, date, 23, 59, 59).getTime() >= new Date().getTime();
     },
+    onChange: (year, month, date) =>
+        console.log('(DateInput) onChange is omitted', year, month, date)
 };

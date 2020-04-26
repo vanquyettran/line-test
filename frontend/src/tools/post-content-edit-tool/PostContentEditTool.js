@@ -17,36 +17,50 @@ export default class PostContentEditTool extends React.Component {
 
         this.state = {
             contentType: CONTENT_IMAGE,
-            contentData: [
-                {
-                    id: '/img/car-white.jpg',
-                    thumbnailUrl: '/img/car-white.jpg',
-                },
-                {
-                    id: '/img/car-red.jpg',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-            ]
+            contentData: getDefaultContentData(CONTENT_IMAGE)
         };
     }
 
-    setContent(values) {
-        const {onChange} = this.props;
-        this.setState(values, () => onChange({
-            contentType: this.state.contentType,
-            contentData: this.state.contentData
-        }));
+    componentDidMount() {
+        this.pushChange();
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.contentType === undefined && props.contentData === undefined) {
+            return null;
+        }
+
+        if (props.contentType !== undefined) {
+            state.contentType = props.contentType;
+        }
+
+        if (props.contentData !== undefined) {
+            state.contentData = props.contentData;
+        }
+
+        return state;
+    }
+
+    pushChange = () => {
+        this.props.onChange(this.state.contentType, this.state.contentData);
+    };
+
+    updateContent(values) {
+        this.setState(
+            values,
+            () => this.pushChange()
+        );
     };
 
     updateContentType = (contentType) => {
         if (contentType === this.state.contentType) {
             return;
         }
-        this.setContent({contentType});
+        this.updateContent({contentType});
     };
 
     updateContentData = (contentData) => {
-        this.setContent({contentData});
+        this.updateContent({contentData});
     };
 
     render() {
@@ -70,7 +84,22 @@ export default class PostContentEditTool extends React.Component {
 }
 
 PostContentEditTool.defaultProps = {
-    onChange: ({contentType, contentData}) =>
-        console.log('(PostContentEditTool) onChange is omitted.', {contentType, contentData}),
+    contentType: undefined,
+    contentData: undefined,
+    onChange: (contentType, contentData) =>
+        console.log('(PostContentEditTool) onChange is omitted.', contentType, contentData),
 
 };
+
+function getDefaultContentData(contentType) {
+    switch (contentType) {
+        case CONTENT_IMAGE: return [];
+        case CONTENT_VIDEO: return null;
+        case CONTENT_STICKER: return null;
+        case CONTENT_COUPON: return null;
+        case CONTENT_LINK: return null;
+        case CONTENT_SURVEY: return null;
+    }
+
+    return null;
+}

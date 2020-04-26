@@ -62,8 +62,6 @@ export default class TimePicker extends React.Component {
     render() {
         const [hours, minutes, seconds] = (this.props.value || []);
 
-        console.log([hours, minutes, seconds]);
-
         return <div className="time-picker">
             <div className="spinners">
                 <SpinnerInput

@@ -10,10 +10,31 @@ export default class PostPublishApp extends React.Component {
         super(props);
 
         this.state = {
+            scheduledTime: null,
+            contentType: null,
+            contentData: null,
+            syncFrom: null
         };
     }
 
+    sync = (values, syncFrom) => {
+        this.setState(
+            {...values, syncFrom},
+            () => {
+                this.setState({syncFrom: null});
+                console.log('sync', this.state);
+            }
+        );
+    };
+
+    syncNeeded = (name) => {
+        const {syncFrom} = this.state;
+        return syncFrom !== null && syncFrom !== name;
+    };
+
     render() {
+        const {scheduledTime, contentType, contentData, syncFrom} = this.state;
+
         return <div className="post-publish-app">
             <div className="top-area">
                 <h1 className="title">{translate('Timeline post')}</h1>
@@ -34,9 +55,17 @@ export default class PostPublishApp extends React.Component {
             </div>
             <div className="body-area">
                 <PublishScheduler
+                    value={this.syncNeeded('publishScheduler') ? scheduledTime : undefined}
+                    onChange={scheduledTime => {
+                        this.sync({scheduledTime}, 'publishScheduler');
+                    }}
                 />
                 <PostContentEditTool
-
+                    contentType={this.syncNeeded('editTool') ? contentType : undefined}
+                    contentData={this.syncNeeded('editTool') ? contentData : undefined}
+                    onChange={(contentType, contentData) => {
+                        this.sync({contentType, contentData}, 'editTool');
+                    }}
                 />
             </div>
             <div className="foot-panel">

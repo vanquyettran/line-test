@@ -24,7 +24,7 @@ export default class TimeInput extends React.Component {
     }
 
     sync = (hours, minutes, seconds, syncFrom) => {
-        const {getIsValidTime} = this.props;
+        const {getIsValidTime, onChange} = this.props;
         const {hours: currentHours, minutes: currentMinutes, seconds: currentSeconds} = this.state;
 
         const currentTimeIsValid = getIsValidTime(currentHours, currentMinutes, currentSeconds);
@@ -42,7 +42,10 @@ export default class TimeInput extends React.Component {
 
         this.setState(
             {hours, minutes, seconds, syncFrom},
-            () => this.setState({syncFrom: null})
+            () => this.setState(
+                {syncFrom: null},
+                () => onChange(this.state.hours, this.state.minutes, this.state.seconds)
+            )
         )
     };
 
@@ -96,4 +99,6 @@ TimeInput.defaultProps = {
     defaultMinutes: 0,
     defaultSeconds: 0,
     getIsValidTime: (hours, minutes, seconds) => true,
+    onChange: (hours, minutes, seconds) =>
+        console.log('(TimeInput) onChange is omitted', hours, minutes, seconds)
 };
