@@ -56,7 +56,11 @@ export default class PostContentEditTool extends React.Component {
         if (contentType === this.state.contentType) {
             return;
         }
-        this.updateContent({contentType});
+
+        this.updateContent({
+            contentType,
+            contentData: getDefaultContentData(contentType)
+        });
     };
 
     updateContentData = (contentData) => {

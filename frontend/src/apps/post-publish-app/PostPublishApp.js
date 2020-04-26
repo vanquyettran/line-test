@@ -22,7 +22,7 @@ export default class PostPublishApp extends React.Component {
             {...values, syncFrom},
             () => {
                 this.setState({syncFrom: null});
-                console.log('sync', this.state);
+                console.log('sync', new Date(this.state.scheduledTime), this.state);
             }
         );
     };
