@@ -84,7 +84,14 @@ export default class Parcel {
      * @return {string}
      */
     getRequestUrl() {
-        return this.getEndpoint() + '?' + this.getQueryString();
+        const endpoint = this.getEndpoint();
+        const queryString = this.getQueryString();
+
+        if (queryString !== '') {
+            return endpoint + '?' + queryString;
+        }
+
+        return endpoint;
     }
 
     /**

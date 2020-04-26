@@ -71,6 +71,6 @@ export default class PostContentEditTool extends React.Component {
 
 PostContentEditTool.defaultProps = {
     onChange: ({contentType, contentData}) =>
-        console.log('(PostContentEditTool) onChange is not defined.', {contentType, contentData}),
+        console.log('(PostContentEditTool) onChange is omitted.', {contentType, contentData}),
 
 };

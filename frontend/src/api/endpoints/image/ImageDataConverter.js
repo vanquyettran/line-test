@@ -18,10 +18,24 @@ function fromEndpoint(data) {
 
 /**
  *
- * @param {IImage} file
+ * @param {IImage} image
+ * @return {{}}
+ */
+function toEndpoint(image) {
+    return {
+        'thumb': image.thumbnailUrl,
+        'original': image.originalUrl,
+        'width': image.width,
+        'height': image.height
+    };
+}
+
+/**
+ *
+ * @param {File} file
  * @return {FormData}
  */
-function toEndpoint(file) {
+function toPayload(file) {
     const formData = new FormData();
 
     formData.append('file', file);
@@ -32,5 +46,6 @@ function toEndpoint(file) {
 
 export default {
     fromEndpoint,
-    toEndpoint
+    toEndpoint,
+    toPayload
 };

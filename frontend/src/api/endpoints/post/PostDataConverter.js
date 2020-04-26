@@ -37,12 +37,22 @@ function fromEndpoint(data) {
  * @return {{}}
  */
 function toEndpoint(post) {
-    return JSON.stringify({
+    return {
         'type': post.contentType,
-        [getContentDataFieldName(post.contentType)]: post.contentData,
+        [getContentDataFieldName(post.contentType)]: post.contentData.map(item => ImageDataConverter.toEndpoint(item)),
         'status': post.status,
         'scheduledTime': post.scheduledTime
-    });
+    };
+}
+
+/**
+ *
+ *
+ * @param {IPost} post
+ * @return {{}}
+ */
+function toPayload(post) {
+    return JSON.stringify(toEndpoint(post));
 }
 
 /**
@@ -61,10 +71,11 @@ function getContentDataFieldName(contentType) {
         case CONTENT_SURVEY: return 'survey';
     }
 
-    throw new Error(`Invalid content type of post: ${contentType}`);
+    throw new Error(`Post content type is invalid: ${contentType}`);
 }
 
 export default {
     fromEndpoint,
-    toEndpoint
+    toEndpoint,
+    toPayload
 }

@@ -22,7 +22,7 @@ export default class PostUploadParcel extends Parcel {
         this.setEndpoint('/_api/post/upload');
         this.setRequestMethod('POST');
         this.setRequestHeader('Content-Type', 'application/json');
-        this.setRequestBody(PostDataConverter.toEndpoint(body));
+        this.setRequestBody(PostDataConverter.toPayload(post));
     }
 
     /**

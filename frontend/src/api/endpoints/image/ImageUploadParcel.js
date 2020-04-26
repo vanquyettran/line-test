@@ -21,7 +21,7 @@ export default class ImageUploadParcel extends Parcel {
     compose(file) {
         this.setEndpoint('/_api/media/upload');
         this.setRequestMethod('PUT');
-        this.setRequestBody(ImageDataConverter.toEndpoint(file));
+        this.setRequestBody(ImageDataConverter.toPayload(file));
     }
 
     /**
