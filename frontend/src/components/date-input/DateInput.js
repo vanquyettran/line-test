@@ -72,8 +72,7 @@ export default class DateInput extends React.Component {
             />
             {
                 datePickerShown &&
-                this.el !== null &&
-                <Dropdown opener={this.el} id="Date" close={this.hideDatePicker}>
+                <Dropdown opener={this.el} close={this.hideDatePicker}>
                     <DatePicker
                         defaultDate={[year, month, date]}
                         date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}
@@ -85,7 +84,6 @@ export default class DateInput extends React.Component {
         </div>;
     }
 }
-
 
 DateInput.defaultProps = {
     defaultYear: new Date().getFullYear(),

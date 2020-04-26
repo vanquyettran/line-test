@@ -38,8 +38,14 @@ export default class Dropdown extends React.Component {
         if (this.el === null) {
             return;
         }
+
+        if (!this.props.opener) {
+            throw new Error('props.opener must be specified');
+        }
+
         const op = this.getOpenerValues();
         const pt = this.getPortalValues();
+
         this.updateDimensions(op, pt);
         this.updatePosition(op, pt);
     };
@@ -50,8 +56,11 @@ export default class Dropdown extends React.Component {
      * @param {{style: CSSStyleDeclaration, rect: ClientRect}} pt
      */
     updateDimensions = (op, pt) => {
-        // this.setStyle('width', op.rect.width + 'px');
-        // this.setStyle('max-height', pt.rect.height + 'px');
+        if (!this.props.matchOpenerWidth) {
+            return;
+        }
+
+        this.setStyle('width', op.rect.width + 'px');
     };
 
     /**
@@ -115,26 +124,30 @@ export default class Dropdown extends React.Component {
     };
 }
 
+
 Dropdown.defaultProps = {
-    opener: document.body
+    opener: null,
+    matchOpenerWidth: false
 };
 
 
-const openerClosers = [];
-
-function addOpenerCloser(opener, closer) {
-    if (openerClosers.some(([_opener]) => _opener === opener)) {
-        return;
-    }
-    openerClosers.push([opener, closer]);
-}
+// CLOSE DISPATCHERS
+const openerCloseDispatchers = [];
 
 function closeOtherOpeners(opener, close) {
-    addOpenerCloser(opener, close);
-    openerClosers.forEach(([_opener, _close]) => {
+    openerCloseDispatchers.forEach(([_opener, _close]) => {
         if (_opener !== opener) {
             _close();
         }
     });
-    console.log('closers', openerClosers);
+
+    addOpenerCloseDispatcherIfNotYet(opener, close);
+}
+
+function addOpenerCloseDispatcherIfNotYet(opener, close) {
+    if (openerCloseDispatchers.some(([_opener]) => _opener === opener)) {
+        return;
+    }
+
+    openerCloseDispatchers.push([opener, close]);
 }

@@ -72,8 +72,10 @@ export default class TimeInput extends React.Component {
             />
             {
                 datePickerShown &&
-                this.el !== null &&
-                <Dropdown opener={this.el} id="Time" close={this.hideDatePicker}>
+                <Dropdown
+                    opener={this.el}
+                    close={this.hideDatePicker}
+                >
                     <TimePicker
                         defaultValue={[hours, minutes, seconds]}
                         value={syncFrom !== null && syncFrom !== 'timePicker' ? [hours, minutes, seconds] : undefined}
