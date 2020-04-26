@@ -67,21 +67,18 @@ export default class TimePicker extends React.Component {
                 <SpinnerInput
                     options={getHoursOptions()}
                     value={hours}
-                    expanding={1}
                     onChange={value => this.updateHours(value)}
                 />
                 <SpinnerInput
                     options={getMinutesOptions()}
                     value={minutes}
                     onChange={value => this.updateMinutes(value)}
-                    expanding={1}
                 />
                 {
                     hasSeconds &&
                     <SpinnerInput
                         options={getSecondsOptions()}
                         value={seconds}
-                        expanding={1}
                         onChange={value => this.updateSeconds(value)}
                     />
                 }

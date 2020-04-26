@@ -65,7 +65,6 @@ export default class TemplateInput extends React.Component {
 
     getSiblingPiece = (key, isForward) => {
         const {template} = this.props;
-        const {focusedPieceKey} = this.state;
 
         const arrayOfPieceProps = [].concat(template);
 
@@ -80,7 +79,11 @@ export default class TemplateInput extends React.Component {
                 return false;
             }
 
-            if (focusedPieceKey === pieceProps.key) {
+            if (key === null) {
+                return pieceProps;
+            }
+
+            if (key === pieceProps.key) {
                 reached = true;
                 return false;
             }
@@ -178,10 +181,20 @@ export default class TemplateInput extends React.Component {
         }
     };
 
+    onClick = () => {
+        if (this.state.focusedPieceKey === null) {
+            const piece = this.getSiblingPiece(null, true);
+            this.focusPiece(piece.key);
+        }
+    };
+
     render() {
         const {template} = this.props;
 
-        return <div className="template-input">
+        return <div
+            className="template-input"
+            onClick={this.onClick}
+        >
             <ul>
                 {
                     template.map(

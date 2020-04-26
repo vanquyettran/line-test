@@ -126,114 +126,158 @@ export default class PostPublishApp extends React.Component {
         return translate('Publish');
     };
 
-    render() {
-        const {isUploading, scheduledTime, updatedTime, contentType, contentData, successShown, submitError, isDraft} = this.state;
-
+    getHeadPanel = () => {
         const error = this.getError();
 
-        return <div className="post-publish-app">
+        return <div className="head-panel">
+            <Button
+                title={this.getSubmitButtonTitle(true)}
+                label={error}
+                appearance="neutral"
+                size="small"
+                onClick={() => this.submit(false)}
+                disabled={error !== null}
+            />
+            <Button
+                title={this.getSubmitButtonTitle(false)}
+                label={error}
+                appearance="primary"
+                size="small"
+                onClick={() => this.submit(true)}
+                disabled={error !== null}
+            />
+        </div>;
+    };
+
+    getPublishScheduler = () => {
+        const {scheduledTime} = this.state;
+        return <PublishScheduler
+            defaultValue={scheduledTime}
+            onChange={scheduledTime => this.updateValues({scheduledTime})}
+        />;
+    };
+
+    getContentEditTool = () => {
+        const {contentType, contentData} = this.state;
+
+        return <div className="content-editor"><PostContentEditTool
+            defaultContentType={contentType}
+            defaultContentData={contentData}
+            onChange={(contentType, contentData) => this.updateValues({contentType, contentData})}
+        /></div>;
+    };
+
+    getFootPanel = () => {
+        const error = this.getError();
+
+        return <div className="foot-panel">
+            <Button
+                title={this.getSubmitButtonTitle(false)}
+                label={error}
+                appearance="primary"
+                size="medium"
+                onClick={() => this.submit(true)}
+                disabled={error !== null}
+            />
+        </div>;
+    };
+
+    getPopupSuccess = () => {
+        return <Popup
+            title={translate('Awesome!')}
+            buttons={[
+                <Button
+                    title={translate('Edit')}
+                    size="small"
+                    onClick={() => this.editPost()}
+                    appearance="primary"
+                />,
+                <Button
+                    title={translate('Homepage')}
+                    size="small"
+                    onClick={() => window.location.reload()}
+                    appearance="neutral"
+                />
+            ]}
+        >
+            <p>
+                {translate('Your post was saved successfully. Now you can edit the post by clicking on Edit button.')}
+            </p>
+        </Popup>;
+    };
+
+    getPopupError = () => {
+        const {submitError} = this.state;
+
+        return <Popup
+            title={translate('Failed to save your post')}
+            close={() => this.setState({submitError: null})}
+            buttons={[
+                <Button
+                    title={translate('Try again')}
+                    size="small"
+                    onClick={() => this.submit(!isDraft)}
+                    appearance="primary"
+                />,
+                <Button
+                    title={translate('Edit')}
+                    size="small"
+                    onClick={() => this.setState({submitError: null})}
+                    appearance="neutral"
+                />
+            ]}
+        >
+            <p>{submitError}</p>
+        </Popup>;
+    };
+
+    getPopupProgress = () => {
+        return <Popup
+            name="post-publish"
+            title={<div className="progress-title">
+                <span>{translate('Progressing...')}</span>
+                <Spinner/>
+            </div>}
+        >
+            <div className="progress-message">
+                <span>{translate('Please wait for a moment')}</span>
+            </div>
+        </Popup>;
+    };
+
+    render() {
+        const {isUploading, updatedTime, successShown, submitError} = this.state;
+
+        return <div className="post-publish-app" key={updatedTime}>
             <div className="top-area">
                 <h1 className="title">{translate('Timeline post')}</h1>
             </div>
-            <div className="head-panel">
-                <Button
-                    title={this.getSubmitButtonTitle(true)}
-                    label={error}
-                    appearance="neutral"
-                    size="small"
-                    onClick={() => this.submit(false)}
-                    disabled={error !== null}
-                />
-                <Button
-                    title={this.getSubmitButtonTitle(false)}
-                    label={error}
-                    appearance="primary"
-                    size="small"
-                    onClick={() => this.submit(true)}
-                    disabled={error !== null}
-                />
-            </div>
-            <div className="body-area" key={updatedTime}>
-                <PublishScheduler
-                    defaultValue={scheduledTime}
-                    onChange={scheduledTime => this.updateValues({scheduledTime})}
-                />
-                <PostContentEditTool
-                    defaultContentType={contentType}
-                    defaultContentData={contentData}
-                    onChange={(contentType, contentData) => this.updateValues({contentType, contentData})}
-                />
-            </div>
-            <div className="foot-panel">
-                <Button
-                    title={this.getSubmitButtonTitle(false)}
-                    label={error}
-                    appearance="primary"
-                    size="medium"
-                    onClick={() => this.submit(true)}
-                    disabled={error !== null}
-                />
-            </div>
+            <div className="divider"/>
             {
-                successShown &&
-                    <Popup
-                        title={translate('Awesome!')}
-                        buttons={[
-                            <Button
-                                title={translate('Edit')}
-                                size="small"
-                                onClick={() => this.editPost()}
-                                appearance="primary"
-                            />,
-                            <Button
-                                title={translate('Homepage')}
-                                size="small"
-                                onClick={() => window.location.reload()}
-                                appearance="neutral"
-                            />
-                        ]}
-                    >
-                        <p>
-                            {translate('Your post was saved successfully. Now you can edit the post by clicking on Edit button.')}
-                        </p>
-                    </Popup>
+                this.getHeadPanel()
+            }
+            <div className="divider"/>
+            {
+                this.getPublishScheduler()
+            }
+            <div className="divider"/>
+            {
+                this.getContentEditTool()
             }
             {
-                submitError !== null &&
-                    <Popup
-                        title={translate('Failed to save your post')}
-                        close={() => this.setState({submitError: null})}
-                        buttons={[
-                            <Button
-                                title={translate('Try again')}
-                                size="small"
-                                onClick={() => this.submit(!isDraft)}
-                                appearance="primary"
-                            />,
-                            <Button
-                                title={translate('Edit')}
-                                size="small"
-                                onClick={() => this.setState({submitError: null})}
-                                appearance="neutral"
-                            />
-                        ]}
-                    >
-                        <p>{submitError}</p>
-                    </Popup>
+                this.getFootPanel()
             }
             {
                 isUploading &&
-                    <Popup
-                        name="post-publish"
-                        title={<div className="progress-title">
-                            <span>{translate('Progressing...')}</span>
-                            <Spinner/>
-                        </div>}
-                    >
-                        <div className="progress-message">
-                            <span>{translate('Please wait for a moment')}</span>
-                        </div>
-                    </Popup>
+                this.getPopupProgress()
+            }
+            {
+                successShown &&
+                this.getPopupSuccess()
+            }
+            {
+                submitError !== null &&
+                this.getPopupError()
             }
         </div>;
     }

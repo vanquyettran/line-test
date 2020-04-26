@@ -3,23 +3,36 @@
 .post-publish-app {
     .top-area {
         padding: 10px 0;
-        border-bottom: 1px solid @colorv-grey-light-2;
     }
 
     .head-panel {
         margin-top: 20px;
         padding: 10px 0;
-        border-bottom: 1px solid @colorv-grey-light-2;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
-    .body-area {
-        margin-top: 20px;
+    .publish-scheduler {
         padding: 10px 0;
+    }
+
+    .content-editor {
+        padding: 10px 0;
+        max-width: 800px;
     }
 
     .foot-panel {
-        margin-top: 10px;
+        margin-top: 20px;
         padding: 10px 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .divider {
+        width: 100%;
+        border-top: 1px solid @colorv-grey-light-4;
+        margin: 10px 0;
     }
 }
 

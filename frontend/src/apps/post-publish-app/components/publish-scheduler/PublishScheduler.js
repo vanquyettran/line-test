@@ -54,7 +54,6 @@ export default class PublishScheduler extends React.Component {
                     return new Date(year, month - 1, date, 23, 59, 59).getTime() >= new Date().getTime();
                 }}
             />
-            <br/>
             <TimeInput
                 value={[hours, minutes, 0]}
                 onChange={(hours, minutes, seconds) => {
@@ -62,6 +61,7 @@ export default class PublishScheduler extends React.Component {
                 }}
                 hasSeconds={false}
             />
+            <div className="timezone">GMT +7:00</div>
         </div>;
     };
 
@@ -69,6 +69,9 @@ export default class PublishScheduler extends React.Component {
         const {scheduled} = this.state;
 
         return <div className="publish-scheduler">
+            <div className="field-label">
+                {translate('Publish date')}
+            </div>
             <RadioGroupInput
                 defaultValue={scheduled}
                 options={[

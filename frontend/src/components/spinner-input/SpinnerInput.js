@@ -160,10 +160,10 @@ export default class SpinnerInput extends React.Component {
 
 SpinnerInput.defaultProps = {
     defaultValue: null,
-    value: undefined,
+    value: undefined, // force update value if !== undefined
+    expanding: 1, // number of options shown on below or upper of selected option
     options: new Array(60).fill(null).map(
         (_, index) => ({value: index, label: index < 10 ? '0' + index : '' + index})
     ),
     onChange: (value) => console.log('(SpinnerInput) onChange is omitted', value),
-    expanding: 2
 };
