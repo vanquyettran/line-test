@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {getLayoutPortalElement} from '../../../utils/dom';
+import {getLayoutPortalElement} from '../../domElements';
 
 export default class LayoutPortal extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.el = document.createElement('div');
-        this.el.className = props.name;
+        this.initEl();
     }
+
+    initEl = () => {
+        this.el = document.createElement('div');
+        this.el.className = this.props.name;
+        this.el.style.display = 'contents';
+    };
 
     componentDidMount() {
         getLayoutPortalElement().appendChild(this.el);

@@ -2,7 +2,7 @@ import './PostPublishApp.less';
 import React from 'react';
 import {translate} from '../../i18n';
 import Button from '../../components/button/Button';
-import PublishTimeScheduler from './components/publish-time-scheduler/PublishTimeScheduler';
+import PublishScheduler from './components/publish-scheduler/PublishScheduler';
 import PostContentEditTool from '../../tools/post-content-edit-tool/PostContentEditTool';
 
 export default class PostPublishApp extends React.Component {
@@ -33,7 +33,7 @@ export default class PostPublishApp extends React.Component {
                 />
             </div>
             <div className="body-area">
-                <PublishTimeScheduler
+                <PublishScheduler
                 />
                 <PostContentEditTool
 

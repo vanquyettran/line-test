@@ -2,6 +2,7 @@ import './DateInput.less';
 import React from 'react';
 import DatePicker from '../../components/date-picker/DatePicker';
 import TemplateInput from '../../components/template-input/TemplateInput';
+import Dropdown from '../../components/dropdown/Dropdown';
 
 export default class DateInput extends React.Component {
     constructor(props) {
@@ -13,6 +14,12 @@ export default class DateInput extends React.Component {
             date: props.defaultDate,
             syncFrom: null
         };
+
+        /**
+         *
+         * @type {HTMLDivElement}
+         */
+        this.el = null;
     }
 
     syncYMD = (year, month, date, syncFrom) => {
@@ -42,19 +49,24 @@ export default class DateInput extends React.Component {
         const {getIsValidDate} = this.props;
         const {year, month, date, syncFrom} = this.state;
 
-        return <div className="date-input">
+        return <div className="date-input" ref={el => this.el = el}>
             <TemplateInput
                 template={TemplateInput.dateDMYTemplate}
                 defaultValues={{year, month, date}}
                 values={syncFrom !== null && syncFrom !== 'templateInput' ? {year, month, date} : undefined}
                 onChange={({year, month, date}) => this.syncYMD(year, month, date, 'templateInput')}
             />
-            <DatePicker
-                defaultDate={[year, month, date]}
-                date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}
-                onChange={([year, month, date]) => this.syncYMD(year, month, date, 'datePicker')}
-                getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
-            />
+            {
+                this.el !== null &&
+                <Dropdown opener={this.el}>
+                    <DatePicker
+                        defaultDate={[year, month, date]}
+                        date={syncFrom !== null && syncFrom !== 'datePicker' ? [year, month, date] : undefined}
+                        onChange={([year, month, date]) => this.syncYMD(year, month, date, 'datePicker')}
+                        getIsValidDate={(year, month, date) => getIsValidDate(year, month, date)}
+                    />
+                </Dropdown>
+            }
         </div>;
     }
 }
