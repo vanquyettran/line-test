@@ -71,3 +71,8 @@ frontend
         i18n
             // translations of messages in different languages
 ```
+
+## Frontend diagram
+```
+./diagram/Diagram.png
+```
