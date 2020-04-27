@@ -1,27 +1,11 @@
 function timeToUTC(time) {
-    const now = new Date(time);
-
-    if (isNaN(now.getTime())) {
-        return time;
-    }
-
-    const utc = Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-        now.getUTCHours(),
-        now.getUTCMinutes(),
-        now.getUTCSeconds()
-    );
-
-    console.log(new Date(time).toISOString(), new Date(utc).toISOString());
-
-    return utc;
+    const tz = (new Date().getTimezoneOffset());
+    return time + tz * 60 * 1000;
 }
 
 function timeFromUTC(time) {
-    // TODO: need to implement
-    return time;
+    const tz = (new Date().getTimezoneOffset());
+    return time - tz * 60 * 1000;
 }
 
 function getTimezoneStamp() {

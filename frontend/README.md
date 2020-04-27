@@ -1,5 +1,16 @@
 # Frontend code
 
+
+## Dev commands
+Build
+```
+npm run build
+```
+Watch
+```
+npm run watch
+```
+
 ## Folder structure
 ```
 frontend
@@ -42,14 +53,4 @@ frontend
             // SVG files, used to generate to iconfont
         i18n
             // translations of messages in different languages
-```
-
-## Development
-Build
-```
-npm run build
-```
-Watch
-```
-npm run watch
 ```
