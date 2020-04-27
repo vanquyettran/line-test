@@ -175,3 +175,23 @@
 .border-color-disabled(@color) {
     border-color: fade(@color, 30%);
 }
+
+
+// GRID
+.grid-item(@cols, @space, @start: 1) {
+    width: ~'calc(100% / @{cols} - @{space} + @{space} / @{cols})';
+    float: left;
+
+    &:not(:nth-child(@{cols}n + @{start})) {
+        margin-left: @space;
+    }
+
+    @cols_plus: @cols + @start;
+    &:nth-child(n + @{cols_plus}) {
+        margin-top: @space;
+    }
+
+    &:nth-child(@{cols}n + @{start}) {
+        clear: left;
+    }
+}

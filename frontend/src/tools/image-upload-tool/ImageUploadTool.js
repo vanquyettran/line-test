@@ -217,7 +217,9 @@ export default class ImageUploadTool extends React.Component {
                         </DropBox>
                 }
             </div>
-            {getHintBlock()}
+            {
+                getHintBlock()
+            }
             <BottomBar
                 apply={this.apply}
                 reset={this.reset}

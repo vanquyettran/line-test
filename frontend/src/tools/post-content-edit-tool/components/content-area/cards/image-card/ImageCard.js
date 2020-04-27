@@ -19,13 +19,13 @@ export default class ImageCard extends React.Component {
     }
 
     showTool = () => {
-        if (this.state.toolShown === false) {
+        if (!this.state.toolShown) {
             this.setState({toolShown: true});
         }
     };
 
     hideTool = () => {
-        if (this.state.toolShown === true) {
+        if (this.state.toolShown) {
             this.setState({toolShown: false});
         }
     };
@@ -53,7 +53,6 @@ export default class ImageCard extends React.Component {
 
     render() {
         const {toolShown} = this.state;
-
         const {images} = this.props;
 
         return <div className="image-card">
@@ -64,7 +63,7 @@ export default class ImageCard extends React.Component {
             }
             {
                 toolShown &&
-                <Popup title={translate('Upload photo')}>
+                <Popup title={translate('Upload photo')} close={() => this.hideTool()}>
                     <ImageUploadTool
                         onDone={(images) => {
                             this.addImages(images);
@@ -109,13 +108,15 @@ function getCardContent(images, requestAddImage, requestRemoveImage) {
         <ul>
             {
                 images.map((image, index) => <li key={image.id}>
-                    {getImageThumbnail(image, requestRemoveImage)}
+                    <div className="aspect-ratio-keeper">
+                        {getImageThumbnail(image, requestRemoveImage)}
+                    </div>
                 </li>)
             }
             <li>
-                {
-                    getAddButton(requestAddImage)
-                }
+                <div className="aspect-ratio-keeper">
+                    {getAddButton(requestAddImage)}
+                </div>
             </li>
         </ul>
     </div>;
@@ -147,11 +148,10 @@ function getImageThumbnail(image, requestRemoveImage) {
  * @return {Component}
  */
 function getAddButton(requestAddImage) {
-    return <button
-        className="add-button"
-        type="button"
+    return <div
+        className="adding-pad"
         onClick={() => requestAddImage()}
     >
         <Icon name="plus"/>
-    </button>;
+    </div>;
 }

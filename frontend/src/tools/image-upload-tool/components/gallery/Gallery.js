@@ -28,7 +28,9 @@ export default class Gallery extends React.Component {
             <ul>
                 {
                     fileInfoList.map((fileInfo, index) => <li key={index}>
-                        {getImageView(fileInfo)}
+                        <div className="aspect-ratio-keeper">
+                            {getImageView(fileInfo)}
+                        </div>
                     </li>)
                 }
             </ul>
