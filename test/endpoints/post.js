@@ -17,7 +17,7 @@ router.post('/upload', (req, res) => {
             errorMessage: error ? 'Hello, this is just a testing error. There are 33.3% requests will return this error.' : ''
         });
 
-    }, Math.random() * 1000);
+    }, Math.random() * 3000);
 });
 
 
