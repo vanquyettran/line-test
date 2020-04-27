@@ -121,6 +121,14 @@ export default class PostPublishApp extends React.Component {
         });
     };
 
+    compareScheduledTimes = (time1, time2) => {
+        const date1 = new Date(time1);
+        const date2 = new Date(time2);
+        date1.setSeconds(0);
+        date2.setSeconds(0);
+        return date1.getTime() === date2.getTime();
+    };
+
     hasChangesToSubmit = () => {
         const {contentType, contentData, scheduledTime} = this.state;
 
@@ -128,11 +136,11 @@ export default class PostPublishApp extends React.Component {
             return true;
         }
 
-        if (scheduledTime !== this.refPost.scheduledTime) {
+        if (contentType !== this.refPost.contentType) {
             return true;
         }
 
-        if (contentType !== this.refPost.contentType) {
+        if (!this.compareScheduledTimes(scheduledTime, this.refPost.scheduledTime)) {
             return true;
         }
 
@@ -275,11 +283,11 @@ export default class PostPublishApp extends React.Component {
     };
 
     render() {
-        const {isSubmitting, updatedTime, isSubmitSuccess, submitError} = this.state;
+        const {postId, isSubmitting, updatedTime, isSubmitSuccess, submitError} = this.state;
 
         return <div
             className="post-publish-app"
-            key={updatedTime} // re-render UI to keep up-to-date with data
+            key={`${postId} ${updatedTime}`} // re-render UI to keep up-to-date with data
         >
             <div className="top-area">
                 <h1 className="title">{translate('Timeline post')}</h1>

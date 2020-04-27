@@ -1,29 +1,23 @@
 const express = require('express');
 var router = express.Router();
-var posts = require('../data/posts.json');
-var images = require('../data/images.json');
+var {getPost} = require('../data/posts');
 
 router.post('/upload', (req, res) => {
     // console.log('Request Headers', req.headers);
     console.log('Request Body', req.body);
 
     setTimeout(() => {
-
         const now = new Date().getMilliseconds();
         const error = now % 3 === 0;
 
-        const randomPost = posts[Math.floor(Math.random() * posts.length)];
-        randomPost['images'] = shuffle(images).splice(0, 8);
-        randomPost['updatedAt'] = new Date().getTime();
-
         res.send({
             resultCode: error ? 0 : 1,
-            resultData: randomPost,
-            errorDisplay: false,
+            resultData: getPost(),
+            errorDisplay: error,
             errorMessage: error ? 'Hello, this is just a testing error. There are 33.3% requests will return this error.' : ''
         });
 
-    }, Math.random() * 6000);
+    }, Math.random() * 1000);
 });
 
 

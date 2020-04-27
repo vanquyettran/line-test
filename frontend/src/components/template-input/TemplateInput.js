@@ -74,16 +74,16 @@ export default class TemplateInput extends React.Component {
 
         let reached = false;
 
-        return arrayOfPieceProps.find(pieceProps => {
-            if (this.getIsAlienPiece(pieceProps)) {
+        return arrayOfPieceProps.find(pieceCnf => {
+            if (this.getIsAlienPiece(pieceCnf)) {
                 return false;
             }
 
             if (key === null) {
-                return pieceProps;
+                return pieceCnf;
             }
 
-            if (key === pieceProps.key) {
+            if (key === pieceCnf.key) {
                 reached = true;
                 return false;
             }
@@ -92,33 +92,33 @@ export default class TemplateInput extends React.Component {
         });
     };
 
-    getIsAlienPiece = (pieceProps) => {
-        if ('string' === typeof pieceProps) {
+    getIsAlienPiece = (pieceCnf) => {
+        if ('string' === typeof pieceCnf) {
             return true;
         }
 
-        if (React.isValidElement(pieceProps)) {
+        if (React.isValidElement(pieceCnf)) {
             return true;
         }
 
         return false;
     };
 
-    getAlienPiece = (pieceProps) => {
-        return pieceProps;
+    getAlienPiece = (pieceCnf) => {
+        return pieceCnf;
     };
 
-    getNumberPiece = (pieceProps) => {
+    getNumberPiece = (pieceCnf) => {
         const {defaultValues} = this.props;
         const {values, forceFocusedPieceKey} = this.state;
 
-        const propValue = this.props.values !== undefined ? this.props.values[pieceProps.key] : undefined;
-        const defaultValue = defaultValues !== null ? defaultValues[pieceProps.key] : null;
-        const min = 'number' === typeof pieceProps.min ? pieceProps.min : pieceProps.min(values);
-        const max = 'number' === typeof pieceProps.max ? pieceProps.max : pieceProps.max(values);
+        const propValue = this.props.values !== undefined ? this.props.values[pieceCnf.key] : undefined;
+        const defaultValue = defaultValues !== null ? defaultValues[pieceCnf.key] : null;
+        const min = 'number' === typeof pieceCnf.min ? pieceCnf.min : pieceCnf.min(values);
+        const max = 'number' === typeof pieceCnf.max ? pieceCnf.max : pieceCnf.max(values);
 
         const onInputRef = el => {
-            if (el && forceFocusedPieceKey === pieceProps.key) {
+            if (el && forceFocusedPieceKey === pieceCnf.key) {
                 el.focus();
                 this.focusPiece(null);
             }
@@ -131,7 +131,7 @@ export default class TemplateInput extends React.Component {
             // if true, just ignore
             // if no focus happened, set focused key null, and fire onBlurAll
             setTimeout(() => {
-                if (this.state.focusedPieceKey !== pieceProps.key) {
+                if (this.state.focusedPieceKey !== pieceCnf.key) {
                     return;
                 }
                 this.updateFocusedPiece(null);
@@ -140,44 +140,44 @@ export default class TemplateInput extends React.Component {
         };
 
         const onFocus = ev => {
-            this.updateFocusedPiece(pieceProps.key, () => {
-                this.props.onFocus(pieceProps.key);
+            this.updateFocusedPiece(pieceCnf.key, () => {
+                this.props.onFocus(pieceCnf.key);
             });
         };
 
         return <NumberPiece
             value={propValue}
             defaultValue={defaultValue}
-            emptyDigit={pieceProps.emptyDigit}
+            emptyDigit={pieceCnf.emptyDigit}
             min={min}
             max={max}
             onInputRef={onInputRef}
-            onChange={value => this.updateValue(pieceProps.key, value)}
-            onBackward={() => this.focusPrevPiece(pieceProps.key)}
-            onForward={() => this.focusNextPiece(pieceProps.key)}
+            onChange={value => this.updateValue(pieceCnf.key, value)}
+            onBackward={() => this.focusPrevPiece(pieceCnf.key)}
+            onForward={() => this.focusNextPiece(pieceCnf.key)}
             onBlur={onBlur}
             onFocus={onFocus}
         />;
     };
 
-    getSelectablePiece = (pieceProps) => {
+    getSelectablePiece = (pieceCnf) => {
         /**
          * Not implemented yet
          */
         return <SelectablePiece/>;
     };
 
-    getPiece = (pieceProps) => {
-        if (this.getIsAlienPiece(pieceProps)) {
-            return this.getAlienPiece(pieceProps);
+    getPiece = (pieceCnf) => {
+        if (this.getIsAlienPiece(pieceCnf)) {
+            return this.getAlienPiece(pieceCnf);
         }
 
-        if (pieceProps.type === TemplateInput.PIECE_NUMBER) {
-            return this.getNumberPiece(pieceProps);
+        if (pieceCnf.type === TemplateInput.PIECE_NUMBER) {
+            return this.getNumberPiece(pieceCnf);
         }
 
-        if (pieceProps.type === TemplateInput.PIECE_SELECTABLE) {
-            return this.getSelectablePiece(pieceProps);
+        if (pieceCnf.type === TemplateInput.PIECE_SELECTABLE) {
+            return this.getSelectablePiece(pieceCnf);
         }
     };
 
@@ -199,9 +199,9 @@ export default class TemplateInput extends React.Component {
             <ul>
                 {
                     template.map(
-                        (pieceProps, index) =>
-                            <li key={pieceProps.key || index}>
-                                {this.getPiece(pieceProps)}
+                        (pieceCnf, index) =>
+                            <li key={pieceCnf.key || index}>
+                                {this.getPiece(pieceCnf)}
                             </li>
                     )
                 }

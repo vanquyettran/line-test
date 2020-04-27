@@ -15,6 +15,25 @@ export default class TimePicker extends React.Component {
         };
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.value === undefined) {
+            return null;
+        }
+
+        if (state.hours === props.value[0] &&
+            state.minutes === props.value[1] &&
+            state.seconds === props.value[2]
+        ) {
+            return null;
+        }
+
+        state.hours = props.value[0];
+        state.minutes = props.value[1];
+        state.seconds = props.value[2];
+
+        return state;
+    }
+
     updateTime = (hours, minutes, seconds) => {
         const {onChange} = this.props;
         this.setState(

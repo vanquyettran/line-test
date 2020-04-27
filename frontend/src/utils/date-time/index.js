@@ -1,9 +1,17 @@
 function timeToUTC(time) {
+    if ('number' !== typeof time) {
+        return time;
+    }
+
     const tz = (new Date().getTimezoneOffset());
     return time + tz * 60 * 1000;
 }
 
 function timeFromUTC(time) {
+    if ('number' !== typeof time) {
+        return time;
+    }
+
     const tz = (new Date().getTimezoneOffset());
     return time - tz * 60 * 1000;
 }

@@ -23,6 +23,25 @@ export default class DateInput extends React.Component {
         this.el = null;
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.value === undefined) {
+            return null;
+        }
+
+        if (state.year === props.value[0] &&
+            state.month === props.value[1] &&
+            state.date === props.value[2]
+        ) {
+            return null;
+        }
+
+        state.year = props.value[0];
+        state.month = props.value[1];
+        state.date = props.value[2];
+
+        return state;
+    }
+
     pushChange = () => {
         this.props.onChange(this.state.year, this.state.month, this.state.date);
     };
