@@ -5,7 +5,10 @@ import ImageRuler from '../../models/image/ImageRuler';
 import {formatNumberLocalized, formatBytesLocalized} from '../../utils/number';
 import DropBox from './components/drop-box/DropBox';
 import BrowseButton from './components/browse-button/BrowseButton';
-import Gallery from './components/gallery/Gallery';
+import Gallery, {
+    GALLERY_FULL,
+    GALLERY_GRID
+} from './components/gallery/Gallery';
 import {readFileAsDataURL} from '../../utils/browser';
 import ImageUploadParcel from '../../api/endpoints/image/ImageUploadParcel';
 import Request from '../../api/Request';
@@ -15,10 +18,10 @@ import BottomBar, {
     STATUS_ALL_SUCCESS,
     STATUS_ALL_ERROR,
     STATUS_BOTH_SUCCESS_ERROR,
-    STATUS_UPLOADING
+    STATUS_PROGRESSING
 } from './components/bottom-bar/BottomBar';
 
-const MAX_FILES = 4;
+const MAX_FILES = 10;
 
 export default class ImageUploadTool extends React.Component {
     constructor(props) {
@@ -26,21 +29,51 @@ export default class ImageUploadTool extends React.Component {
 
         this.state = {
             fileInfoList: [],
-            uploadedImages: []
+            uploadedImages: [],
+            isReadingFiles: false,
+            galleryLayout: this.getGalleryLayout(0)
         };
     }
 
-    handleFiles = files => {
-        const N = Math.min(files.length, MAX_FILES);
-
-        for (let i = 0; i < N; i++) {
-            const file = files[i];
-            readFileAsDataURL(file).then(
-                data => this.onFileData(data, file)
-            ).catch(
-                error => this.onFileError(error)
-            );
+    getGalleryLayout = (numOfFiles) => {
+        if (numOfFiles > 1) {
+            return GALLERY_GRID;
         }
+
+        return GALLERY_FULL;
+    };
+
+    readFileSequentially = (index, files, numRead, onDone) => {
+        const file = files[index];
+
+        readFileAsDataURL(file)
+            .then(data => this.onFileData(data, file))
+            .catch(error => this.onFileError(error))
+            .finally(() => {
+                if (index < numRead - 1) {
+                    this.readFileSequentially(index + 1, files, numRead, onDone);
+                    return;
+                }
+
+                onDone();
+            });
+    };
+
+    handleFiles = files => {
+        const numRead = Math.min(files.length, MAX_FILES);
+
+        this.setState(
+            {
+                isReadingFiles: true,
+                galleryLayout: this.getGalleryLayout(numRead)
+            },
+            () => this.readFileSequentially(
+                0,
+                files,
+                numRead,
+                () => this.setState({isReadingFiles: false})
+            )
+        );
     };
 
     onFileData = (data, file) => {
@@ -107,8 +140,10 @@ export default class ImageUploadTool extends React.Component {
     };
 
     getStatus = () => {
-        if (this.getIsUploading()) {
-            return STATUS_UPLOADING;
+        console.log('isReadingFiles', this.state.isReadingFiles);
+
+        if (this.state.isReadingFiles || this.getIsUploading()) {
+            return STATUS_PROGRESSING;
         }
 
         const {uploadedImages, fileInfoList} = this.state;
@@ -138,6 +173,11 @@ export default class ImageUploadTool extends React.Component {
         this.forceUpdate();
     };
 
+    filter = () => {
+        this.state.fileInfoList = this.state.fileInfoList.filter(fileInfo => fileInfo.error === null);
+        this.forceUpdate();
+    };
+
     cancel = () => {
         if (this.props.onCancel) {
             this.props.onCancel();
@@ -145,14 +185,17 @@ export default class ImageUploadTool extends React.Component {
     };
 
     render() {
-        const {fileInfoList} = this.state;
+        const {fileInfoList, galleryLayout} = this.state;
 
         return <div className="image-upload-tool">
             <div className="workspace">
                 {
                     fileInfoList.length > 0
                         ?
-                        <Gallery fileInfoList={fileInfoList}/>
+                        <Gallery
+                            fileInfoList={fileInfoList}
+                            layout={galleryLayout}
+                        />
                         :
                         <DropBox onChange={files => this.handleFiles(files)}>
                             <div className="guideline">{translate('Drop your photo here')}</div>
@@ -167,6 +210,7 @@ export default class ImageUploadTool extends React.Component {
             <BottomBar
                 apply={this.apply}
                 reset={this.reset}
+                filter={this.filter}
                 cancel={this.cancel}
                 status={this.getStatus()}
             />
@@ -202,7 +246,7 @@ function getHintBlock() {
     return <div className="hint">
         <p>{translate('Formats: ::exts', {exts: ImageRuler.fileExts.map(t => t.toUpperCase())})}</p>
         <p>{translate('File size: ::size', {size: formatBytesLocalized(ImageRuler.maxBytes)})}</p>
-        <p>{translate('Max files: ::max', {max: formatNumberLocalized(MAX_FILES)})}</p>
+        <p>{translate('Limit: ::max files', {max: formatNumberLocalized(MAX_FILES)})}</p>
     </div>;
 }
 

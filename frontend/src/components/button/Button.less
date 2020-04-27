@@ -29,6 +29,11 @@
         &.appearance-neutral {
             .background-interactive(@colorv-grey-light-1);
         }
+
+        &.appearance-caution {
+            color: @colorv-white;
+            .background-interactive(@color-caution);
+        }
     }
 
     &.disabled {
@@ -42,6 +47,11 @@
         &.appearance-neutral {
             color: @colorv-grey-middle;
             .background-disabled(@colorv-grey-light-1);
+        }
+
+        &.appearance-caution {
+            color: @colorv-white;
+            .background-disabled(@color-caution);
         }
     }
 

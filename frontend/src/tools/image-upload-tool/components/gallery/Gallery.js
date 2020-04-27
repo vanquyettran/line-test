@@ -4,33 +4,50 @@ import Spinner from '../../../../components/spinner/Spinner';
 import Icon from '../../../../components/icon/Icon';
 import {colorvWhite} from '../../../../values/color';
 
+const GALLERY_FULL = 'full-view';
+const GALLERY_GRID = 'grid-view';
+
+export {
+    GALLERY_FULL,
+    GALLERY_GRID
+};
+
 export default class Gallery extends React.Component {
 
-    render() {
+    getFullView = () => {
         const {fileInfoList} = this.props;
+        return <div className="full-view">
+            {getImageView(fileInfoList[0])}
+        </div>;
+    };
+
+    getGridView = () => {
+        const {fileInfoList} = this.props;
+        return <div className="grid-view">
+            <ul>
+                {
+                    fileInfoList.map((fileInfo, index) => <li key={index}>
+                        {getImageView(fileInfo)}
+                    </li>)
+                }
+            </ul>
+        </div>;
+    };
+
+    getViewByLayout = (layout) => {
+        switch (layout) {
+            case GALLERY_FULL: return this.getFullView();
+            case GALLERY_GRID: return this.getGridView();
+        }
+
+        return null;
+    };
+
+    render() {
+        const {layout} = this.props;
 
         return <div className="gallery">
-            {
-                fileInfoList.length > 0
-                &&
-                (
-                    fileInfoList.length > 1
-                        ?
-                        <div className="grid-view">
-                            <ul>
-                                {
-                                    fileInfoList.map((fileInfo, index) => <li key={index}>
-                                        {getImageView(fileInfo)}
-                                    </li>)
-                                }
-                            </ul>
-                        </div>
-                        :
-                        <div className="full-view">
-                            {getImageView(fileInfoList[0])}
-                        </div>
-                )
-            }
+            {this.getViewByLayout(layout)}
         </div>;
     }
 }
@@ -75,3 +92,4 @@ function getImageView(fileInfo) {
 
     </div>;
 }
+
