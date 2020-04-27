@@ -124,7 +124,7 @@ export default class TemplateInput extends React.Component {
             }
         };
 
-        const onBlur = () => {
+        const onBlur = ev => {
 
             // add to callback queue
             // to wait for next focus happens immediately on other pieces of this input instance
@@ -139,7 +139,7 @@ export default class TemplateInput extends React.Component {
             }, 0);
         };
 
-        const onFocus = () => {
+        const onFocus = ev => {
             this.updateFocusedPiece(pieceProps.key, () => {
                 this.props.onFocus(pieceProps.key);
             });
@@ -181,8 +181,9 @@ export default class TemplateInput extends React.Component {
         }
     };
 
-    onClick = () => {
-        if (this.state.focusedPieceKey === null) {
+    onClick = (ev) => {
+        const {focusedPieceKey} = this.state;
+        if (focusedPieceKey === null) {
             const piece = this.getSiblingPiece(null, true);
             this.focusPiece(piece.key);
         }
@@ -193,7 +194,7 @@ export default class TemplateInput extends React.Component {
 
         return <div
             className="template-input"
-            onClick={this.onClick}
+            onClick={(ev) => this.onClick(ev)}
         >
             <ul>
                 {

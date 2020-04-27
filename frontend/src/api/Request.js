@@ -1,3 +1,21 @@
+import {getCookie} from '../utils/cookie';
+
+/**
+ *
+ * @return {string}
+ */
+function getAuthToken() {
+    return getCookie('Authorization');
+}
+
+/**
+ *
+ * @param {Parcel} parcel
+ */
+function authentify(parcel) {
+    const token = getAuthToken();
+    parcel.setRequestHeader('Authorization', `Bearer ${token}`);
+}
 
 /**
  *
@@ -5,6 +23,9 @@
  * @return {Promise}
  */
 function add(parcel) {
+    // add authorization info
+    authentify(parcel);
+
     return new Promise((resolve, reject) => {
         fetch(
             parcel.getRequestUrl(),
@@ -12,7 +33,8 @@ function add(parcel) {
                 method: parcel.getRequestMethod(),
                 headers: parcel.getRequestHeaders(),
                 body: parcel.getRequestBody(),
-                credentials: 'same-origin'
+                mode: 'same-origin',
+                credentials: 'same-origin',
             }
         )
             .then((response) => response.json())

@@ -262,7 +262,7 @@ export default class NumberPiece extends React.Component {
         const {onFocus} = this.props;
         this.setState(
             {focused: true},
-            () => onFocus()
+            () => onFocus(ev)
         );
     };
 
@@ -273,7 +273,7 @@ export default class NumberPiece extends React.Component {
         this.setState(
             {focused: false},
             () => {
-                onBlur();
+                onBlur(ev);
 
                 this.setState(
                     {isTemp: false},
