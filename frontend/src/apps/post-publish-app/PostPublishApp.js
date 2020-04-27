@@ -99,6 +99,7 @@ export default class PostPublishApp extends React.Component {
     };
 
     editPost = () => {
+        console.log('resPost', this.resPost);
         this.setState({
             successShown: false,
             postId: this.resPost.id,
@@ -205,7 +206,7 @@ export default class PostPublishApp extends React.Component {
     };
 
     getPopupError = () => {
-        const {submitError} = this.state;
+        const {submitError, isDraft} = this.state;
 
         return <Popup
             name="post-publish"

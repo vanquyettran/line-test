@@ -104,9 +104,9 @@ function dateFromValue(value) {
 }
 
 function stateToValue({scheduled, year, month, date, hours, minutes}) {
-    if (scheduled === null) {
-        return null;
+    if (scheduled) {
+        return new Date(year, month - 1, date, hours, minutes).getTime();
     }
 
-    return new Date(year, month - 1, date, hours, minutes).getTime();
+    return null;
 }

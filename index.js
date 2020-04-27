@@ -37,14 +37,14 @@ app.put('/_api/media/upload', (req, res) => setTimeout(
 
 app.post('/_api/post/upload', (req, res) => setTimeout(
     () => {
-        const error = false;
+        const error = true;
         res.send({
             resultCode: error ? 0 : 1,
             resultData: {
                 id: 1,
                 type: 'IMAGE',
                 status: 'DRAFTED', // PUBLISHED
-                scheduledTime: 1234566789,
+                scheduledTime: 2020870800000,
                 images: [
                     {
                         thumb: '/img/car-red.jpg',

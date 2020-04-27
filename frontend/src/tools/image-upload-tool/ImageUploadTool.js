@@ -140,7 +140,6 @@ export default class ImageUploadTool extends React.Component {
     };
 
     getStatus = () => {
-        console.log('isReadingFiles', this.state.isReadingFiles);
 
         if (this.state.isReadingFiles || this.getIsUploading()) {
             return STATUS_PROGRESSING;

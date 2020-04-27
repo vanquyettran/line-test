@@ -79,7 +79,7 @@ function toEndpoint_contentDataField(contentType) {
  * @throws {Error}
  */
 function fromEndpoint_contentData(data) {
-    const {contentType} = data;
+    const contentType = data['type'];
 
     switch (contentType) {
         case CONTENT_IMAGE: return data['images'].map(item => ImageDataConverter.fromEndpoint(item));
