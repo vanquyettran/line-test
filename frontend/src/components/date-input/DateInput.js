@@ -59,15 +59,19 @@ export default class DateInput extends React.Component {
     };
 
     showPicker = () => {
-        if (!this.state.pickerShown) {
-            this.setState({pickerShown: true});
+        if (this.state.pickerShown) {
+            return;
         }
+
+        this.setState({pickerShown: true});
     };
 
     hidePicker = () => {
-        if (this.state.pickerShown) {
-            this.setState({pickerShown: false});
+        if (!this.state.pickerShown) {
+            return;
         }
+
+        this.setState({pickerShown: false});
     };
 
     render() {

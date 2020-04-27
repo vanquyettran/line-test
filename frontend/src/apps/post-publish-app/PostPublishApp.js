@@ -10,6 +10,7 @@ import {STATUS_DRAFTED, STATUS_PUBLISED} from '../../models/post/statuses';
 import Popup from '../../components/popup/Popup';
 import Spinner from '../../components/spinner/Spinner';
 import {CONTENT_IMAGE} from '../../models/post/contentTypes';
+import {url__homepage} from '../../app.config';
 
 export default class PostPublishApp extends React.Component {
     constructor(props) {
@@ -194,7 +195,7 @@ export default class PostPublishApp extends React.Component {
                 <Button
                     title={translate('Homepage')}
                     size="small"
-                    onClick={() => window.location.reload()}
+                    onClick={() => window.location.href = url__homepage}
                     appearance="neutral"
                 />
             ]}

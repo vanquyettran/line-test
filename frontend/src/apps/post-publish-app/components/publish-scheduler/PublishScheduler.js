@@ -43,7 +43,7 @@ export default class PublishScheduler extends React.Component {
 
     getDateTimeInput = () => {
         const {year, month, date, hours, minutes} = this.state;
-        console.log({year, month, date, hours, minutes});
+
         return <div className="date-time">
             <DateInput
                 defaultValue={[year, month, date]}

@@ -59,15 +59,24 @@ export default class TimeInput extends React.Component {
     };
 
     showPicker = () => {
-        if (!this.state.pickerShown) {
-            this.setState({pickerShown: true});
+        const {hours, minutes, seconds, pickerShown} = this.state;
+
+        if (pickerShown) {
+            return;
         }
+
+        this.setState(
+            {pickerShown: true},
+            () => this.sync(hours, minutes, seconds, 'pickerOpener')
+        );
     };
 
     hidePicker = () => {
-        if (this.state.pickerShown) {
-            this.setState({pickerShown: false});
+        if (!this.state.pickerShown) {
+            return;
         }
+
+        this.setState({pickerShown: false});
     };
 
     render() {

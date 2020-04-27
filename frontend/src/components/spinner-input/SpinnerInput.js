@@ -10,16 +10,10 @@ export default class SpinnerInput extends React.Component {
             value: props.defaultValue
         };
 
-        /**
-         *
-         * @type {HTMLDivElement}
-         */
-        this.optionsView = null;
     }
 
     static getDerivedStateFromProps(props, state) {
-        const hasChange = props.value !== undefined && props.value !== state.value;
-        if (!hasChange) {
+        if (props.value === undefined || props.value === state.value) {
             return null;
         }
 
@@ -31,7 +25,6 @@ export default class SpinnerInput extends React.Component {
         if (!this.ensureValueIsValid()) {
             return;
         }
-
     }
 
     /**
