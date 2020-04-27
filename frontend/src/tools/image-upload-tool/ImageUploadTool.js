@@ -21,7 +21,7 @@ import BottomBar, {
     STATUS_PROGRESSING
 } from './components/bottom-bar/BottomBar';
 
-const MAX_FILES = 10;
+const MAX_FILES = 12;
 
 export default class ImageUploadTool extends React.Component {
     constructor(props) {
@@ -56,14 +56,14 @@ export default class ImageUploadTool extends React.Component {
 
         const error = getFileError(file);
         if (error !== null) {
-            this.onFileError(error);
+            this.onFileError(error, file);
             next();
             return;
         }
 
         readFileAsDataURL(file)
             .then(data => this.onFileData(data, file))
-            .catch(error => this.onFileError(error))
+            .catch(error => this.onFileError(error, file))
             .finally(next);
     };
 
@@ -84,23 +84,24 @@ export default class ImageUploadTool extends React.Component {
         );
     };
 
-    onFileData = (data, file) => {
-        const fileInfo = {
+    createFileInfo = (file, data, error, uploading) => {
+        return {
+            name: file.name,
             data,
-            error: null,
-            uploading: true
+            error,
+            uploading
         };
+    };
+
+    onFileData = (data, file) => {
+        const fileInfo = this.createFileInfo(file, data, null, true);
 
         this.addFileInfo(fileInfo);
         this.uploadFile(file, fileInfo);
     };
 
-    onFileError = (error) => {
-        const fileInfo = {
-            data: null,
-            error,
-            uploading: false
-        };
+    onFileError = (error, file) => {
+        const fileInfo = this.createFileInfo(file, null, error, false);
 
         this.addFileInfo(fileInfo);
     };
@@ -237,7 +238,7 @@ function getFileError(file) {
     if (errors.length === 0) {
         return null;
     }
-    return translate('Invalid: ::errors', {errors});
+    return errors.join('; ');
 }
 
 /**

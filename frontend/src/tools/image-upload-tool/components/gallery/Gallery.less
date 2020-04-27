@@ -79,8 +79,22 @@
             background: rgba(190, 0, 0, 0.6);
 
             .error {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                padding: 10px;
                 color: @colorv-white;
-                text-align: center;
+                overflow: auto;
+
+                .filename {
+                    font-weight: bold;
+                }
+
+                .message {
+                    margin-top: 10px;
+                }
             }
         }
 

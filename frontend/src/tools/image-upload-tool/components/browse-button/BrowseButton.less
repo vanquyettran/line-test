@@ -7,14 +7,6 @@
     .border-radius(1);
     line-height: 0;
 
-    &:not(:disabled) {
-        cursor: pointer;
-    }
-
-    &:disabled {
-        cursor: default;
-    }
-
     .text {
         display: inline-block;
         height: 30px;
@@ -32,10 +24,6 @@
         height: 30px;
         line-height: 30px;
         overflow: hidden;
-
-        .icon {
-
-        }
     }
 
     input {
@@ -43,5 +31,26 @@
         height: 0;
         position: absolute;
         visibility: hidden;
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &:hover {
+            .box-shadow(2);
+
+        }
+
+        &:active {
+            .box-shadow(1);
+
+            .icon-holder {
+                color: @color-primary;
+            }
+        }
+    }
+
+    &:disabled {
+        cursor: default;
     }
 }

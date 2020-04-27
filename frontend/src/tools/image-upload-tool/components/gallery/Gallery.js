@@ -69,7 +69,8 @@ function getImageView(fileInfo) {
                 ?
                 <div className="overlay-error">
                     <div className="error">
-                        {fileInfo.error}
+                        <div className="filename">{fileInfo.name}</div>
+                        <div className="message">{fileInfo.error}</div>
                     </div>
                 </div>
                 :
