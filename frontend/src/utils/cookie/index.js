@@ -1,12 +1,12 @@
 function setCookie(cname, cvalue, exdays = 365) {
     let d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    let expires = 'expires=' + d.toUTCString();
+    document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
 }
 
-function getCookie(cname) {
-    let name = cname + "=";
+function getCookie(cname, defval = '') {
+    let name = cname + '=';
     let ca = document.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
         let c = ca[i];
@@ -17,11 +17,11 @@ function getCookie(cname) {
             return c.substring(name.length, c.length);
         }
     }
-    return "";
+    return defval;
 }
 
 function unsetCookie(name) {
-    setCookie(name, "", -1);
+    setCookie(name, '', -1);
 }
 
 export {

@@ -2,23 +2,8 @@ import {getCookie} from '../utils/cookie';
 
 /**
  *
- * @return {string}
- */
-function getAuthToken() {
-    return getCookie('Authorization');
-}
-
-/**
- *
- * @param {Parcel} parcel
- */
-function authentify(parcel) {
-    const token = getAuthToken();
-    parcel.setRequestHeader('Authorization', `Bearer ${token}`);
-}
-
-/**
- *
+ * Make a request
+ * The request might be queued caused by ConnectionsPerHostname of each browser
  * @param {Parcel} parcel
  * @return {Promise}
  */
@@ -56,14 +41,25 @@ function add(parcel) {
 
 /**
  *
- * @param {Parcel[]} parcels
- * @return {Promise}
+ * Add authentication info to parcel
+ * These info can be saved in cookie when an user logged in successfully
+ * @param {Parcel} parcel
  */
-function parallel(parcels) {
-    return Promise.all(parcels.map(parcel => add(parcel)));
+function authentify(parcel) {
+    const token = getAuthToken();
+    parcel.setRequestHeader('Authorization', `Bearer ${token}`);
+}
+
+/**
+ *
+ * Get authorization token,
+ * that might be saved in browser's cookie when and user logged in successfully
+ * @return {string}
+ */
+function getAuthToken() {
+    return getCookie('Authorization');
 }
 
 export default {
-    add,
-    parallel
+    add
 }
