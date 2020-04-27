@@ -1,8 +1,8 @@
 import './ImageUploadTool.less';
 import React from 'react';
 import {translate} from "../../i18n";
-import {fileExts, maxBytes, checkErrors} from '../../models/image/rules';
-import {formatBytes} from '../../utils/number';
+import ImageRuler from '../../models/image/ImageRuler';
+import {formatNumberLocalized, formatBytesLocalized} from '../../utils/number';
 import DropBox from './components/drop-box/DropBox';
 import BrowseButton from './components/browse-button/BrowseButton';
 import Gallery from './components/gallery/Gallery';
@@ -10,27 +10,37 @@ import {readFileAsDataURL} from '../../utils/browser';
 import ImageUploadParcel from '../../api/endpoints/image/ImageUploadParcel';
 import Request from '../../api/Request';
 import ResponseError from '../../api/ResponseError';
+import BottomBar, {
+    STATUS_EMPTY,
+    STATUS_ALL_SUCCESS,
+    STATUS_ALL_ERROR,
+    STATUS_BOTH_SUCCESS_ERROR,
+    STATUS_UPLOADING
+} from './components/bottom-bar/BottomBar';
 
+const MAX_FILES = 4;
 
 export default class ImageUploadTool extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            errors: [],
             fileInfoList: [],
             uploadedImages: []
         };
     }
 
     handleFiles = files => {
-        files.forEach(file =>
+        const N = Math.min(files.length, MAX_FILES);
+
+        for (let i = 0; i < N; i++) {
+            const file = files[i];
             readFileAsDataURL(file).then(
                 data => this.onFileData(data, file)
             ).catch(
                 error => this.onFileError(error)
-            )
-        );
+            );
+        }
     };
 
     onFileData = (data, file) => {
@@ -84,10 +94,6 @@ export default class ImageUploadTool extends React.Component {
         const onFinish = () => {
             fileInfo.uploading = false;
             this.forceUpdate();
-
-            if (this.isAllUploadsEnded()) {
-                this.onAllUploadsEnded();
-            }
         };
 
         Request.add(new ImageUploadParcel(file))
@@ -96,16 +102,45 @@ export default class ImageUploadTool extends React.Component {
             .finally(onFinish);
     };
 
-    isAllUploadsEnded = () => {
-        return this.state.fileInfoList.every(fileInfo => !fileInfo.uploading);
+    getIsUploading = () => {
+        return this.state.fileInfoList.some(fileInfo => fileInfo.uploading);
     };
 
-    onAllUploadsEnded = () => {
-        const {onDone} = this.props;
-        const {uploadedImages} = this.state;
+    getStatus = () => {
+        if (this.getIsUploading()) {
+            return STATUS_UPLOADING;
+        }
 
-        if (uploadedImages.length > 0) {
-            setTimeout(() => onDone(uploadedImages), 1000);
+        const {uploadedImages, fileInfoList} = this.state;
+
+        if (fileInfoList.length === 0) {
+            return STATUS_EMPTY;
+        }
+
+        if (fileInfoList.length === uploadedImages.length) {
+            return STATUS_ALL_SUCCESS;
+        }
+
+        if (fileInfoList.length > 0 && uploadedImages.length === 0) {
+            return STATUS_ALL_ERROR;
+        }
+
+        return STATUS_BOTH_SUCCESS_ERROR;
+    };
+
+    apply = () => {
+        this.props.onDone(this.state.uploadedImages);
+    };
+
+    reset = () => {
+        this.state.fileInfoList.length = 0;
+        this.state.uploadedImages.length = 0;
+        this.forceUpdate();
+    };
+
+    cancel = () => {
+        if (this.props.onCancel) {
+            this.props.onCancel();
         }
     };
 
@@ -128,17 +163,21 @@ export default class ImageUploadTool extends React.Component {
                         </DropBox>
                 }
             </div>
-            <div className="hint">
-                <p>{translate('Formats: ::exts', {exts: fileExts.map(t => t.toUpperCase())})}</p>
-                <p>{translate('File size: ::size', {size: formatBytes(maxBytes)})}</p>
-            </div>
+            {getHintBlock()}
+            <BottomBar
+                apply={this.apply}
+                reset={this.reset}
+                cancel={this.cancel}
+                status={this.getStatus()}
+            />
         </div>;
     }
 }
 
 
 ImageUploadTool.defaultProps = {
-    onDone: (uploadedImages) => console.log('ImageUploadTool onDone is not defined.', uploadedImages)
+    onDone: (uploadedImages) => console.log('ImageUploadTool onDone is not defined.', uploadedImages),
+    onCancel: () => {}
 };
 
 
@@ -148,9 +187,22 @@ ImageUploadTool.defaultProps = {
  */
 function getFileError(file) {
     const ext = file.name.split('.').pop();
-    const errors = checkErrors(file.type, ext, file.size);
+    const errors = ImageRuler.checkErrors(file.type, ext, file.size);
     if (errors.length === 0) {
         return null;
     }
     return translate('Invalid: ::errors', {errors});
 }
+
+/**
+ *
+ * @return {Component}
+ */
+function getHintBlock() {
+    return <div className="hint">
+        <p>{translate('Formats: ::exts', {exts: ImageRuler.fileExts.map(t => t.toUpperCase())})}</p>
+        <p>{translate('File size: ::size', {size: formatBytesLocalized(ImageRuler.maxBytes)})}</p>
+        <p>{translate('Max files: ::max', {max: formatNumberLocalized(MAX_FILES)})}</p>
+    </div>;
+}
+

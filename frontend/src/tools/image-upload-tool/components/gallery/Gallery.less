@@ -1,7 +1,15 @@
 @import "../../../../css/_mixin";
 
+
 .image-upload-tool .gallery {
+    @gallery-dimen: 400px;
+    @item-dimen: 120px;
+
     .grid-view {
+        overflow: auto;
+        width: @gallery-dimen;
+        height: @gallery-dimen;
+
         ul {
             list-style: none;
             .clear-fix();
@@ -17,8 +25,8 @@
         }
 
         .image-view {
-            width: 100px;
-            height: 100px;
+            width: @item-dimen;
+            height: @item-dimen;
 
             .error {
                 .font-body-small();
@@ -27,9 +35,13 @@
     }
 
     .full-view {
+        width: @gallery-dimen;
+        height: @item-dimen;
+
         .image-view {
+            position: absolute;
             width: 100%;
-            height: 400px;
+            height: 100%;
         }
     }
 

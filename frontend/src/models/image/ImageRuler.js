@@ -1,5 +1,5 @@
 import {translate} from '../../i18n';
-import {formatBytes} from '../../utils/number';
+import {formatBytesLocalized} from '../../utils/number';
 
 const mimeTypes = [
     'image/jpeg',
@@ -30,13 +30,13 @@ const checkErrors = (mimeType, fileExt, bytes) => {
 
     if (bytes > maxBytes) {
         errors.push(translate('File size ::size has exceeded limit ::limit',
-            {size: formatBytes(bytes), limit: formatBytes(maxBytes)}));
+            {size: formatBytesLocalized(bytes), limit: formatBytesLocalized(maxBytes)}));
     }
 
     return errors;
 };
 
-export {
+export default {
     mimeTypes,
     fileExts,
     maxBytes,

@@ -2,9 +2,7 @@ import './BrowseButton.less';
 import React from 'react';
 import Icon from '../../../../components/icon/Icon';
 import {translate} from '../../../../i18n';
-import {
-    mimeTypes,
-} from '../../../../models/image/rules';
+import ImageRuler from '../../../../models/image/ImageRuler';
 
 export default class BrowseButton extends React.Component {
     constructor(props) {
@@ -29,7 +27,7 @@ export default class BrowseButton extends React.Component {
             <input
                 type="file"
                 multiple="multiple"
-                accept={mimeTypes.join(',')}
+                accept={ImageRuler.mimeTypes.join(',')}
                 onChange={this.handleFileInputChange}
             />
         </label>;

@@ -6,13 +6,8 @@ import {translate} from "../../../../../../i18n";
 import Icon from "../../../../../../components/icon/Icon";
 import Popup from "../../../../../../components/popup/Popup";
 import ImageUploadTool from '../../../../../image-upload-tool/ImageUploadTool';
-import {
-    fileExts,
-    maxBytes
-} from '../../../../../../models/image/rules';
-import {
-    formatBytes
-} from '../../../../../../utils/number';
+import ImageRuler from '../../../../../../models/image/ImageRuler';
+import {formatBytesLocalized} from '../../../../../../utils/number';
 
 export default class ImageCard extends React.Component {
     constructor(props) {
@@ -69,18 +64,7 @@ export default class ImageCard extends React.Component {
             }
             {
                 toolShown &&
-                <Popup
-                    title={translate('Upload photo')}
-                    close={() => this.hideTool()}
-                    buttons={[
-                        <Button
-                            title={translate('Cancel')}
-                            appearance="neutral"
-                            size="small"
-                            onClick={() => this.hideTool()}
-                        />
-                    ]}
-                >
+                <Popup title={translate('Upload photo')}>
                     <ImageUploadTool
                         onDone={(images) => {
                             this.addImages(images);
@@ -108,8 +92,8 @@ function getCardPlaceholder(requestAddImage) {
             </div>
         </div>
         <div className="hint">
-            <p>{translate('Formats: ::exts', {exts: fileExts.map(t => t.toUpperCase())})}</p>
-            <p>{translate('File size: ::size', {size: formatBytes(maxBytes)})}</p>
+            <p>{translate('Formats: ::exts', {exts: ImageRuler.fileExts.map(t => t.toUpperCase())})}</p>
+            <p>{translate('File size: ::size', {size: formatBytesLocalized(ImageRuler.maxBytes)})}</p>
         </div>
     </div>;
 }

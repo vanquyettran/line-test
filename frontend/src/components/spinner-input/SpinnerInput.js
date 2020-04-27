@@ -103,19 +103,19 @@ export default class SpinnerInput extends React.Component {
         </li>;
     };
 
-    renderOptionsView = () => {
-        return <div className="options-view" ref={el => this.optionsView = el}>
-            <ul>
-                { this.getShouldDrawnOptions().map(option => this.renderOptionItem(option)) }
-            </ul>
-        </div>;
+    renderOptionsListView = () => {
+        return <ul>
+            { this.getShouldDrawnOptions().map(option => this.renderOptionItem(option)) }
+        </ul>;
     };
 
     updateValue = (value) => {
         const {onChange} = this.props;
         this.setState(
             {value},
-            () => onChange(value)
+            () => {
+                onChange(this.state.value);
+            }
         );
     };
 
@@ -142,15 +142,39 @@ export default class SpinnerInput extends React.Component {
         return options.find(option => option.value === value);
     };
 
+    getSelectedOptionIndex = () => {
+        const {options} = this.props;
+        const {value} = this.state;
+
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].value === value) {
+                return i;
+            }
+        }
+
+        return -1;
+    };
+
     render() {
+        const {options} = this.props;
+        const selectedOptionIndex = this.getSelectedOptionIndex();
+        const belowActive = selectedOptionIndex < options.length - 1;
+        const aboveActive = selectedOptionIndex > 0;
+
         return <div className="spinner-input">
-            <div className="head" onClick={() => this.selectBelow()}>
+            <div
+                className={'head' + (belowActive ? ' active' : '')}
+                onClick={() => this.selectBelow()}
+            >
                 <Icon name="angle-up"/>
             </div>
             <div className="body">
-                {this.renderOptionsView()}
+                {this.renderOptionsListView()}
             </div>
-            <div className="foot" onClick={() => this.selectAbove()}>
+            <div
+                className={'foot' + (aboveActive ? ' active' : '')}
+                onClick={() => this.selectAbove()}
+            >
                 <Icon name="angle-down"/>
             </div>
         </div>;
