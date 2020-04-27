@@ -295,10 +295,13 @@ export default class NumberPiece extends React.Component {
     };
 
     getInputStyle = (displayedValue) => {
+        const padX = 3;
+        const padY = 3;
         return {
             boxSizing: 'content-box',
-            padding: '0px',
-            minWidth: measureTextWidth(displayedValue, this.input || document.body) + 'px'
+            padding: `${padY}px ${padX}px`,
+            textAlign: 'center',
+            minWidth: measureTextWidth(displayedValue, this.input || document.body) + 2 * padX + 'px'
         };
     };
 

@@ -88,7 +88,11 @@ export default class DateInput extends React.Component {
             />
             {
                 pickerShown &&
-                <Dropdown opener={this.el} close={this.hidePicker}>
+                <Dropdown
+                    name="date-picker"
+                    opener={this.el}
+                    close={this.hidePicker}
+                >
                     <DatePicker
                         defaultDate={[year, month, date]}
                         date={this.syncNeeded('picker') ? [year, month, date] : undefined}

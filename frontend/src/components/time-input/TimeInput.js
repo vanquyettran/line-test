@@ -94,6 +94,7 @@ export default class TimeInput extends React.Component {
             {
                 pickerShown &&
                 <Dropdown
+                    name="time-picker"
                     opener={this.el}
                     close={this.hidePicker}
                 >

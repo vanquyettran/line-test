@@ -123,11 +123,11 @@ export default class Dropdown extends React.Component {
     };
 
     render = () => {
-        const {children} = this.props;
+        const {name, children} = this.props;
 
         return <LayoutPortal name="dropdown">
             <div
-                className="dropdown"
+                className={`dropdown ${name}-dropdown`}
                 ref={el => this.el = el}
                 style={{
                     display: 'table',
