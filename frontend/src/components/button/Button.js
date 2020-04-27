@@ -5,7 +5,7 @@ export default class Button extends React.Component {
     render() {
         const {
             title,
-            label,
+            tooltip,
             onClick,
             appearance = 'neutral', // neutral, primary
             size = 'medium', // small, medium, large
@@ -16,7 +16,7 @@ export default class Button extends React.Component {
             type="button"
             className={`button appearance-${appearance} size-${size} ${disabled ? 'disabled' : ''}`}
             onClick={ev => disabled || onClick(ev)}
-            {...{'aria-label': label || ''}}
+            {...{'aria-label': tooltip || ''}}
         >
             {title}
         </button>;

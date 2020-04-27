@@ -39,26 +39,26 @@ export default class PostPublishApp extends React.Component {
         this.setState(values);
     };
 
-    getParcel = (published) => {
+    getParcel = (useDraft) => {
         const {scheduledTime, contentType, contentData} = this.state;
 
         return new PostUploadParcel({
-            status: published ? STATUS_PUBLISED : STATUS_DRAFTED,
+            status: useDraft ? STATUS_DRAFTED : STATUS_PUBLISED,
             scheduledTime,
             contentType,
             contentData
         });
     };
 
-    submit = (published) => {
+    submit = (useDraft) => {
         this.setState({
-            isDraft: !published,
+            isDraft: useDraft,
             isUploading: true,
             successShown: false,
             submitError: null
         });
         
-        Request.add(this.getParcel(published))
+        Request.add(this.getParcel(useDraft))
             .then(this.onSubmitDone)
             .catch(this.onSubmitError)
             .finally(this.onSubmitFinish);
@@ -99,16 +99,13 @@ export default class PostPublishApp extends React.Component {
     };
 
     editPost = () => {
-        if (!this.resPost) {
-            throw new Error('something_went_wrong');
-        }
         this.setState({
             successShown: false,
             postId: this.resPost.id,
             contentType: this.resPost.contentType,
             contentData: this.resPost.contentData,
             scheduledTime: this.resPost.scheduledTime,
-            updatedTime: this.resPost.updatedAt
+            updatedTime: this.resPost.updatedTime
         });
     };
 
@@ -132,18 +129,18 @@ export default class PostPublishApp extends React.Component {
         return <div className="head-panel">
             <Button
                 title={this.getSubmitButtonTitle(true)}
-                label={error}
+                onClick={() => this.submit(true)}
+                tooltip={error}
                 appearance="neutral"
                 size="small"
-                onClick={() => this.submit(false)}
                 disabled={error !== null}
             />
             <Button
                 title={this.getSubmitButtonTitle(false)}
-                label={error}
+                onClick={() => this.submit(false)}
+                tooltip={error}
                 appearance="primary"
                 size="small"
-                onClick={() => this.submit(true)}
                 disabled={error !== null}
             />
         </div>;
@@ -173,10 +170,10 @@ export default class PostPublishApp extends React.Component {
         return <div className="foot-panel">
             <Button
                 title={this.getSubmitButtonTitle(false)}
-                label={error}
+                onClick={() => this.submit(false)}
+                tooltip={error}
                 appearance="primary"
                 size="medium"
-                onClick={() => this.submit(true)}
                 disabled={error !== null}
             />
         </div>;
@@ -184,6 +181,7 @@ export default class PostPublishApp extends React.Component {
 
     getPopupSuccess = () => {
         return <Popup
+            name="post-publish"
             title={translate('Awesome!')}
             buttons={[
                 <Button
@@ -201,7 +199,7 @@ export default class PostPublishApp extends React.Component {
             ]}
         >
             <p>
-                {translate('Your post was saved successfully. Now you can edit the post by clicking on Edit button.')}
+                {translate('post_saved_successfully')}
             </p>
         </Popup>;
     };
@@ -210,13 +208,14 @@ export default class PostPublishApp extends React.Component {
         const {submitError} = this.state;
 
         return <Popup
+            name="post-publish"
             title={translate('Failed to save your post')}
             close={() => this.setState({submitError: null})}
             buttons={[
                 <Button
                     title={translate('Try again')}
                     size="small"
-                    onClick={() => this.submit(!isDraft)}
+                    onClick={() => this.submit(isDraft)}
                     appearance="primary"
                 />,
                 <Button
@@ -248,7 +247,10 @@ export default class PostPublishApp extends React.Component {
     render() {
         const {isUploading, updatedTime, successShown, submitError} = this.state;
 
-        return <div className="post-publish-app" key={updatedTime}>
+        return <div
+            className="post-publish-app"
+            key={updatedTime} // re-render UI to keep up-to-date with data
+        >
             <div className="top-area">
                 <h1 className="title">{translate('Timeline post')}</h1>
             </div>

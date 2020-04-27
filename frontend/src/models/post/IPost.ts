@@ -12,9 +12,9 @@ import {ISurvey} from '../survey/ISurvey';
 export interface IPost {
   id: number,
   status: string,
-  scheduledTime?: number,
+  scheduledTime: number | null,
   contentType: string,
   contentData: IImage[] | IVideo | ISticker | ICoupon | ILink | ISurvey,
-  createdAt: number,
-  updatedAt: number
+  createdTime: number,
+  updatedTime: number
 }

@@ -1,4 +1,5 @@
 {
   "something_went_wrong": "Ôi không! có gì đó không đúng",
-  "apology_for_unexpected_error": "Dường như đã có một lỗi không mong muốn xảy ra, chúng tôi xin lỗi vì sự bất tiện này. Đội ngũ của chúng tôi sẽ làm việc để khắc phục vấn đề sớm nhất có thể."
+  "apology_for_unexpected_error": "Dường như đã có một lỗi không mong muốn xảy ra, chúng tôi xin lỗi vì sự bất tiện này. Đội ngũ của chúng tôi sẽ làm việc để khắc phục vấn đề sớm nhất có thể.",
+  "post_saved_successfully": "Bài đăng của bạn đã được lưu thành công. Bây giờ bạn có thể chỉnh sửa bằng cách nhấp vào nút bên dưới."
 }
