@@ -4,6 +4,7 @@ import {translate} from '../../../../i18n';
 import RadioGroupInput from '../../../../components/radio-group-input/RadioGroupInput';
 import DateInput from '../../../../components/date-input/DateInput';
 import TimeInput from '../../../../components/time-input/TimeInput';
+import {getTimezoneStamp} from '../../../../utils/date-time';
 
 export default class PublishScheduler extends React.Component {
     constructor(props) {
@@ -61,7 +62,7 @@ export default class PublishScheduler extends React.Component {
                 }}
                 hasSeconds={false}
             />
-            <div className="timezone">GMT +7:00</div>
+            <div className="timezone">{getTimezoneStamp()}</div>
         </div>;
     };
 

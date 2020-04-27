@@ -55,7 +55,7 @@ export default class Gallery extends React.Component {
 
 /**
  *
- * @param {{data, error}} fileInfo
+ * @param {IFileInfo} fileInfo
  * @return {Component}
  */
 function getImageView(fileInfo) {

@@ -84,6 +84,14 @@ export default class ImageUploadTool extends React.Component {
         );
     };
 
+    /**
+     *
+     * @param {File} file
+     * @param {string|null} data
+     * @param {string|null} error
+     * @param uploading
+     * @return {IFileInfo}
+     */
     createFileInfo = (file, data, error, uploading) => {
         return {
             name: file.name,

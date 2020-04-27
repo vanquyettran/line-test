@@ -7,6 +7,7 @@ import {
     CONTENT_LINK,
     CONTENT_SURVEY
 } from '../../../models/post/contentTypes';
+import {timeToUTC, timeFromUTC} from '../../../utils/date-time';
 
 
 /**
@@ -19,10 +20,10 @@ function fromEndpoint(data) {
         id: data['id'],
         status: data['status'],
         contentType: data['type'],
-        scheduledTime: data['scheduledTime'],
         contentData: fromEndpoint_contentData(data),
-        createdTime: data['createdAt'],
-        updatedTime: data['updatedAt']
+        scheduledTime: timeFromUTC(data['scheduledTime']),
+        createdTime: timeFromUTC(data['createdAt']),
+        updatedTime: timeFromUTC(data['updatedAt'])
     };
 }
 
@@ -37,7 +38,7 @@ function toEndpoint(post) {
         'type': post.contentType,
         [toEndpoint_contentDataField(post.contentType)]: toEndpoint_contentData(post),
         'status': post.status,
-        'scheduledTime': post.scheduledTime
+        'scheduledTime': timeToUTC(post.scheduledTime)
     };
 }
 
@@ -97,7 +98,7 @@ function fromEndpoint_contentData(data) {
  *
  * Convert from post.contentData to data that accepted by endpoint
  * @param {IPost} post
- * @return {*}
+ * @return {{}}
  * @throws {Error}
  */
 function toEndpoint_contentData(post) {

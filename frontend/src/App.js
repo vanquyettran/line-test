@@ -1,6 +1,6 @@
 import './layout';
 import React from 'react';
-import AppErrorBoundary from './error-boundaries/app-error-boundary/AppErrorBoundary';
+import AppErrorBoundary from './errorb/app-error-boundary/AppErrorBoundary';
 import PostPublishApp from './apps/post-publish-app/PostPublishApp';
 
 export default class App extends React.Component {
