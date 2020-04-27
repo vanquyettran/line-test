@@ -2,6 +2,7 @@ import './PostContentEditTool.less';
 import React from 'react';
 import TopBar from './components/top-bar/TopBar';
 import ContentArea from './components/content-area/ContentArea';
+import Popup from '../../components/popup/Popup';
 import {
     CONTENT_IMAGE,
     CONTENT_VIDEO,

@@ -43,7 +43,6 @@ export default class PublishScheduler extends React.Component {
 
     getDateTimeInput = () => {
         const {year, month, date, hours, minutes} = this.state;
-
         return <div className="date-time">
             <DateInput
                 defaultValue={[year, month, date]}
@@ -56,7 +55,7 @@ export default class PublishScheduler extends React.Component {
                 }}
             />
             <TimeInput
-                value={[hours, minutes, 0]}
+                defaultValue={[hours, minutes, 0]}
                 onChange={(hours, minutes, seconds) => {
                     this.updateHMS(hours, minutes);
                 }}

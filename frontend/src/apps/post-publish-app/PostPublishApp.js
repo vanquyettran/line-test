@@ -11,6 +11,7 @@ import Popup from '../../components/popup/Popup';
 import Spinner from '../../components/spinner/Spinner';
 import {CONTENT_IMAGE} from '../../models/post/contentTypes';
 import {url__homepage} from '../../app.config';
+import {jsonCopy, jsonCompare} from '../../utils/json';
 
 export default class PostPublishApp extends React.Component {
     constructor(props) {
@@ -80,7 +81,8 @@ export default class PostPublishApp extends React.Component {
          *
          * @type {IPost|null}
          */
-        this.resPost = null;
+        this.refPost = null;
+
     }
 
     updateValues = (values) => {
@@ -116,7 +118,7 @@ export default class PostPublishApp extends React.Component {
      * @param {IPost} post
      */
     onSubmitDone = post => {
-        this.resPost = post;
+        this.refPost = post;
 
         this.setState({
             isSubmitSuccess: true
@@ -143,18 +145,44 @@ export default class PostPublishApp extends React.Component {
             return translate('Post content cannot be empty');
         }
 
+        if (!this.hasChangesToSubmit()) {
+            return translate('No changes to save');
+        }
+
         return null;
     };
 
-    editPost = () => {
+    /**
+     * 
+     * @param {IPost} post
+     */
+    editPost = (post) => {
         this.setState({
             isSubmitSuccess: false,
-            postId: this.resPost.id,
-            contentType: this.resPost.contentType,
-            contentData: this.resPost.contentData,
-            scheduledTime: this.resPost.scheduledTime,
-            updatedTime: this.resPost.updatedTime
+            postId: post.id,
+            contentType: post.contentType,
+            contentData: post.contentData,
+            scheduledTime: post.scheduledTime,
+            updatedTime: post.updatedTime
         });
+    };
+
+    hasChangesToSubmit = () => {
+        const {contentType, contentData, scheduledTime} = this.state;
+
+        if (this.refPost === null) {
+            return true;
+        }
+
+        if (scheduledTime !== this.refPost.scheduledTime) {
+            return true;
+        }
+
+        if (contentType !== this.refPost.contentType) {
+            return true;
+        }
+
+        return !jsonCompare(contentData, this.refPost.contentData);
     };
 
     getSubmitButtonTitle = (useDraft) => {
@@ -235,7 +263,7 @@ export default class PostPublishApp extends React.Component {
                 <Button
                     title={translate('Edit')}
                     size="small"
-                    onClick={() => this.editPost()}
+                    onClick={() => this.editPost(jsonCopy(this.refPost))}
                     appearance="primary"
                 />,
                 <Button
