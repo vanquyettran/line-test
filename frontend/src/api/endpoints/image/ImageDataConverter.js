@@ -38,7 +38,7 @@ function toEndpoint(image) {
 function toPayload(file) {
     const formData = new FormData();
 
-    formData.append('file', file);
+    formData.append('file_to_upload', file);
     formData.append('type', 'PHOTO');
 
     return formData;

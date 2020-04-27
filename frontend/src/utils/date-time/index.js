@@ -5,7 +5,7 @@ function timeToUTC(time) {
         return time;
     }
 
-    return Date.UTC(
+    const utc = Date.UTC(
         now.getUTCFullYear(),
         now.getUTCMonth(),
         now.getUTCDate(),
@@ -13,6 +13,10 @@ function timeToUTC(time) {
         now.getUTCMinutes(),
         now.getUTCSeconds()
     );
+
+    console.log(new Date(time).toISOString(), new Date(utc).toISOString());
+
+    return utc;
 }
 
 function timeFromUTC(time) {

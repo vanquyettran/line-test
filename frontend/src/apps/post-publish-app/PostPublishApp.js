@@ -24,53 +24,7 @@ export default class PostPublishApp extends React.Component {
             isDraft: true,
             scheduledTime: null,
             contentType: CONTENT_IMAGE,
-            contentData: [
-                {
-                    id: '1',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '2',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '3',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '4',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '5',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '6',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '7',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '8',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '9',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '10',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-                {
-                    id: '11',
-                    thumbnailUrl: '/img/car-red.jpg',
-                },
-
-            ],
+            contentData: PostContentEditTool.getDefaultContentData(CONTENT_IMAGE),
 
             isSubmitting: false,
             isSubmitSuccess: false,
@@ -315,7 +269,7 @@ export default class PostPublishApp extends React.Component {
             </div>}
         >
             <div className="progress-message">
-                <span>{translate('Please wait for a moment')}</span>
+                <span>{translate('Please wait for a moment.')}</span>
             </div>
         </Popup>;
     };
