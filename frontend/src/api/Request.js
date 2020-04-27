@@ -34,7 +34,7 @@ function add(parcel) {
                 reject(responseData.getError());
             })
             .catch((rawError) => {
-                reject(parcel.parseResponseError(rawError.message));
+                reject(parcel.parseResponseError(rawError));
             });
     });
 }

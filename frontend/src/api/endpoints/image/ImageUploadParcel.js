@@ -26,33 +26,33 @@ export default class ImageUploadParcel extends Parcel {
 
     /**
      *
-     * @param res
+     * @param rawData
      * @return {ResponseData}
      */
-    parseResponseData(res) {
-        const success = res['resultCode'] === 1;
+    parseResponseData(rawData) {
+        const success = rawData['resultCode'] === 1;
 
         if (success) {
             /**
              *
              * @type {IImage}
              */
-            const image = ImageDataConverter.fromEndpoint(res['resultData']);
+            const image = ImageDataConverter.fromEndpoint(rawData['resultData']);
 
             return new ResponseData(image, null);
         }
 
-        const responseError = new ResponseError(res['errorMessage']);
+        const responseError = new ResponseError(rawData['errorMessage']);
 
         return new ResponseData(null, responseError);
     }
 
     /**
      *
-     * @param err
+     * @param rawError
      * @return {ResponseError}
      */
-    parseResponseError(err) {
-        return new ResponseError(err);
+    parseResponseError(rawError) {
+        return new ResponseError(rawError.message);
     }
 }

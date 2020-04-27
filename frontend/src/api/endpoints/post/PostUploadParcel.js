@@ -27,33 +27,33 @@ export default class PostUploadParcel extends Parcel {
 
     /**
      *
-     * @param res
+     * @param rawData
      * @return {ResponseData}
      */
-    parseResponseData(res) {
-        const success = res['resultCode'] === 1;
+    parseResponseData(rawData) {
+        const success = rawData['resultCode'] === 1;
 
         if (success) {
             /**
              *
              * @type {IPost}
              */
-            const post = PostDataConverter.fromEndpoint(res['resultData']);
+            const post = PostDataConverter.fromEndpoint(rawData['resultData']);
 
             return new ResponseData(post, null);
         }
 
-        const responseError = new ResponseError(res['errorMessage']);
+        const responseError = new ResponseError(rawData['errorMessage']);
 
         return new ResponseData(null, responseError);
     }
 
     /**
      *
-     * @param err
+     * @param rawError
      * @return {ResponseError}
      */
-    parseResponseError(err) {
-        return new ResponseError(err);
+    parseResponseError(rawError) {
+        return new ResponseError(rawError.message);
     }
 }
