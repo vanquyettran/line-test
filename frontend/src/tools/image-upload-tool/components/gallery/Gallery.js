@@ -3,6 +3,7 @@ import React from 'react';
 import Spinner from '../../../../components/spinner/Spinner';
 import Icon from '../../../../components/icon/Icon';
 import {colorvWhite} from '../../../../values/color';
+import {img__no_image} from '../../../../app.config';
 
 const GALLERY_FULL = 'full-view';
 const GALLERY_GRID = 'grid-view';
@@ -58,10 +59,10 @@ export default class Gallery extends React.Component {
  * @return {Component}
  */
 function getImageView(fileInfo) {
+
     return <div className="image-view">
         {
-            fileInfo.data !== null &&
-            <img src={fileInfo.data}/>
+            getImageElement(fileInfo.data)
         }
         {
             fileInfo.error !== null
@@ -93,3 +94,16 @@ function getImageView(fileInfo) {
     </div>;
 }
 
+function getImageElement(data) {
+    let placeholder = false;
+
+    return <img
+        src={data || img__no_image}
+        onError={ev => {
+            if (!placeholder) {
+                ev.target.src = img__no_image;
+                placeholder = true;
+            }
+        }}
+    />;
+}

@@ -54,7 +54,7 @@ export default class DropBox extends React.Component {
         >
             {
                 !isDragging ? children :
-                    <div>
+                    <div className="drop-here">
                         {translate('Drop here')}
                     </div>
             }

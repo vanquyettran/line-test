@@ -17,15 +17,16 @@ export default class PostPublishApp extends React.Component {
 
         this.state = {
             postId: null, // null -> create, !null -> update
+            updatedTime: null,
+
+            isDraft: true,
             scheduledTime: null,
             contentType: CONTENT_IMAGE,
             contentData: PostContentEditTool.getDefaultContentData(CONTENT_IMAGE),
-            syncFrom: null,
-            successShown: false,
+
+            isSubmitting: false,
+            isSubmitSuccess: false,
             submitError: null,
-            isDraft: true,
-            updatedTime: null,
-            isUploading: false
         };
 
         /**
@@ -53,8 +54,8 @@ export default class PostPublishApp extends React.Component {
     submit = (useDraft) => {
         this.setState({
             isDraft: useDraft,
-            isUploading: true,
-            successShown: false,
+            isSubmitting: true,
+            isSubmitSuccess: false,
             submitError: null
         });
         
@@ -71,7 +72,7 @@ export default class PostPublishApp extends React.Component {
         this.resPost = post;
 
         this.setState({
-            successShown: true
+            isSubmitSuccess: true
         });
     };
 
@@ -85,7 +86,7 @@ export default class PostPublishApp extends React.Component {
     };
 
     onSubmitFinish = () => {
-        this.setState({isUploading: false});
+        this.setState({isSubmitting: false});
     };
 
     getError = () => {
@@ -99,9 +100,8 @@ export default class PostPublishApp extends React.Component {
     };
 
     editPost = () => {
-        console.log('resPost', this.resPost);
         this.setState({
-            successShown: false,
+            isSubmitSuccess: false,
             postId: this.resPost.id,
             contentType: this.resPost.contentType,
             contentData: this.resPost.contentData,
@@ -246,7 +246,7 @@ export default class PostPublishApp extends React.Component {
     };
 
     render() {
-        const {isUploading, updatedTime, successShown, submitError} = this.state;
+        const {isSubmitting, updatedTime, isSubmitSuccess, submitError} = this.state;
 
         return <div
             className="post-publish-app"
@@ -271,11 +271,11 @@ export default class PostPublishApp extends React.Component {
                 this.getFootPanel()
             }
             {
-                isUploading &&
+                isSubmitting &&
                 this.getPopupProgress()
             }
             {
-                successShown &&
+                isSubmitSuccess &&
                 this.getPopupSuccess()
             }
             {

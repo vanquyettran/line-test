@@ -46,17 +46,25 @@ export default class ImageUploadTool extends React.Component {
     readFileSequentially = (index, files, numRead, onDone) => {
         const file = files[index];
 
+        const next = () => {
+            if (index < numRead - 1) {
+                this.readFileSequentially(index + 1, files, numRead, onDone);
+                return;
+            }
+            onDone();
+        };
+
+        const error = getFileError(file);
+        if (error !== null) {
+            this.onFileError(error);
+            next();
+            return;
+        }
+
         readFileAsDataURL(file)
             .then(data => this.onFileData(data, file))
             .catch(error => this.onFileError(error))
-            .finally(() => {
-                if (index < numRead - 1) {
-                    this.readFileSequentially(index + 1, files, numRead, onDone);
-                    return;
-                }
-
-                onDone();
-            });
+            .finally(next);
     };
 
     handleFiles = files => {
@@ -77,19 +85,14 @@ export default class ImageUploadTool extends React.Component {
     };
 
     onFileData = (data, file) => {
-        const error = getFileError(file);
-
         const fileInfo = {
             data,
-            error,
-            uploading: error === null
+            error: null,
+            uploading: true
         };
 
         this.addFileInfo(fileInfo);
-
-        if (error === null) {
-            this.uploadFile(file, fileInfo);
-        }
+        this.uploadFile(file, fileInfo);
     };
 
     onFileError = (error) => {
