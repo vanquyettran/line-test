@@ -16,7 +16,7 @@ GET http://localhost:3000
 - Choose photo icon in editor top bar to set content type is IMAGE
 - Upload one or more images by using browse button or drag-drop files in drop box
 - Publish post by click Publish/Schedule button and waiting for some seconds to see result
-- There are roughly 33.3% of upload requests would be error, and error will be displayed that you can see
+- There are roughly 30% of upload requests would be error, and error will be displayed that you can see
 - You can see request body in log screen where you run start command
 
 ## Test endpoints
