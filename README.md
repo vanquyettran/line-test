@@ -5,6 +5,7 @@
 npm install
 npm start
 ```
+Change port config in `.env` file. Default port: `3000`
 
 ## Test scenario
 Open this URL in your browser 
