@@ -67,31 +67,22 @@ function getImageView(fileInfo) {
             getImageElement(fileInfo.data)
         }
         {
-            fileInfo.error !== null
-                ?
-                <div className="overlay-error">
-                    <div className="error">
-                        <div className="filename">{fileInfo.name}</div>
-                        <div className="message">{fileInfo.error}</div>
-                    </div>
+            fileInfo.error !== null &&
+            <div className="overlay-error">
+                <div className="error">
+                    <div className="filename">{fileInfo.name}</div>
+                    <div className="message">{fileInfo.error}</div>
                 </div>
-                :
-                (
-                    fileInfo.uploading
-                        ?
-                        <div className="overlay-uploading">
-                            <div className="indicator">
-                                <Spinner color={colorvWhite}/>
-                            </div>
-                        </div>
-                        :
-                        <div className="overlay-success">
-                            <div className="indicator">
-                                <Icon name="check"/>
-                            </div>
-                        </div>
+            </div>
+        }
+        {
+            fileInfo.uploading &&
+            <div className="overlay-uploading">
+                <div className="indicator">
+                    <Spinner color={colorvWhite}/>
+                </div>
+            </div>
 
-                )
         }
 
     </div>;

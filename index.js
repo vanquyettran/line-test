@@ -37,7 +37,7 @@ app.put('/_api/media/upload', (req, res) => setTimeout(
 
 app.post('/_api/post/upload', (req, res) => setTimeout(
     () => {
-        const error = false;
+        const error = true;
         res.send({
             resultCode: error ? 0 : 1,
             resultData: {
