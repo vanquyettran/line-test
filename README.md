@@ -75,5 +75,6 @@ frontend
 
 ## Frontend diagram
 ```
-./diagram/Diagram.png
+./diagram/Diagram.html
+./diagram/PostPublishApp.html
 ```
