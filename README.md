@@ -5,12 +5,12 @@
 npm install
 npm start
 ```
-Change port config in `.env` file. Default port: `3000`
+Change port config in `.env` file. Default port: `3669`
 
 ## Test scenario
 Open this URL in your browser 
 ```
-GET http://localhost:3000
+GET http://localhost:3669
 ```
 - Choose time to publish or scheduling
 - Choose photo icon in editor top bar to set content type is IMAGE

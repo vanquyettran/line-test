@@ -27,7 +27,7 @@ const watchTasks = [];
             .pipe(iconfontCss({
                 fontName: fontName,
                 fontPath: fontName + '/',
-                targetPath: cssFilePath,
+                targetPath: `../${fontName}.css`,
                 timestamp: Math.round(Date.now() / 1000),
                 cssClass: cssClass,
             }))
