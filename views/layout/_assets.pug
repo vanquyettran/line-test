@@ -1,6 +1,10 @@
 if env.MODE === 'development'
     link(rel='stylesheet', href='/bundles/iconfont.css')
+    script(type='text/javascript', src='/bundles/vendor.js')
+    script(type='text/javascript', src='/bundles/default.js')
     script(type='text/javascript', src='/bundles/app.js')
 else
     link(rel='stylesheet', href='/bundles/iconfont.min.css')
+    script(type='text/javascript', src='/bundles/vendor.min.js')
+    script(type='text/javascript', src='/bundles/default.min.js')
     script(type='text/javascript', src='/bundles/app.min.js')

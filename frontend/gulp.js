@@ -14,7 +14,7 @@ if (commandOpt === '--dist') {
 }
 
 {
-    runTask('build');
+    runTask('buildConfig');
 }
 
 function runTask(task) {

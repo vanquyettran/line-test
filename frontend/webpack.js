@@ -1,13 +1,13 @@
 const webpack = require('webpack');
 const moment = require('moment');
 const args = process.argv.slice(2);
-const config = require('./webpack.config');
+const buildConfig = require('./webpack.configb');
 const commandOpt = args[0];
 
 if (commandOpt === '--watch') {
     console.log('webpack --watch start');
 
-    webpack(config).watch({}, (err, stats) => {
+    webpack(buildConfig('development')).watch({}, (err, stats) => {
         console.log('[' + moment().format('hh:mm:ss') + '] webpack is watching...');
         logResult(err, stats);
     });
@@ -18,10 +18,7 @@ if (commandOpt === '--watch') {
 if (commandOpt === '--min') {
     console.log('webpack --min start');
 
-    config.optimization.minimize = true;
-    config.output.filename = '[name].min.js';
-
-    webpack(config).run((err, stats) => {
+    webpack(buildConfig('production')).run((err, stats) => {
         logResult(err, stats);
         console.log('webpack --min done');
     });
@@ -32,7 +29,7 @@ if (commandOpt === '--min') {
 {
     console.log('webpack start');
 
-    webpack(config).run((err, stats) => {
+    webpack(buildConfig('development')).run((err, stats) => {
         logResult(err, stats);
         console.log('webpack done');
     });

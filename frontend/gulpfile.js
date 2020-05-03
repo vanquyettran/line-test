@@ -74,6 +74,6 @@ const watchTasks = [];
     }
 }
 
-gulp.task('build', gulp.parallel(...buildTasks));
+gulp.task('buildConfig', gulp.parallel(...buildTasks));
 gulp.task('dist', gulp.parallel(...distTasks));
 gulp.task('watch', gulp.parallel(...watchTasks));
