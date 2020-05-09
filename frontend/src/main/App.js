@@ -19,9 +19,9 @@ export default class App extends React.Component {
 
     render() {
         return <AppErrorBoundary>
-            <React.Suspense fallback={<div>Loading...</div>}>
+            {/*<React.Suspense fallback={<div>Loading...</div>}>*/}
                 {this._render()}
-            </React.Suspense>
+            {/*</React.Suspense>*/}
         </AppErrorBoundary>;
     }
 }
