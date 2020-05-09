@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const moment = require('moment');
 const args = process.argv.slice(2);
-const buildConfig = require('./webpack.configb');
+const buildConfig = require('./webpack.config.builder');
 const commandOpt = args[0];
 
 if (commandOpt === '--watch') {

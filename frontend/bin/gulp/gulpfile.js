@@ -15,28 +15,34 @@ const watchTasks = [];
     distTasks.push(distIconfont);
     watchTasks.push(watchIconfont);
 
+    const rootDir = path.resolve(__dirname, '../../../');
+    const mainDir = path.resolve(rootDir, 'frontend/src/main');
+    const bundlesDir = path.resolve(rootDir, 'public/bundles/');
+
     const fontName = 'iconfont';
     const cssClass = 'icon';
-    const src = path.resolve(__dirname, './src/icons/**/*.svg');
-    const fontDir = path.resolve(__dirname, `../public/bundles/${fontName}/`);
-    const cssFilePath = path.resolve(__dirname, `../public/bundles/${fontName}.css`);
-    const cssMinDir = path.resolve(__dirname, `../public/bundles/`);
+    const svgIconsRelative = 'icons/**/*.svg';
+    const svgIcons = path.resolve(mainDir, svgIconsRelative);
+    const fontDir = path.resolve(bundlesDir, `${fontName}/`);
+    const cssFilePath = path.resolve(bundlesDir, `${fontName}.css`);
+    const cssMinDir = path.resolve(bundlesDir, `./`);
+    const timestamp = Math.round(Date.now() / 1000);
 
     function buildIconfont(done) {
-        gulp.src(src)
+        gulp.src(svgIcons)
             .pipe(iconfontCss({
-                fontName: fontName,
-                fontPath: fontName + '/',
                 targetPath: `../${fontName}.css`,
-                timestamp: Math.round(Date.now() / 1000),
-                cssClass: cssClass,
+                fontName,
+                fontPath: fontName + '/',
+                timestamp,
+                cssClass
             }))
             .pipe(iconfont({
-                fontName: fontName,
+                fontName,
                 fontHeight: 10000,
                 formats: ['ttf', 'eot', 'woff', 'woff2', 'svg'],
                 normalize: true,
-                timestamp: Math.round(Date.now() / 1000),
+                timestamp
             }))
             .pipe(gulp.dest(fontDir))
             .on('end', () => {
@@ -63,7 +69,7 @@ const watchTasks = [];
 
     function watchIconfont(done) {
         buildIconfont(() => {
-            gulp.watch('src/icons/**/*.svg', {cwd: __dirname})
+            gulp.watch(svgIconsRelative, {cwd: mainDir})
                 .on('change', () => {
                     console.log('[' + moment().format('hh:mm:ss') + '] gulp is watching...');
                     buildIconfont(() => {

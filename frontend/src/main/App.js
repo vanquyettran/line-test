@@ -1,9 +1,9 @@
 import './layout';
 import React from 'react';
 import AppErrorBoundary from './errorb/app-error-boundary/AppErrorBoundary';
-// import PostPublishApp from './apps/post-publish-app/PostPublishApp';
+import PostPublishApp from './apps/post-publish-app/PostPublishApp';
 // const PostPublishApp = React.lazy(() => import(/*webpackChunkName: 'PostPublishApp'*/ './apps/post-publish-app/PostPublishApp'));
-const PostPublishApp = React.lazy(() => import('./apps/post-publish-app/PostPublishApp'));
+// const PostPublishApp = React.lazy(() => import('./apps/post-publish-app/PostPublishApp'));
 
 export default class App extends React.Component {
 

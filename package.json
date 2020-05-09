@@ -4,11 +4,11 @@
   "description": "LINE pre-test",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build": "cd frontend/ && node webpack.js && node webpack.js --min && node gulp.js --dist",
-    "watch": "cd frontend/ && concurrently \"node webpack.js --watch\" \"node gulp.js --watch\"",
-    "postinstall": "npm run-script build"
+    "test": "node frontend/bin/jest",
+    "build": "cd frontend/bin/ && node gulp --dist && node webpack && node webpack --min",
+    "watch": "cd frontend/bin/ && concurrently \"node gulp --watch\" \"node webpack --watch\"",
+    "postinstall": "npm run build"
   },
   "author": "Tran Van Quyet",
   "license": "ISC",
@@ -39,6 +39,7 @@
     "gulp-iconfont": "^10.0.3",
     "gulp-iconfont-css": "^3.0.0",
     "gulp-rename": "^2.0.0",
+    "jest": "^26.0.1",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
     "style-loader": "^1.1.4",

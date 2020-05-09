@@ -1,5 +1,10 @@
 const path = require('path');
 
+const rootDir = path.resolve(__dirname, '../../../');
+const srcDir = path.resolve(rootDir, 'frontend/src/');
+const bundlesRelative = 'bundles/';
+const bundlesDir = path.resolve(rootDir, 'public/', bundlesRelative);
+
 function buildConfig(mode = 'development') {
 
     const useMinify = mode === 'production';
@@ -10,19 +15,32 @@ function buildConfig(mode = 'development') {
         mode: mode,
         context: __dirname,
         entry: {
-            'app': path.resolve(__dirname, './src/index.js')
+            'app': path.resolve(srcDir, 'main/index.js')
         },
         output: {
+            path: bundlesDir,
+            publicPath: bundlesRelative,
             filename: `[name].${ext}`,
             chunkFilename: `[name].chunk.${ext}`,
-            path: path.resolve(__dirname, '../public/bundles/'),
-            publicPath: 'bundles/',
         },
         module: {
             rules: [
                 {
                     test: /\.js$/,
-                    use: ['babel-loader']
+                    use: [
+                        {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: [
+                                    "@babel/preset-env",
+                                    "@babel/preset-react"
+                                ],
+                                plugins: [
+                                    "transform-class-properties"
+                                ]
+                            }
+                        }
+                    ]
                 },
                 {
                     test: /\.css$/,
